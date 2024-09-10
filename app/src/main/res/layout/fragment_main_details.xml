@@ -1,0 +1,737 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+<variable
+    name="maindetails"
+    type="com.example.omoperation.viewmodel.MainDetailsViewMod" />
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="2dp"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:padding="5sp"
+                        android:weightSum="2">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="5dp"
+                                android:text="Manual No"
+                                android:textColor="@color/colorPrimary"
+                                android:textSize="15sp"
+                                android:textStyle="bold" />
+
+                            <RelativeLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:background="@android:drawable/edit_text">
+
+                                <ImageView
+                                    android:id="@+id/img_manual_no"
+                                    android:layout_width="20dp"
+                                    android:layout_height="20dp"
+                                    android:layout_centerVertical="true"
+                                    android:visibility="visible"
+                                    app:srcCompat="@drawable/cn"
+                                    tools:ignore="VectorDrawableCompat" />
+
+                                <EditText
+                                    android:id="@+id/manual_no"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="25dp"
+                                    android:layout_centerVertical="true"
+                                    android:layout_marginLeft="5dp"
+                                    android:layout_toRightOf="@+id/img_manual_no"
+                                    android:background="@null"
+                                    android:hint="Manual number"
+
+                                    android:text="@={maindetails.manualnum}"
+                                    android:inputType="number"
+                                    android:textSize="15sp"
+                                    android:textStyle="bold" />
+                            </RelativeLayout>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="5dp"
+                                android:text="Manual Date"
+                                android:textColor="@color/colorPrimary"
+                                android:textSize="15sp"
+                                android:textStyle="bold" />
+
+                            <RelativeLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:background="@android:drawable/edit_text">
+
+                                <ImageView
+                                    android:id="@+id/img_manual_date"
+                                    android:layout_width="20dp"
+                                    android:layout_height="20dp"
+                                    android:layout_centerVertical="true"
+                                    android:visibility="visible"
+                                    app:srcCompat="@drawable/date"
+                                    tools:ignore="VectorDrawableCompat" />
+
+                                <EditText
+                                    android:id="@+id/manual_date"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="25dp"
+                                    android:layout_centerVertical="true"
+                                    android:layout_marginLeft="5dp"
+                                    android:layout_toRightOf="@+id/img_manual_date"
+                                    android:background="@null"
+                                    android:cursorVisible="false"
+                                    android:focusable="false"
+                                    android:hint="Manual Date"
+                                    android:text="@={maindetails.manualdate}"
+                                    android:inputType="text"
+                                    android:textSize="15sp"
+                                    android:textStyle="bold" />
+                            </RelativeLayout>
+                        </LinearLayout>
+                    </LinearLayout>
+                    <!--this layout is hidden for from branch and to branch which is taken according to consignor and consignee-->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:padding="5sp"
+                        android:visibility="gone"
+                        android:weightSum="2">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="5dp"
+                                android:text="From Branch"
+                                android:textColor="@color/colorPrimary"
+                                android:textSize="15sp"
+                                android:textStyle="bold" />
+
+                            <RelativeLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:background="@android:drawable/edit_text">
+
+                                <ImageView
+                                    android:id="@+id/img_from_branch"
+                                    android:layout_width="20dp"
+                                    android:layout_height="20dp"
+                                    android:layout_centerVertical="true"
+                                    android:visibility="visible"
+                                    app:srcCompat="@drawable/location"
+                                    tools:ignore="VectorDrawableCompat" />
+
+                                <EditText
+                                    android:id="@+id/from_branch"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="25dp"
+                                    android:layout_centerVertical="true"
+                                    android:layout_marginLeft="5dp"
+                                    android:layout_toRightOf="@+id/img_from_branch"
+                                    android:background="@null"
+                                    android:focusable="false"
+                                    android:hint="From branch"
+                                    android:inputType="text"
+                                    android:textSize="15sp"
+                                    android:textStyle="bold" />
+                            </RelativeLayout>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="5dp"
+                                android:text="To Branch"
+                                android:textColor="@color/colorPrimary"
+                                android:textSize="15sp"
+                                android:textStyle="bold" />
+
+                            <RelativeLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:background="@android:drawable/edit_text">
+
+                                <ImageView
+                                    android:id="@+id/img_to_branch"
+                                    android:layout_width="20dp"
+                                    android:layout_height="20dp"
+                                    android:layout_centerVertical="true"
+                                    android:visibility="visible"
+                                    app:srcCompat="@drawable/location"
+                                    tools:ignore="VectorDrawableCompat" />
+
+                                <EditText
+                                    android:id="@+id/to_branch"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="25dp"
+                                    android:layout_centerVertical="true"
+                                    android:layout_marginLeft="5dp"
+                                    android:layout_toRightOf="@+id/img_to_branch"
+                                    android:background="@null"
+                                    android:focusable="false"
+                                    android:hint="To branch"
+                                    android:inputType="text"
+                                    android:textSize="15sp"
+                                    android:textStyle="bold" />
+                            </RelativeLayout>
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <!--END OF FROM AND TO BRANCH-->
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:padding="5sp"
+                        android:weightSum="2">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="5dp"
+                                android:text="Transportation Mode"
+                                android:textColor="@color/colorPrimary"
+                                android:textSize="15sp"
+                                android:textStyle="bold" />
+
+                            <RelativeLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:background="@android:drawable/edit_text">
+
+                                <ImageView
+                                    android:id="@+id/img_transp_mode"
+                                    android:layout_width="20dp"
+                                    android:layout_height="20dp"
+                                    android:layout_centerVertical="true"
+                                    android:visibility="visible"
+                                    app:srcCompat="@drawable/vehicletracking"
+                                    tools:ignore="VectorDrawableCompat" />
+
+                                <!--<EditText
+                                    android:id="@+id/tran_mode"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="25dp"
+                                    android:layout_centerVertical="true"
+                                    android:layout_marginLeft="5dp"
+                                    android:layout_toRightOf="@+id/img_transp_mode"
+                                    android:background="@null"
+                                    android:hint="Transportation mode"
+                                    android:inputType="textCapCharacters"
+                                    android:textAllCaps="true"
+                                    android:textSize="15sp"
+                                    android:textStyle="bold" />-->
+
+                                <Spinner
+                                    android:id="@+id/tran_mode"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="25dp"
+                                    android:layout_centerVertical="true"
+                                    android:layout_marginLeft="5dp"
+                                    android:layout_toRightOf="@+id/img_transp_mode"
+                                    android:textAllCaps="true"
+                                    android:textSize="15sp"
+                                    android:textStyle="bold" />
+                            </RelativeLayout>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="5dp"
+                                android:text="Freight Mode"
+                                android:textColor="@color/colorPrimary"
+                                android:textSize="15sp"
+                                android:textStyle="bold" />
+
+                            <RelativeLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:background="@android:drawable/edit_text">
+
+                                <ImageView
+                                    android:id="@+id/img_freight_mode"
+                                    android:layout_width="20dp"
+                                    android:layout_height="20dp"
+                                    android:layout_centerVertical="true"
+                                    android:visibility="visible"
+                                    app:srcCompat="@drawable/monthlytax"
+                                    tools:ignore="VectorDrawableCompat" />
+
+                                <Spinner
+                                    android:id="@+id/freight_mode"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="25dp"
+                                    android:layout_centerVertical="true"
+                                    android:layout_marginLeft="5dp"
+                                    android:layout_toRightOf="@+id/img_freight_mode"
+                                    android:textSize="15sp"
+                                    android:textStyle="bold" />
+                            </RelativeLayout>
+                        </LinearLayout>
+                    </LinearLayout>
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:padding="5sp"
+                        android:weightSum="2">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="5dp"
+                                android:text="Consignor Code"
+                                android:textColor="@color/colorPrimary"
+                                android:textSize="15sp"
+                                android:textStyle="bold" />
+
+                            <RelativeLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:background="@android:drawable/edit_text">
+
+                                <ImageView
+                                    android:id="@+id/img_cnrno"
+                                    android:layout_width="20dp"
+                                    android:layout_height="20dp"
+                                    android:layout_centerVertical="true"
+                                    android:visibility="visible"
+                                    app:srcCompat="@drawable/consigner"
+                                    tools:ignore="VectorDrawableCompat" />
+
+                                <EditText
+                                    android:id="@+id/cnrno"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="25dp"
+                                    android:layout_centerVertical="true"
+                                    android:layout_marginLeft="5dp"
+                                    android:layout_toRightOf="@+id/img_cnrno"
+                                    android:background="@null"
+                                    android:hint="Consignor Code"
+                                    android:text="@={maindetails.cnrcode}"
+                                    android:inputType="number"
+                                    android:textSize="15sp"
+                                    android:textStyle="bold" />
+                            </RelativeLayout>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="5dp"
+                                android:text="Consignee Code"
+                                android:textColor="@color/colorPrimary"
+                                android:textSize="15sp"
+                                android:textStyle="bold" />
+
+                            <RelativeLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:background="@android:drawable/edit_text">
+
+                                <ImageView
+                                    android:id="@+id/img_cneeno"
+                                    android:layout_width="20dp"
+                                    android:layout_height="20dp"
+                                    android:layout_centerVertical="true"
+                                    android:visibility="visible"
+                                    app:srcCompat="@drawable/consigner"
+                                    tools:ignore="VectorDrawableCompat" />
+
+                                <EditText
+                                    android:id="@+id/cneeno"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="25dp"
+                                    android:layout_centerVertical="true"
+                                    android:layout_marginLeft="5dp"
+                                    android:layout_toRightOf="@+id/img_cneeno"
+                                    android:background="@null"
+                                    android:hint="Consignee Code"
+                                    android:text="@={maindetails.cnecode}"
+                                    android:inputType="number"
+                                    android:textSize="15sp"
+                                    android:textStyle="bold" />
+                            </RelativeLayout>
+                        </LinearLayout>
+                    </LinearLayout>
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:padding="5sp"
+                        android:weightSum="2">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="5dp"
+                                android:text="Consignor"
+                                android:textColor="@color/colorPrimary"
+                                android:textSize="15sp"
+                                android:textStyle="bold" />
+
+                            <RelativeLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:background="@android:drawable/edit_text">
+
+                                <ImageView
+                                    android:id="@+id/img_cnr"
+                                    android:layout_width="20dp"
+                                    android:layout_height="20dp"
+                                    android:layout_centerVertical="true"
+                                    android:visibility="visible"
+                                    app:srcCompat="@drawable/consigner"
+                                    tools:ignore="VectorDrawableCompat" />
+
+                                <EditText
+                                    android:id="@+id/cnr"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="25dp"
+                                    android:layout_centerVertical="true"
+                                    android:layout_marginLeft="5dp"
+                                    android:layout_toRightOf="@+id/img_cnr"
+                                    android:background="@null"
+                                    android:cursorVisible="false"
+                                    android:focusable="false"
+                                    android:hint="Consignor"
+                                    android:text="@={maindetails.cnr}"
+                                    android:inputType="text"
+                                    android:textSize="15sp"
+                                    android:textStyle="bold" />
+                            </RelativeLayout>
+
+                            <TextView
+                                android:id="@+id/cnrloc"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textSize="15sp"
+                                android:textStyle="bold"
+                                android:visibility="gone" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="5dp"
+                                android:text="Consignee"
+                                android:textColor="@color/colorPrimary"
+                                android:textSize="15sp"
+                                android:textStyle="bold" />
+
+                            <RelativeLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:background="@android:drawable/edit_text">
+
+                                <ImageView
+                                    android:id="@+id/img_cnee"
+                                    android:layout_width="20dp"
+                                    android:layout_height="20dp"
+                                    android:layout_centerVertical="true"
+                                    android:visibility="visible"
+                                    app:srcCompat="@drawable/consigner"
+                                    tools:ignore="VectorDrawableCompat" />
+
+                                <EditText
+                                    android:id="@+id/cnee"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="25dp"
+                                    android:layout_centerVertical="true"
+                                    android:layout_marginLeft="5dp"
+                                    android:layout_toRightOf="@+id/img_cnee"
+                                    android:background="@null"
+                                    android:cursorVisible="false"
+                                    android:focusable="false"
+                                    android:hint="Consignee"
+                                    android:text="@={maindetails.cne}"
+                                    android:inputType="text"
+                                    android:textSize="15sp"
+                                    android:textStyle="bold" />
+                            </RelativeLayout>
+
+                            <TextView
+                                android:id="@+id/ceeloc"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textSize="15sp"
+                                android:textStyle="bold"
+                                android:visibility="gone" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:padding="5sp"
+                        android:weightSum="2">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="5dp"
+                                android:text="Billing Party Code"
+                                android:textColor="@color/colorPrimary"
+                                android:textSize="15sp"
+                                android:textStyle="bold" />
+
+                            <RelativeLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:background="@android:drawable/edit_text">
+
+                                <ImageView
+                                    android:id="@+id/img_bill_mode"
+                                    android:layout_width="20dp"
+                                    android:layout_height="20dp"
+                                    android:layout_centerVertical="true"
+                                    android:visibility="visible"
+                                    app:srcCompat="@drawable/user"
+                                    tools:ignore="VectorDrawableCompat" />
+
+                                    <EditText
+                                    android:id="@+id/bill_mode"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="25dp"
+                                    android:layout_centerVertical="true"
+                                    android:layout_marginLeft="5dp"
+                                    android:layout_toRightOf="@+id/img_bill_mode"
+                                    android:background="@null"
+                                    android:hint="Billing party code"
+                                        android:text="@={maindetails.billingpartycode}"
+                                    android:inputType="number"
+                                    android:textAllCaps="true"
+                                    android:textSize="15sp"
+                                    android:textStyle="bold" />
+                            </RelativeLayout>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="5dp"
+                                android:text="Load Type"
+                                android:textColor="@color/colorPrimary"
+                                android:textSize="15sp"
+                                android:textStyle="bold" />
+
+                            <RelativeLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:background="@android:drawable/edit_text">
+
+                                <ImageView
+                                    android:id="@+id/img_load_type"
+                                    android:layout_width="20dp"
+                                    android:layout_height="20dp"
+                                    android:layout_centerVertical="true"
+                                    android:inputType="textCapCharacters"
+                                    android:visibility="visible"
+                                    app:srcCompat="@drawable/load_type"
+                                    tools:ignore="VectorDrawableCompat" />
+
+                                <Spinner
+                                    android:id="@+id/load_type"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="25dp"
+                                    android:layout_centerVertical="true"
+                                    android:layout_marginLeft="5dp"
+                                    android:layout_toRightOf="@+id/img_load_type"
+                                    android:textSize="15sp"
+                                    android:textStyle="bold" />
+                            </RelativeLayout>
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dp"
+                            android:text="Billing Party"
+                            android:textColor="@color/colorPrimary"
+                            android:textSize="15sp"
+                            android:textStyle="bold" />
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@android:drawable/edit_text">
+
+                            <ImageView
+                                android:id="@+id/img_bill_mode1"
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:layout_centerVertical="true"
+                                android:visibility="visible"
+                                app:srcCompat="@drawable/user"
+                                tools:ignore="VectorDrawableCompat" />
+
+                            <EditText
+                                android:id="@+id/bill_mode1"
+                                android:layout_width="match_parent"
+                                android:layout_height="25dp"
+                                android:layout_centerVertical="true"
+                                android:layout_marginLeft="5dp"
+                                android:layout_toRightOf="@+id/img_bill_mode1"
+                                android:background="@null"
+                                android:hint="Billing party"
+                                android:text="@={maindetails.billingpartname}"
+                                android:inputType="text"
+                                android:textAllCaps="true"
+                                android:textSize="15sp"
+                                android:textStyle="bold" />
+                        </RelativeLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dp"
+                            android:text="Remarks"
+                            android:textColor="@color/colorPrimary"
+                            android:textSize="15sp"
+                            android:textStyle="bold" />
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@android:drawable/editbox_background_normal">
+
+                            <EditText
+                                android:id="@+id/remarks"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_centerVertical="true"
+                                android:background="@null"
+                                android:gravity="top"
+                                android:hint="Remarks"
+                                android:inputType="textMultiLine|textCapCharacters"
+                                android:lines="5"
+                                android:text="@={maindetails.remarks}"
+                                android:textSize="15sp"
+                                android:textStyle="bold" />
+                        </RelativeLayout>
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+        </ScrollView>
+    </RelativeLayout>
+</layout>

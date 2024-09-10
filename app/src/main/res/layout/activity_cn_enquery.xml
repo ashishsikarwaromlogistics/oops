@@ -1,0 +1,849 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="cnenquery"
+            type="com.example.omoperation.viewmodel.CnEnqueryViewmod" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context=".activities.CnEnquery">
+
+        <include layout="@layout/toolbar" />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/toolbar"
+            android:background="@drawable/app_background">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/white"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="110dp"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/enquiry" />
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/card_spinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/header_card"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginBottom="5dp"
+                    app:cardElevation="5dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/background_light"
+                        android:orientation="vertical">
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@android:drawable/editbox_background_normal"
+                            android:padding="8dp">
+
+                            <ImageView
+                                android:id="@+id/img_department"
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:layout_centerVertical="true"
+                                app:srcCompat="@drawable/cn" />
+
+                            <EditText
+                                android:id="@+id/cn_text"
+                                android:layout_width="match_parent"
+                                android:layout_height="48dp"
+                                android:layout_centerVertical="true"
+                                android:layout_marginLeft="5dp"
+                                android:layout_toLeftOf="@+id/searchByVoice"
+                                android:layout_toRightOf="@+id/img_department"
+                                android:background="@null"
+                                android:hint="CN Number"
+                                android:imeOptions="actionSearch"
+                                android:inputType="number"
+                                android:text="@={cnenquery.cntext}"
+                                android:textColorHint="#78909C"
+                                android:textSize="15sp"
+                                android:textStyle="bold" />
+
+                            <ImageButton
+                                android:id="@+id/searchByVoice"
+                                android:layout_width="48dp"
+                                android:layout_height="48dp"
+                                android:layout_toLeftOf="@+id/searchByCode"
+                                android:background="@null"
+
+                                 />
+
+                            <ImageButton
+                                android:id="@+id/searchByCode"
+                                android:layout_width="35dp"
+                                android:layout_height="35dp"
+                                android:layout_toLeftOf="@+id/searchBtn"
+                                android:background="@null"
+                                android:src="@drawable/barcode"
+                                tools:ignore="TouchTargetSizeCheck,TouchTargetSizeCheck" />
+
+                            <ImageButton
+                                android:id="@+id/searchBtn"
+                                android:layout_width="48dp"
+                                android:layout_height="48dp"
+                                android:layout_alignParentRight="true"
+                                android:layout_centerVertical="true"
+                                android:background="@null"
+                                android:src="@android:drawable/ic_menu_search"
+                                android:onClick="@{()->cnenquery.checkcn()}"
+                                tools:ignore="ImageContrastCheck" />
+                        </RelativeLayout>
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/table"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginRight="5dp"
+                    app:cardElevation="5dp"
+                    android:visibility="gone"
+                    >
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <LinearLayout
+                            android:id="@+id/ll_details_table_head"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@color/colorPrimary"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/cn_details_table_head"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+
+                                android:padding="5dp"
+                                android:layout_weight="1"
+                                android:text="CN Details"
+                                android:textColor="@android:color/white"
+                                android:textSize="15dp" />
+
+                            <TextView
+                                android:id="@+id/cn_communiocation"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:padding="5dp"
+                                android:text="CN Communication"
+                                android:textColor="@android:color/white"
+                                android:textSize="15dp" />
+                        </LinearLayout>
+
+
+                        <TableLayout
+                            android:id="@+id/l1"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_below="@+id/ll_details_table_head">
+
+                            <TableRow android:layout_height="wrap_content">
+
+                                <TextView
+                                    android:layout_height="match_parent"
+                                    android:background="@drawable/cell_shape"
+                                    android:gravity="center_vertical"
+                                    android:padding="5dp"
+                                    android:text="CN Number"
+                                    android:textColor="@color/colorPrimary"
+                                    android:textSize="12sp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/col_cno_value"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:background="@drawable/cell_shape"
+                                    android:padding="5dp"
+                                    android:textColor="@android:color/black"
+                                    android:textSize="12sp" />
+                            </TableRow>
+
+                            <TableRow android:layout_height="wrap_content">
+
+                                <TextView
+                                    android:layout_height="match_parent"
+                                    android:background="@drawable/cell_shape"
+                                    android:gravity="center_vertical"
+                                    android:padding="5dp"
+                                    android:text="CN Date"
+                                    android:textColor="@color/colorPrimary"
+                                    android:textSize="12sp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/col_cndate_value"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:background="@drawable/cell_shape"
+                                    android:padding="5dp"
+                                    android:textColor="@android:color/black"
+                                    android:textSize="12sp" />
+                            </TableRow>
+
+                            <TableRow android:layout_height="wrap_content">
+
+                                <TextView
+                                    android:layout_height="match_parent"
+                                    android:background="@drawable/cell_shape"
+                                    android:gravity="center_vertical"
+                                    android:padding="5dp"
+                                    android:text="Consignor"
+                                    android:textColor="@color/colorPrimary"
+                                    android:textSize="12sp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/col_status_value"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:background="@drawable/cell_shape"
+                                    android:padding="5dp"
+                                    android:textColor="@android:color/black"
+                                    android:textSize="12sp" />
+                            </TableRow>
+
+                            <TableRow android:layout_height="wrap_content">
+
+                                <TextView
+                                    android:layout_height="match_parent"
+                                    android:background="@drawable/cell_shape"
+                                    android:gravity="center_vertical"
+                                    android:padding="5dp"
+                                    android:text="Consignee"
+                                    android:textColor="@color/colorPrimary"
+                                    android:textSize="12sp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/col_conname_value"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:background="@drawable/cell_shape"
+                                    android:padding="5dp"
+                                    android:textColor="@android:color/black"
+                                    android:textSize="12sp" />
+                            </TableRow>
+
+                            <TableRow android:layout_height="wrap_content">
+
+                                <TextView
+                                    android:layout_height="match_parent"
+                                    android:background="@drawable/cell_shape"
+                                    android:gravity="center_vertical"
+                                    android:padding="5dp"
+                                    android:text="From"
+                                    android:textColor="@color/colorPrimary"
+                                    android:textSize="12sp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/col_from_value"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:background="@drawable/cell_shape"
+                                    android:padding="5dp"
+                                    android:textColor="@android:color/black"
+                                    android:textSize="12sp" />
+                            </TableRow>
+
+                            <TableRow android:layout_height="wrap_content">
+
+                                <TextView
+                                    android:layout_height="match_parent"
+                                    android:background="@drawable/cell_shape"
+                                    android:gravity="center_vertical"
+                                    android:padding="5dp"
+                                    android:text="To"
+                                    android:textColor="@color/colorPrimary"
+                                    android:textSize="12sp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/col_to_value"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:background="@drawable/cell_shape"
+                                    android:padding="5dp"
+                                    android:textColor="@android:color/black"
+                                    android:textSize="12sp" />
+                            </TableRow>
+
+                            <TableRow android:layout_height="wrap_content">
+
+                                <TextView
+                                    android:layout_height="match_parent"
+                                    android:background="@drawable/cell_shape"
+                                    android:gravity="center_vertical"
+                                    android:padding="5dp"
+                                    android:text="Booking Mode"
+                                    android:textColor="@color/colorPrimary"
+                                    android:textSize="12sp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/col_mode_value"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:background="@drawable/cell_shape"
+                                    android:padding="5dp"
+                                    android:textColor="@android:color/black"
+                                    android:textSize="12sp" />
+                            </TableRow>
+
+                            <TableRow android:layout_height="wrap_content">
+
+                                <TextView
+                                    android:layout_height="match_parent"
+                                    android:background="@drawable/cell_shape"
+                                    android:gravity="center_vertical"
+                                    android:padding="5dp"
+                                    android:text="Fright Mode"
+                                    android:textColor="@color/colorPrimary"
+                                    android:textSize="12sp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/fright_value"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:background="@drawable/cell_shape"
+                                    android:padding="5dp"
+                                    android:textColor="@android:color/black"
+                                    android:textSize="12sp" />
+                            </TableRow>
+
+                            <TableRow android:layout_height="wrap_content">
+
+                                <TextView
+                                    android:layout_height="match_parent"
+                                    android:background="@drawable/cell_shape"
+                                    android:gravity="center_vertical"
+                                    android:padding="5dp"
+                                    android:text="Lorry No"
+                                    android:textColor="@color/colorPrimary"
+                                    android:textSize="12sp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/lorry_no"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:background="@drawable/cell_shape"
+                                    android:padding="5dp"
+                                    android:textColor="@android:color/black"
+                                    android:textSize="12sp" />
+                            </TableRow>
+
+                            <TableRow android:layout_height="wrap_content">
+
+                                <TextView
+                                    android:layout_height="match_parent"
+                                    android:background="@drawable/cell_shape"
+                                    android:gravity="center_vertical"
+                                    android:padding="5dp"
+                                    android:text="ETA"
+                                    android:textColor="@color/colorPrimary"
+                                    android:textSize="12sp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/eta"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:background="@drawable/cell_shape"
+                                    android:padding="5dp"
+                                    android:textColor="@android:color/black"
+                                    android:textSize="12sp" />
+                            </TableRow>
+
+                            <TableRow android:layout_height="wrap_content">
+
+                                <TextView
+                                    android:layout_height="match_parent"
+                                    android:background="@drawable/cell_shape"
+                                    android:gravity="center_vertical"
+                                    android:padding="5dp"
+                                    android:text="Status"
+                                    android:textColor="@color/colorPrimary"
+                                    android:textSize="12sp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/col_exp_value"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:background="@drawable/cell_shape"
+                                    android:padding="5dp"
+                                    android:textColor="@android:color/black"
+                                    android:textSize="12sp" />
+                            </TableRow> <TableRow android:layout_height="wrap_content">
+                            <TextView
+                                android:layout_height="match_parent"
+                                android:background="@drawable/cell_shape"
+                                android:gravity="center_vertical"
+                                android:padding="5dp"
+                                android:text=" Undelivered reason"
+                                android:textColor="@color/colorPrimary"
+                                android:textSize="12sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/colundeliver"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:background="@drawable/cell_shape"
+                                android:padding="5dp"
+                                android:textColor="@android:color/black"
+                                android:textSize="12sp" />
+                        </TableRow>
+
+                            <TableRow
+                                android:id="@+id/download_pod_layout"
+                                android:layout_height="wrap_content"
+                                android:visibility="gone">
+
+                                <TextView
+                                    android:layout_height="match_parent"
+                                    android:background="@drawable/cell_shape"
+                                    android:gravity="center_vertical"
+                                    android:padding="5dp"
+                                    android:text="Download POD"
+                                    android:textColor="@color/colorPrimary"
+                                    android:textSize="12sp"
+                                    android:textStyle="bold" />
+
+                                <!--<TextView
+                                    android:id="@+id/download_pod"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:background="@drawable/cell_shape"
+                                    android:padding="10dp"
+                                    android:text="@string/click_here"
+                                    android:textColor="#0000EE"/>-->
+                                <RelativeLayout
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:background="@drawable/cell_shape"
+                                    android:padding="5dp">
+
+                                    <ImageView
+                                        android:id="@+id/download_pod"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:src="@drawable/pdf" />
+                                </RelativeLayout>
+                            </TableRow>
+
+                            <TableRow
+                                android:id="@+id/track_pod_layout"
+                                android:layout_height="wrap_content"
+                                android:visibility="gone">
+
+                                <TextView
+                                    android:layout_height="match_parent"
+                                    android:background="@drawable/cell_shape"
+                                    android:gravity="center_vertical"
+                                    android:padding="5dp"
+                                    android:text="Track CN"
+                                    android:textColor="@android:color/black"
+                                    android:textSize="12sp"
+                                    android:textStyle="bold" />
+
+                                <!--<TextView
+                                    android:id="@+id/download_pod"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:background="@drawable/cell_shape"
+                                    android:padding="10dp"
+                                    android:text="@string/click_here"
+                                    android:textColor="#0000EE"/>-->
+                                <RelativeLayout
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:background="@drawable/cell_shape"
+                                    android:padding="5dp">
+
+                                    <ImageView
+                                        android:id="@+id/track_pod"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:src="@drawable/map" />
+                                </RelativeLayout>
+                            </TableRow>
+
+                            <TableRow
+                                android:id="@+id/ddrrow"
+                                android:layout_height="wrap_content"
+                                android:visibility="gone">
+
+                                <TextView
+                                    android:layout_height="match_parent"
+                                    android:background="@drawable/cell_shape"
+                                    android:gravity="center_vertical"
+                                    android:padding="5dp"
+                                    android:text="DDR"
+                                    android:textColor="@color/colorPrimary"
+                                    android:textSize="12sp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/ddr_value"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:background="@drawable/cell_shape"
+                                    android:padding="5dp"
+                                    android:textColor="@android:color/black"
+                                    android:textSize="12sp" />
+                            </TableRow>
+
+                            <TableRow
+                                android:id="@+id/adrrow"
+                                android:layout_height="wrap_content"
+                                android:visibility="gone">
+
+                                <TextView
+                                    android:layout_height="match_parent"
+                                    android:background="@drawable/cell_shape"
+                                    android:gravity="center_vertical"
+                                    android:padding="5dp"
+                                    android:text="ADR"
+                                    android:textColor="@color/colorPrimary"
+                                    android:textSize="12sp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/adr_value"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:background="@drawable/cell_shape"
+                                    android:padding="5dp"
+                                    android:textColor="@android:color/black"
+                                    android:textSize="12sp" />
+                            </TableRow>
+
+                            <TableRow
+                                android:id="@+id/billnorow"
+                                android:layout_height="wrap_content"
+                                android:visibility="gone">
+
+                                <TextView
+                                    android:layout_height="match_parent"
+                                    android:background="@drawable/cell_shape"
+                                    android:gravity="center_vertical"
+                                    android:padding="5dp"
+                                    android:text="Bill Number"
+                                    android:textColor="@color/colorPrimary"
+                                    android:textSize="12sp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/billno_value"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:background="@drawable/cell_shape"
+                                    android:padding="5dp"
+                                    android:textColor="@android:color/black"
+                                    android:textSize="12sp" />
+                            </TableRow>
+
+                            <TableRow
+                                android:id="@+id/subnorow"
+                                android:layout_height="wrap_content"
+                                android:visibility="gone">
+
+                                <TextView
+                                    android:layout_height="match_parent"
+                                    android:background="@drawable/cell_shape"
+                                    android:gravity="center_vertical"
+                                    android:padding="5dp"
+                                    android:text="Submission Number"
+                                    android:textColor="@color/colorPrimary"
+                                    android:textSize="12sp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/subno_value"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:background="@drawable/cell_shape"
+                                    android:padding="5dp"
+                                    android:textColor="@android:color/black"
+                                    android:textSize="12sp" />
+                            </TableRow>
+
+                            <TableRow
+                                android:id="@+id/subdaterow"
+                                android:layout_height="wrap_content"
+                                android:visibility="gone">
+
+                                <TextView
+                                    android:layout_height="match_parent"
+                                    android:background="@drawable/cell_shape"
+                                    android:gravity="center_vertical"
+                                    android:padding="5dp"
+                                    android:text="Submitted Date"
+                                    android:textColor="@color/colorPrimary"
+                                    android:textSize="12sp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/sub_date_value"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:background="@drawable/cell_shape"
+                                    android:padding="5dp"
+                                    android:textColor="@android:color/black"
+                                    android:textSize="12sp" />
+                            </TableRow>
+                        </TableLayout>
+
+                        <TextView
+                            android:id="@+id/moreBtn"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/l1"
+                            android:layout_alignParentBottom="true"
+                            android:background="@null"
+                            android:gravity="center"
+                            android:padding="5dp"
+                            android:text="@string/more_details"
+                            android:textAllCaps="false"
+                            android:textColor="@color/colorPrimary"
+                            android:textSize="15dp" />
+                    </RelativeLayout>
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/table2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginRight="5dp"
+                    android:visibility="gone"
+                    app:cardElevation="5dp">
+
+                    <HorizontalScrollView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TableLayout
+                            android:id="@+id/dynamicTable"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"></TableLayout>
+                    </HorizontalScrollView>
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/table3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginBottom="20dp"
+                    android:visibility="gone"
+                    app:cardElevation="5dp">
+
+                    <HorizontalScrollView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TableLayout
+                            android:id="@+id/dynamicTableDispatch"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"></TableLayout>
+                    </HorizontalScrollView>
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/table4"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginRight="5dp"
+                    android:visibility="gone"
+                    app:cardElevation="5dp">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:id="@+id/fright_details_table_head"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@color/colorPrimary"
+                            android:gravity="center"
+                            android:padding="5dp"
+                            android:text="FREIGHT DETAILS"
+                            android:textColor="@android:color/white"
+                            android:textSize="13dp" />
+
+                        <TableLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_below="@+id/fright_details_table_head">
+
+                            <TableRow android:layout_height="wrap_content">
+
+                                <TextView
+                                    android:layout_height="match_parent"
+                                    android:background="@drawable/cell_shape"
+                                    android:gravity="center_vertical"
+                                    android:padding="5dp"
+                                    android:text="RATE"
+                                    android:textColor="@color/colorPrimary"
+                                    android:textSize="12sp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/col_rate_value"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:background="@drawable/cell_shape"
+                                    android:padding="5dp"
+                                    android:textColor="@android:color/black"
+                                    android:textSize="12sp" />
+                            </TableRow>
+
+                            <TableRow android:layout_height="wrap_content">
+
+                                <TextView
+                                    android:layout_height="match_parent"
+                                    android:background="@drawable/cell_shape"
+                                    android:gravity="center_vertical"
+                                    android:padding="5dp"
+                                    android:text="FREIGHT CHARGE"
+                                    android:textColor="@color/colorPrimary"
+                                    android:textSize="12sp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/col_frightcharge_value"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:background="@drawable/cell_shape"
+                                    android:padding="5dp"
+                                    android:textColor="@android:color/black"
+                                    android:textSize="12sp" />
+                            </TableRow>
+
+                            <TableRow android:layout_height="wrap_content">
+
+                                <TextView
+                                    android:layout_height="match_parent"
+                                    android:background="@drawable/cell_shape"
+                                    android:gravity="center_vertical"
+                                    android:padding="5dp"
+                                    android:text="CN TOTAL VALUE"
+                                    android:textColor="@color/colorPrimary"
+                                    android:textSize="12sp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/col_cntotal_value"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:background="@drawable/cell_shape"
+                                    android:padding="5dp"
+                                    android:textColor="@android:color/black"
+                                    android:textSize="12sp" />
+                            </TableRow>
+
+                            <TableRow android:layout_height="wrap_content">
+
+                                <TextView
+                                    android:layout_height="match_parent"
+                                    android:background="@drawable/cell_shape"
+                                    android:gravity="center_vertical"
+                                    android:padding="5dp"
+                                    android:text="GROSS VALUE"
+                                    android:textColor="@color/colorPrimary"
+                                    android:textSize="12sp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/col_cngross_value"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:background="@drawable/cell_shape"
+                                    android:padding="5dp"
+                                    android:textColor="@android:color/black"
+                                    android:textSize="12sp" />
+                            </TableRow>
+                        </TableLayout>
+                    </RelativeLayout>
+                </androidx.cardview.widget.CardView>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
+
+                    <Button
+                        android:id="@+id/dispatchDetailsBtn"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_margin="10dp"
+                        android:layout_weight="1"
+                        android:background="@color/colorPrimary"
+                        android:text="Get Dispatch Details"
+                        android:textAllCaps="false"
+                        android:onClick="@{()->cnenquery.getDispatch()}"
+                        android:textColor="@android:color/white"
+                        android:visibility="gone" />
+
+                    <Button
+                        android:id="@+id/frightDetailsBtn"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_margin="10dp"
+                        android:layout_weight="1"
+                        android:background="@color/colorPrimary"
+                        android:text="Get Freight Details"
+                        android:textAllCaps="false"
+                        android:onClick="@{()->cnenquery.getFreight()}"
+                        android:textColor="@android:color/white"
+                        android:visibility="gone" />
+                </LinearLayout>
+
+
+            </LinearLayout>
+        </ScrollView>
+    </LinearLayout>
+</layout>

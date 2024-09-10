@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@color/white"
+    >
+
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_20sdp"
+        android:layout_marginTop="@dimen/_1sdp"
+        android:background="#F3F3F3"
+        android:orientation="horizontal"
+        >
+        <CheckBox
+            android:id="@+id/che_gr"
+            android:layout_width="@dimen/_33sdp"
+            android:layout_height="match_parent"
+
+            android:gravity="center"
+            android:textSize="@dimen/_12ssp"
+            android:textColor="@color/white"
+            />
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@color/black"/>
+        <TextView
+            android:id="@+id/tv_gr"
+            android:layout_width="@dimen/_122sdp"
+            android:layout_height="match_parent"
+
+            android:text="GR No."
+            android:gravity="center"
+            android:textSize="@dimen/_12ssp"
+            android:textColor="@color/black"
+            />
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@color/black"/>
+        <TextView
+            android:id="@+id/tv_wt"
+            android:layout_width="@dimen/_43sdp"
+            android:layout_height="match_parent"
+
+            android:text="Wt"
+            android:gravity="center"
+            android:textSize="@dimen/_12ssp"
+            android:textColor="@color/black"
+            />
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@color/black"/>
+        <TextView
+            android:id="@+id/tv_ch_wt"
+            android:layout_width="@dimen/_43sdp"
+            android:layout_height="match_parent"
+
+            android:text="Wt"
+            android:gravity="center"
+            android:textSize="@dimen/_12ssp"
+            android:textColor="@color/black"
+            />
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@color/black"/>
+        <TextView
+            android:id="@+id/tv_pkt"
+            android:layout_width="@dimen/_43sdp"
+            android:layout_height="match_parent"
+
+            android:text="Pkt"
+            android:gravity="center"
+            android:textSize="@dimen/_12ssp"
+            android:textColor="@color/black"
+            />
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@color/black"/>
+        <TextView
+            android:id="@+id/tv_destcode"
+            android:layout_width="@dimen/_60sdp"
+            android:layout_height="match_parent"
+
+            android:text="Dest code"
+            android:gravity="center"
+            android:textSize="@dimen/_12ssp"
+            android:textColor="@color/black"
+            />
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@color/black"/>
+
+
+        <TextView
+            android:id="@+id/tv_cn_age"
+            android:layout_width="@dimen/_50sdp"
+            android:layout_height="match_parent"
+
+            android:text="CN AGE"
+            android:gravity="center"
+            android:textSize="@dimen/_12ssp"
+            android:textColor="@color/black"
+            />
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@color/black"/>
+
+
+        <TextView
+            android:id="@+id/tv_remarks"
+            android:layout_width="@dimen/_50sdp"
+            android:layout_height="match_parent"
+
+            android:text="Remarks"
+            android:gravity="center"
+            android:textSize="@dimen/_12ssp"
+            android:textColor="@color/black"
+            />
+
+    </LinearLayout>
+</LinearLayout>
