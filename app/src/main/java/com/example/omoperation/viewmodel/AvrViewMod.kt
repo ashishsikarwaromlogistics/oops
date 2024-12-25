@@ -30,6 +30,7 @@ class AvrViewMod  @Inject constructor(application: Application) : AndroidViewMod
     val data : LiveData<NetworkState> get() = _data
     val myBarcodes= MutableLiveData<String>("")
 
+
     fun finddata(){
         if(gatenumber.value.equals("")){
             _data.value=NetworkState.Error("error ","Please enter gate entry number")

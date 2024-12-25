@@ -61,7 +61,7 @@ import java.util.Locale;
 import java.util.UUID;
 
 public class Utils {
-
+//
     public static boolean isNetworkConnected(Context context) {
        boolean b=false;
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -551,6 +551,27 @@ public class Utils {
         canvas.drawCircle(radius, radius, radius, paint);
 
         return output;
+    }
+    public static String getDeviceIMEI(Context context) {
+
+        String deviceUniqueIdentifier = null;
+       try{
+           TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+           if (null != tm) {
+               deviceUniqueIdentifier = tm.getDeviceId();
+           }
+           if (null == deviceUniqueIdentifier || 0 == deviceUniqueIdentifier.length()) {
+               deviceUniqueIdentifier = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
+           }
+           return deviceUniqueIdentifier;
+       }
+       catch (Exception e){
+           return "1234567";
+        }
+
+    }
+    public static String getCurrentTimestamp()  {
+        return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
     }
 
 }

@@ -43,7 +43,7 @@ class PickUpChallan : AppCompatActivity() , OfflineChallanAdapter.OnItemSelected
         binding.offlineChallanList.adapter=adapter
         getData()
         binding.nextButton.setOnClickListener {
-            if (finalList!!.size == 0) {
+            if (finalList!!.size > 0) {
                 AlertDialog.Builder(this@PickUpChallan)
                     .setMessage("Do you really want to go next?")
                     .setCancelable(false)
@@ -74,24 +74,26 @@ class PickUpChallan : AppCompatActivity() , OfflineChallanAdapter.OnItemSelected
                                     db.restorebarcodedao().inserbarcode(barcodem)
                                 }
                             }
+                            finish()
+                            startActivity(Intent(this@PickUpChallan, RestoreActivity::class.java).putExtra("value",3))
 
                         }
 
 
 
-                        finish()
-                        val intent =
+                         /* val intent =
                             Intent(
                                 this@PickUpChallan,
                                 ChallanCreation::class.java
                             )
                         intent.putExtra("from", "offline_challan")
-                        startActivity(intent)
+                        startActivity(intent)*/
                     }
                     .setNegativeButton(
                         "No"
                     ) { dialog: DialogInterface?, which: Int -> }.show()
-            }   else {
+            }
+            else {
               Utils.showDialog(this@PickUpChallan, "error","Please select CN",R.drawable.ic_error_outline_red_24dp)
             }
         }
@@ -101,6 +103,7 @@ class PickUpChallan : AppCompatActivity() , OfflineChallanAdapter.OnItemSelected
            //   final String URL = AppConfig.ANDROID_API_PATH + "/offline_challan.php?bcode="+"1314";// +data[1];
            val mod: CommonMod = CommonMod()
            mod.bcode=OmOperation.getPreferences(Constants.BCODE,"")
+          //  mod.bcode="2001"//OmOperation.getPreferences(Constants.BCODE,"")
            lifecycleScope.launch {
                val response=ApiClient.getClient().create(ServiceInterface::class.java).offline_challan(Utils.getheaders(),mod)
                if(response.code()==200){

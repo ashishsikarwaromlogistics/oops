@@ -15,11 +15,11 @@ class DrawerAdapter @Inject constructor()
     : RecyclerView.Adapter<DrawerAdapter.MyViewHolder>() {
     val titlename= arrayOf("CN Creation","Loading Plan Tally","Vehicle Load/Unload",
         "POD Upload","Bill Submission","CN ReWare House",
-        "OTPL CN Creation","Vehicle Image\nUpload","Logout")
+        "OTPL CN Creation","Get Paper IN","Gate Pass(Out)","Empty Challan")
+
     @Inject
     @Named("drawer")
     lateinit var drawerinterface:Drawerinterface
-
         class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
        val tv=itemView.findViewById<TextView>(R.id.tv)
     }

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?android:attr/selectableItemBackground"
+    android:clickable="true"
+    android:layout_margin="@dimen/_5sdp">
+
+    <ImageView
+        android:id="@+id/thumbnail"
+        android:layout_width="@dimen/_24sdp"
+        android:layout_height="@dimen/_24ssp"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="@dimen/_5sdp"
+        android:src="@drawable/warehouse" />
+
+    <TextView
+        android:id="@+id/name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/thumbnail"
+        android:fontFamily="sans-serif-medium"
+        android:text="DEEPAK SHARMA"
+        android:textColor="@color/black"
+        android:textSize="@dimen/_11ssp" />
+
+    <TextView
+        android:id="@+id/city"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/name"
+        android:layout_toRightOf="@id/thumbnail"
+        android:layout_marginTop="5dp"
+        android:text="INFORMATION TECHNOLOGY"
+        android:textColor="@color/black"
+        android:textSize="@dimen/_11ssp"/>
+
+    <TextView
+        android:id="@+id/contact_person"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/city"
+        android:layout_marginTop="5dp"
+        android:layout_toRightOf="@id/thumbnail"
+        android:text="SR. MANAGER"
+        android:visibility="gone"
+        android:textColor="@color/black"
+        android:textSize="@dimen/_11ssp"/>
+
+    <TextView
+        android:id="@+id/phone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/contact_person"
+        android:layout_marginTop="5dp"
+        android:visibility="gone"
+        android:layout_toRightOf="@id/thumbnail"
+        android:text="882626262602"
+        android:textColor="@color/black"
+        android:textSize="@dimen/_11ssp" />
+
+
+
+</RelativeLayout>

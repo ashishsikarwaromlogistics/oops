@@ -4,4 +4,5 @@ package com.example.omoperation.model.avr
     var CHALLAN_NO: String?=null
     var CN_No: String?=null
     var barcode: String?=null
+    var paperstatus: String?=null
 }

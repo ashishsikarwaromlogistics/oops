@@ -26,17 +26,17 @@ class MissingList : AppCompatActivity() , MissingAdapter.MissingInterface {
         super.onCreate(savedInstanceState)
 
         binding=DataBindingUtil. setContentView(this,R.layout.activity_missing_list)
-       init()
+        init()
     }
       fun init(){
           myinterface=this
           scancnbox= ArrayList()
           verifycnbox=ArrayList()
           missingcnbox=ArrayList()
-        db=AppDatabase.getDatabase(this)
-        misingcn= ArrayList()
-        binding.recymissing.setHasFixedSize(true)
-        binding.recymissing.layoutManager=LinearLayoutManager(this)
+          db=AppDatabase.getDatabase(this)
+          misingcn= ArrayList()
+         binding.recymissing.setHasFixedSize(true)
+         binding.recymissing.layoutManager=LinearLayoutManager(this)
           adapter=MissingAdapter(myinterface,scancnbox)
         binding.recymissing.adapter=adapter
         lifecycleScope.launch {  finddiff()  }
@@ -66,9 +66,6 @@ class MissingList : AppCompatActivity() , MissingAdapter.MissingInterface {
           binding.recymissing.adapter=adapter
 
         }
-
-
-
     }
 
     override fun missing(cnWithBoxes: CNWithBoxes) {

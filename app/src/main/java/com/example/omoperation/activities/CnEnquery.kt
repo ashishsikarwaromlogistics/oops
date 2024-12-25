@@ -32,11 +32,14 @@ import com.example.omoperation.viewmodel.CnEnqueryViewmod
 class CnEnquery : AppCompatActivity() {
     lateinit var binding: ActivityCnEnqueryBinding
     lateinit var cnEnqueryViewmod: CnEnqueryViewmod
+    lateinit var title: TextView
     private var CN_GPS_API: String? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
        binding=DataBindingUtil. setContentView(this,R.layout.activity_cn_enquery)
+        title=findViewById(R.id.title)
+        title.setText("CN Enquiry")
         cnEnqueryViewmod=ViewModelProvider(this,CnEnqueryFact(this, CnEnqueryRepository())).get(CnEnqueryViewmod::class.java)
         binding.cnenquery=cnEnqueryViewmod
         binding.lifecycleOwner=this

@@ -45,6 +45,7 @@ data class CnEnquiry(
     val ADDR: String?,
     val BARCODE: String?,
     val BFROM: String,
+    val STICKER_COUNT: String,
     val BILL_NO: String?,
     val BOOKING_MODE: String,
     val BTO: String,

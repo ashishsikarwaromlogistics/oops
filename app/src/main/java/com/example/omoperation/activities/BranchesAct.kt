@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.SearchView
@@ -29,6 +30,8 @@ class BranchesAct : AppCompatActivity() , BrancheAdapter.BranchInterface {
     val imgsync : ImageView by lazy { findViewById(R.id.imgsync) }
     lateinit var branchviewmod : BrancheViewMod
     lateinit var cp : CustomProgress
+
+
 
      var senddata:Int=0  //if ==1 send data to another otherwise nothing
 
@@ -61,14 +64,14 @@ class BranchesAct : AppCompatActivity() , BrancheAdapter.BranchInterface {
             }
 
         })
-
+        imgsync.visibility=View.VISIBLE
         imgsync.setOnClickListener {
         branchviewmod.getonlinebranch()
        }
     }
 
     fun calltofilter(){
-   binding.edtsearch.addTextChangedListener(object : TextWatcher {
+    binding.edtsearch.addTextChangedListener(object : TextWatcher {
        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
            // No action needed here
        }

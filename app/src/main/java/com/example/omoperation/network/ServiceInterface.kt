@@ -2,20 +2,35 @@ package com.example.omoperation.network
 
 import com.example.omoperation.model.CommonMod
 import com.example.omoperation.model.CommonRespS
+import com.example.omoperation.model.VersionResp
+import com.example.omoperation.model.audit.AuditMod
 import com.example.omoperation.model.avr.AvrMod
 import com.example.omoperation.model.avr.AvrResp
 import com.example.omoperation.model.branches.BranchesResp
+import com.example.omoperation.model.calculate_charge.CalculateMod
+import com.example.omoperation.model.cn_create_eway.CNCreateEwayResp
+import com.example.omoperation.model.cn_create_eway.CnCreateEwayMod
 import com.example.omoperation.model.cn_enquery.Myquery
 import com.example.omoperation.model.cncreation.CnCreationMod
 import com.example.omoperation.model.cnvalidate.CnValidateResp
 import com.example.omoperation.model.cnvaridate.CnValidateMod
 import com.example.omoperation.model.dispactch.DispatchResp
 import com.example.omoperation.model.employess.EmployeeResp
+import com.example.omoperation.model.empty.EmptyMod
+import com.example.omoperation.model.eway.EwayMod
+import com.example.omoperation.model.eway.EwayResp
+import com.example.omoperation.model.eway_dropdown.Eway_DropDownMod
+import com.example.omoperation.model.eway_dropdown.Eway_Drop_Down_Resp
 import com.example.omoperation.model.findcustomer.CustomerMod
 import com.example.omoperation.model.findcustomer.CustomerResp
 import com.example.omoperation.model.findlorry.LorryMod
 import com.example.omoperation.model.findlorry.LorryTypeResp
 import com.example.omoperation.model.freight.FreightResp
+import com.example.omoperation.model.gatepass.GatePassMod
+import com.example.omoperation.model.gatepass.GatePassResp
+import com.example.omoperation.model.gatepass.submitResp
+import com.example.omoperation.model.gatepassin.GatePassInMod
+import com.example.omoperation.model.gatepassin.GatePassInResp
 import com.example.omoperation.model.generatetally.GenerateTallYMod
 import com.example.omoperation.model.generatetally.GenerateTallyResp
 import com.example.omoperation.model.loading.LoadingResp
@@ -25,11 +40,18 @@ import com.example.omoperation.model.oda.OdaResp
 import com.example.omoperation.model.offline.Offline_C_Resp
 import com.example.omoperation.model.pod.PodMod
 import com.example.omoperation.model.pod.getpoddetails
+import com.example.omoperation.model.print.PrintBarcodeMod
 import com.example.omoperation.model.rewarehouse.ReDetailResp
 import com.example.omoperation.model.rewarehouse.ReWarehouseMod
+import com.example.omoperation.model.savegatepass.SaveDataPassMod
 import com.example.omoperation.model.submission.SubmissionResp
 import com.example.omoperation.model.tally.TallyResp
 import com.example.omoperation.model.vehcleimage.VehcleImageMod
+import com.example.omoperation.model.vehicleload.VehcleUnloadResp
+import com.example.omoperation.model.vehicleloadunload.VehcleLoadUnloadMod
+import com.example.omoperation.model.verifyCNE.VerifyCneMod
+import com.example.omoperation.model.verifyCNE.VerifyCneResp
+import com.omlogistics.deepak.omlogistics.model.calculate_charge.CalculateResp
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.Body
@@ -47,6 +69,8 @@ interface ServiceInterface   {
         }
 
         val omapp: String by lazy { "https://omapp.omlogistics.co.in/"
+        }
+     val omsl: String by lazy { "https://omsl.omlogistics.co.in/"
         }
 
     }
@@ -71,12 +95,20 @@ interface ServiceInterface   {
         @HeaderMap headers: Map<String, String>,
         @Body mod: CnValidateMod
     ): Call<CnValidateResp>
+
+    @POST
+    fun cn_validateurl(
+        @Url url : String,
+        @HeaderMap headers: Map<String, String>,
+        @Body mod: CnValidateMod
+    ): Call<CnValidateResp>
+
     @POST("/login.php")
     suspend fun LogIN(@Body mod: LoginMod): Response<LoginResp>
 
     @POST("/branch_networkdir.php")
     suspend fun branch_networkdir(@HeaderMap headers: Map<String, String>,@Body mod: CommonMod): Response<BranchesResp>
-   @POST("vehicle_validate_checklist.php")
+    @POST("vehicle_validate_checklist.php")
     suspend fun vehicle_validate_checklist(@HeaderMap headers: Map<String, String>,@Body mod: Any): Response<CommonRespS>
 
     @POST
@@ -200,7 +232,7 @@ interface ServiceInterface   {
     ): Response<ReDetailResp>
 
     @Headers("Content-Type: application/json;charset=UTF-8")
-    @POST("/cnRewh.php.php")
+    @POST("/cnRewh.php")
     suspend fun cnRewh(
         @HeaderMap headers: Map<String, String>,
         @Body mod: ReWarehouseMod
@@ -213,6 +245,108 @@ interface ServiceInterface   {
         @Body mod: CommonMod?
     ): Response<Offline_C_Resp>
 
+    @POST("oracle/android_api/vehGatePass.php")
+    fun GetePass(
+        @HeaderMap headers: Map<String, String>,
+        @Body mod: GatePassInMod
+    ): Call<GatePassInResp>
+
+    @POST("oracle/android_api/vehGatePass.php")
+    fun GetePassSubmit(
+        @HeaderMap headers: Map<String, String>,
+        @Body mod: SaveDataPassMod
+    ): Call<submitResp>
+    @POST("/oracle/android_api/vehGatePass.php")
+    fun GetePass(
+        @HeaderMap headers: Map<String, String>,
+        @Body mod: GatePassMod
+    ): Call<GatePassResp>
+
+    @Headers("Content-Type: application/json;charset=UTF-8")
+    @POST("oracle/android_api/vehGatePass.php")
+    suspend fun searchGetPaper(
+        @HeaderMap headers: Map<String, String>,
+        @Body mod: GatePassInMod
+    ): Response<GatePassInResp>
+
+    @Headers("Content-Type: application/json;charset=UTF-8")
+    @POST("oracle/android_api/ewaybill/ewbSingle.php")
+    suspend fun searchEwb(
+        @HeaderMap headers: Map<String, String>,
+        @Body mod: EwayMod
+    ): Response<EwayResp>
+
+    @Headers("Content-Type: application/json;charset=UTF-8")
+    @POST("oracle/android_api/ewaybill/ewbSingle.php")
+    suspend fun cftWt(
+        @HeaderMap headers: Map<String, String>,
+        @Body mod: CalculateMod
+    ): Response<CalculateResp>
+@Headers("Content-Type: application/json;charset=UTF-8")
+    @POST("oracle/android_api/ewaybill/ewbSingle.php")
+    suspend fun createCn(
+        @HeaderMap headers: Map<String, String>,
+        @Body mod: CnCreateEwayMod
+    ): Response<CNCreateEwayResp>
+@Headers("Content-Type: application/json;charset=UTF-8")
+    @POST("oracle/android_api/ewaybill/ewbSingle.php")
+    suspend fun checkCNE(
+        @HeaderMap headers: Map<String, String>,
+        @Body mod: VerifyCneMod
+    ): Response<VerifyCneResp>
+
+@Headers("Content-Type: application/json;charset=UTF-8")
+    @POST("oracle/android_api/ewaybill/ewbSingle.php")
+    suspend fun checkBilling(
+        @HeaderMap headers: Map<String, String>,
+        @Body mod: VerifyCneMod
+    ): Response<VerifyCneResp>
+@Headers("Content-Type: application/json;charset=UTF-8")
+    @POST("oracle/android_api/ewaybill/ewbSingle.php")
+    suspend fun dropdowns(
+        @HeaderMap headers: Map<String, String>,
+        @Body mod: Eway_DropDownMod
+    ): Response<Eway_Drop_Down_Resp>
+
+@Headers("Content-Type: application/json;charset=UTF-8")
+    @POST("barcode_print.php")
+    suspend fun barcode_print(
+        @HeaderMap headers: Map<String, String>,
+        @Body mod: PrintBarcodeMod
+    ): Response<CommonRespS>
+
+    @POST("omstaffAppVersion.php")//https://api.omlogistics.co.in/omstaffAppVersion.php
+    suspend fun omstaffAppVersion(
+        @Body mod: CommonMod
+    ): Response<VersionResp>
+
+
+    @Headers("Content-Type: application/json;charset=UTF-8")
+    @POST("/vluimage.php")
+    suspend fun vluimage(
+        @HeaderMap headers: Map<String, String?>,
+        @Body mod: CommonMod?
+    ): Response<VehcleUnloadResp>
+
+    @Headers("Content-Type: application/json;charset=UTF-8")
+    @POST("/vluimage.php")
+    suspend fun vluimage(
+        @HeaderMap headers: Map<String, String?>,
+        @Body mod: VehcleLoadUnloadMod
+    ): Response<VehcleUnloadResp?>?
+
+
+    @Headers("Content-Type: application/json;charset=UTF-8")
+    @POST("/online_audit_scanning1.php?status=audit")
+    suspend fun online_audit_scanning(
+        @HeaderMap headers: Map<String, String>,
+        @Body mod: AuditMod
+    ): Response<CommonRespS>
+
+    @POST("empty_challan.php")
+    suspend fun emptrychallan(
+        @Body mod: EmptyMod
+    ): Response<CommonRespS?>?
 
 //https://api.omlogistics.co.in/emp_networkdir.php
     //https://api.omlogistics.co.in/oda_station.php

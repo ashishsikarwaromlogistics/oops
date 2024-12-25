@@ -17,6 +17,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_40sdp"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
             android:background="@color/colorPrimary"
             >
 
@@ -421,24 +422,43 @@
         </ScrollView>
 
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/addFloatingBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginRight="20dp"
-            android:layout_marginBottom="80dp"
-            android:visibility="visible"
-            />
 
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+     android:layout_alignParentBottom="true"
+    android:layout_marginEnd="20dp"
+     android:layout_marginStart="20dp"
+    android:layout_marginBottom="80dp"
+
+    >
+    <ImageButton
+        android:id="@+id/getmiss"
+        android:layout_width="@dimen/_44sdp"
+        android:layout_height="@dimen/_44sdp"
+        android:contentDescription="Missing"
+        android:src="@drawable/ic_missing"
+        android:padding="@dimen/_9sdp"
+        android:background="@drawable/solid_circle"
+        />
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/addFloatingBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_alignParentRight="true"
+        android:contentDescription="ADD"
+        android:src="@drawable/baseline_add_24"
+        />
+</RelativeLayout>
         <Button
             android:id="@+id/submitBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:background="@color/colorPrimary"
-            android:text="Submit"
+            android:text="@string/submit"
+            android:visibility="gone"
             android:textColor="@android:color/white" />
     </RelativeLayout>
 </layout>

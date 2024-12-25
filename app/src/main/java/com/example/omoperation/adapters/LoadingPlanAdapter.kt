@@ -15,6 +15,8 @@ class LoadingPlanAdapter(val interfaces: Loadinginterface,val loadingPlan: Conte
     class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
        val  loadingplan=itemView.findViewById<TextView>(R.id.loadingplan)
        val  branch=itemView.findViewById<TextView>(R.id.branch)
+       val  loadingdate=itemView.findViewById<TextView>(R.id.loadingdate)
+       val  enterdate=itemView.findViewById<TextView>(R.id.enterdate)
        val  ll=itemView.findViewById<LinearLayout>(R.id.ll)
     }
 
@@ -26,8 +28,10 @@ class LoadingPlanAdapter(val interfaces: Loadinginterface,val loadingPlan: Conte
     }
 
     override fun onBindViewHolder(holder: LoadingPlanAdapter.MyViewHolder, position: Int) {
-       holder.loadingplan.setText(loadingNo.get(position).LOADING_NO)
-       holder.branch.setText(loadingNo.get(position).TO_BRANCH)
+       holder.loadingplan.setText("LOADING_NO : "+loadingNo.get(position).LOADING_NO)
+       holder.branch.setText("TO_BRANCH : "+loadingNo.get(position).TO_BRANCH)
+       holder.enterdate.setText("LOADING_DATE : "+loadingNo.get(position).LOADING_DATE)
+       holder.loadingdate.setText("ENTER_DATE: "+loadingNo.get(position).ENTER_DATE)
         holder.ll.setOnClickListener {
             interfaces.senddata(loadingNo.get(position))
         }

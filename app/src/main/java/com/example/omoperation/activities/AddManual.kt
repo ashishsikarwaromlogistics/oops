@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.omoperation.Constants
+import com.example.omoperation.OmOperation
 import com.example.omoperation.R
 import com.example.omoperation.Utils
 import com.example.omoperation.adapters.ManualAdapter
@@ -28,6 +30,9 @@ class AddManual : AppCompatActivity() , ManualAdapter.ManualInterface {
    lateinit var db : AppDatabase
    lateinit var manualInterface :  ManualAdapter.ManualInterface
     lateinit var manuallist:List<ManualAvr>
+    private var flag = false
+    var avr=""
+    var vno=""
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding=DataBindingUtil.setContentView(this,R.layout.activity_add_manual)
@@ -37,15 +42,35 @@ class AddManual : AppCompatActivity() , ManualAdapter.ManualInterface {
         binding.recyclerView.layoutManager=LinearLayoutManager(this)
         binding.recyclerView.adapter=ManualAdapter(manuallist,manualInterface)
         db= AppDatabase.getDatabase(this)
+
+        flag = intent.hasExtra("avr")
+        if (flag) {
+            avr = intent.getStringExtra("avr").toString()
+        }
+        else {
+            vno = intent.getStringExtra("vno").toString()
+        }
+
         getData()
         binding.addBtn.setOnClickListener {
         if(Utils.haveInternet(this)){
+            var url=ServiceInterface.omapi
             val mod=CnValidateMod()
-            mod.avr=""
-            mod.bcode=""
+            mod.cn_no=binding.cnNo.text.toString()
+            if(flag){
+                url=url+"cn_validate1.php"
+                mod.avr=avr
+                mod.bcode=OmOperation.getPreferences(Constants.BCODE,"")
+            }
+            else  {
+                url=url+"cn_validate.php"
+               mod.vno=vno
+            }
+
+
             mod.cn_no=binding.cnNo.text.toString()
             ApiClient.getClient().create(ServiceInterface::class.java).
-            cn_validate1(Utils.getheaders(),mod).enqueue(object : Callback<CnValidateResp>{
+            cn_validateurl(url,Utils.getheaders(),mod).enqueue(object : Callback<CnValidateResp>{
                 override fun onResponse(
                     call: Call<CnValidateResp>,
                     response: Response<CnValidateResp>
@@ -53,15 +78,15 @@ class AddManual : AppCompatActivity() , ManualAdapter.ManualInterface {
                    if(response.code()==200){
                     if(response.body()?.error.equals("false",true)){
                       lifecycleScope.launch {
-                          val manual=ManualAvr(cn=binding.cnNo.text.toString(), boxes = binding.boxes.toString(), challan = "")
+                          val manual=ManualAvr(cn=binding.cnNo.text.toString(), boxes = binding.boxes.text.toString(), challan = "")
                           db.manualDao().inserbarcode(manual)
                       }
                     }
                        else{
-                        lifecycleScope.launch {
+                        /*lifecycleScope.launch {
                             val manual=ManualAvr(cn=binding.cnNo.text.toString(), boxes = binding.boxes.text.toString(), challan = "")
                             db.manualDao().inserbarcode(manual)
-                        }
+                        }*/
                         Utils.showDialog(this@AddManual,response.code().toString(),response.body()!!.response,R.drawable.ic_error_outline_red_24dp)
 
                     }
@@ -80,6 +105,7 @@ class AddManual : AppCompatActivity() , ManualAdapter.ManualInterface {
             })
         }
     }
+        binding.submitBtn.setOnClickListener { finish() }
 
 
 
@@ -89,6 +115,9 @@ class AddManual : AppCompatActivity() , ManualAdapter.ManualInterface {
         lifecycleScope.launch {
             manuallist= db.manualDao().getData()
             if(manuallist.size>0){
+                binding.recyclerView.adapter=ManualAdapter(manuallist,manualInterface)
+            }
+            else {
                 binding.recyclerView.adapter=ManualAdapter(manuallist,manualInterface)
             }
         }

@@ -2,6 +2,9 @@ package com.example.omoperation.activities
 
 import android.app.Dialog
 import android.app.ProgressDialog
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Color
@@ -10,23 +13,29 @@ import android.speech.tts.TextToSpeech
 import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
+import android.util.Log
 import android.view.Gravity
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.view.ViewGroup
+import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ListView
 import android.widget.SearchView.OnQueryTextListener
 import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
@@ -38,7 +47,9 @@ import com.example.omoperation.OmOperation
 import com.example.omoperation.R
 import com.example.omoperation.Utils
 import com.example.omoperation.adapters.AVRAdapter
+import com.example.omoperation.adapters.CustomGrList
 import com.example.omoperation.databinding.ActivityAvrBinding
+import com.example.omoperation.model.CommonRespS
 import com.example.omoperation.model.cnvalidate.CnValidateResp
 import com.example.omoperation.model.cnvaridate.CnValidateMod
 import com.example.omoperation.network.ApiClient
@@ -49,7 +60,6 @@ import com.example.omoperation.room.tables.Barcode
 import com.example.omoperation.room.tables.CN
 import com.example.omoperation.room.tables.RestoreBarcode
 import com.example.omoperation.viewmodel.AvrViewMod
-import com.example.omoperation.model.CommonRespS
 import com.example.omoperation.model.avr.AvrMod
 import com.example.omoperation.model.avr.AvrResp
 import com.example.omoperation.model.avr.Barcodelist
@@ -66,20 +76,24 @@ import java.util.Locale
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class AVR : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSpeech.OnInitListener {
+class AVR : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSpeech.OnInitListener,
+    CustomGrList.ADDGRREMOVE {
     lateinit var binding : ActivityAvrBinding
     lateinit var cp : CustomProgress
     @Inject
     lateinit var viewmode : AvrViewMod
     lateinit var barcodelist: ArrayList<String>
+    lateinit var grdoc:List<kotlin.collections.ArrayList<String>>
+    lateinit var grwithotdoc:ArrayList<kotlin.collections.ArrayList<String>>
     lateinit var cnlist: LinkedList<String>
     lateinit var cnmap: HashMap<String,String>
+    lateinit var cnmapbox: HashMap<String,Int>
     lateinit var displayedData: ArrayList<String>
     lateinit var adapter: AVRAdapter
     lateinit var db: AppDatabase
     lateinit var pd: ProgressDialog
     lateinit var doc_remarks:String
-   var cureentgr:String=""
+    var cureentgr:String=""
     lateinit var doc:String
     private lateinit var textToSpeech: TextToSpeech
    var isscroll=false
@@ -88,18 +102,24 @@ class AVR : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSpeech.OnInitL
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding=DataBindingUtil.setContentView(this,R.layout.activity_avr)
+        val toolbar: Toolbar = findViewById(R.id.toolbar)
+        setSupportActionBar(toolbar)
+        toolbar.overflowIcon?.setTint(ContextCompat.getColor(this, android.R.color.white))
         textToSpeech = TextToSpeech(this, this)
         //binding=new DataBindingU setContentView(R.layout.activity_avr);
         setSupportActionBar(binding.toolbar)
       // viewmode=ViewModelProvider(this).get(AvrViewMod::class.java)
         db= AppDatabase.getDatabase(this)
+        binding.tvTitle.setText("AVR "+OmOperation.getPreferences(Constants.BCODE,"")+"\n"+OmOperation.getPreferences(Constants.EMP_CODE,""))
         binding.viewmod=viewmode
         binding.lifecycleOwner=this
         barcodelist= ArrayList()
         cnlist= LinkedList()
         cnmap= HashMap()
+        cnmapbox= HashMap()
         displayedData= ArrayList()
         pd= ProgressDialog(this)
+
      /*   for(i in 1 until 1000){
             lifecycleScope.launch {
                 val barcodem= RestoreBarcode(barcode="12345678${i}" )
@@ -124,19 +144,38 @@ class AVR : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSpeech.OnInitL
         binding.submitBtn.setOnClickListener {
             submitData()
         }
+        //binding.gateNo.setText("13932420005664")//1309241025421
+      /*  var cn="1309241025422"
+        for (currentBox in 2 until 101) {
+            var bar: String =
+                if (currentBox < 10) {
+                cn + "000" + currentBox
+            } else if (currentBox >= 10 && currentBox < 100) {
+                cn + "00" + currentBox
+            } else if (currentBox >= 100 && currentBox < 1000) {
+                cn + "0" + currentBox
+            } else {
+                cn + currentBox
+            }
+
+           testlocalbarcode(bar)
+        }*/
+
+       // submitData()
     }
 
-    private fun submitData() {
-        if(binding.gateNo.text.toString().equals("")|| binding.lorryNo.text.toString().equals("")){
+    private   fun submitData() {
+       /* if(binding.gateNo.text.toString().equals("")|| binding.lorryNo.text.toString().equals("")){
             Utils.showDialog(
                 this@AVR,"error ","Gate Entry is not verified",
                 R.drawable.ic_error_outline_red_24dp
             )
             return
-        }
+        }*/
         val d = Dialog(this@AVR)
         d.setContentView(R.layout.dialog_remarks)
         val spin = d.findViewById<Spinner>(R.id.spin_type)
+        val selectgr = d.findViewById<TextView>(R.id.selectgr)
         val msg = d.findViewById<TextView>(R.id.msg)
         val edit_remarks = d.findViewById<EditText>(R.id.edit_remarks)
         val submit = d.findViewById<Button>(R.id.submit)
@@ -145,9 +184,52 @@ class AVR : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSpeech.OnInitL
         val adapter =
             ArrayAdapter(this@AVR, android.R.layout.simple_list_item_1, arrayOf("No", "YES"))
         spin.setAdapter(adapter)
+        grdoc=ArrayList()
+        grwithotdoc=ArrayList()
+       lifecycleScope.launch {
+           grdoc = db.barcodeDao().getcnlischallan().map { cnentity ->
+              ArrayList<String>().apply {
+                  add(cnentity.cn.toString()) // Add cnentity.cn to the ArrayList
+              }
+          }
+
+      }
+        selectgr.setOnClickListener {
+            val d=Dialog(this)
+            d.setContentView(R.layout.selected_gr_d)
+            val window = d.window
+            window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+
+// Optionally, hide the status bar and make it immersive
+            window?.setFlags(
+                WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN
+            )
+
+// If you want to hide navigation bar as well:
+            window?.decorView?.systemUiVisibility = (View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                    or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                    or View.SYSTEM_UI_FLAG_FULLSCREEN)
+            val listView=d.findViewById<ListView>(R.id.listView)
+            val tvok=d.findViewById<TextView>(R.id.tvok)
+            val checkedItems = MutableList(grdoc.size) { false }
+
+// Create an ArrayAdapter to bind the data to the ListView
+           // val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, grwithotdoc)
+            val adapter = CustomGrList(this,this, grdoc, checkedItems)
+            listView.adapter = adapter
+// Set the adapter to the ListView
+            listView.adapter = adapter
+            tvok.setOnClickListener {
+                if(grwithotdoc.size>0)
+                selectgr.setText(grwithotdoc.toString())
+                else  selectgr.setText("Click here to get GR List")
+                d.dismiss() }
+            d.show()
+        }
+
         submit.setOnClickListener {
-            if (edit_remarks.getText().toString()
-                    .equals("", ignoreCase = true) && spin.selectedItemPosition == 0
+            if (grwithotdoc.size==0 && spin.selectedItemPosition == 0
             ) {
                 Utils.showDialog(
                     this@AVR,
@@ -184,6 +266,7 @@ class AVR : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSpeech.OnInitL
                         barcode = cnentity.boxes
                         CN_No = cnentity.cn
                         CHALLAN_NO = cnentity.challan
+                        paperstatus=if (grwithotdoc.any { it.contains(cnentity.cn) })  "N" else "Y"
                     }
                 }
 
@@ -194,7 +277,7 @@ class AVR : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSpeech.OnInitL
                 mod.bcode=OmOperation.getPreferences(Constants.BCODE,"")
                 mod.emp=OmOperation.getPreferences(Constants.EMP_CODE,"")
                 mod.gate_no=binding.gateNo.text.toString()
-                mod.imei= Utils.getDeviceID(this@AVR)
+                mod.imei= Utils.getDeviceIMEI(this@AVR)
                 mod.missing_status=missing//if packet is short give remarks otherwise null
                 mod.remarks=remarks//if packet is short give remarks otherwise null
                 mod.airbag=binding.edtAir.text.toString()
@@ -211,6 +294,7 @@ class AVR : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSpeech.OnInitL
                             cp.dismiss()
                             if(response.code()==200){
                                 if(response.body()!!.error.equals("false")){
+                                    Deletefrontend()
                                    // Utils.showDialog(this@AVR,"Success",response.body()!!.response,R.drawable.ic_success)
                                     android.app.AlertDialog.Builder(this@AVR)
                                         .setTitle("Success")
@@ -219,14 +303,16 @@ class AVR : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSpeech.OnInitL
                                         .setCancelable(false)
                                         .setPositiveButton(
                                             "OK",
-                                            DialogInterface.OnClickListener { dialog: DialogInterface, id: Int ->{dialog.dismiss()
-                                            DeleteAllbarcode()}
+                                            DialogInterface.OnClickListener { dialog: DialogInterface, id: Int ->
+
+                                                dialog.dismiss()
+                                            DeleteAllbarcode()
                                             finish()})
                                         .show()
 
                                 }
                                 else if(response.body()!!.error.equals("true")){
-                                    Utils.showDialog(this@AVR,"error","",R.drawable.ic_error_outline_red_24dp)
+                                    Utils.showDialog(this@AVR,"error",response.body()!!.response,R.drawable.ic_error_outline_red_24dp)
                                 }
                                 else{
                                     showmissingDialogerror()
@@ -258,7 +344,7 @@ class AVR : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSpeech.OnInitL
        val remarksEdittext = view2.findViewById<Spinner>(R.id.remarksEdittext)
        val remarksAdapter = ArrayAdapter.createFromResource(
            this,
-           R.array.challan_missing_remarks2,
+           R.array.challan_missing_remarks,
            android.R.layout.simple_spinner_item
        )
        remarksAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
@@ -346,7 +432,7 @@ class AVR : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSpeech.OnInitL
                    adapter.setfilter(false,null)
                }
                else{
-                   if(newText!!.length>4){
+                   if(newText!!.length>3){
                        lifecycleScope.launch {
                            adapter.setfilter(true,db.barcodeDao().getscan(newText!!) )
                        }
@@ -373,7 +459,7 @@ class AVR : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSpeech.OnInitL
            override fun afterTextChanged(editable: Editable) {}
        })
        binding.barcodeText.setOnEditorActionListener { v, actionId, event ->
-           if (actionId === EditorInfo.IME_ACTION_DONE || actionId === 0) {
+           if (actionId == EditorInfo.IME_ACTION_DONE || actionId == 0) {
                try {
                    //viewmode.checkdata(binding.barcodeText.getText().toString().trim())
                    var barCode = binding.barcodeText.getText().toString().trim()
@@ -417,13 +503,35 @@ class AVR : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSpeech.OnInitL
                            addtolocalbarcode(barCode)
                        }
                        else{
-                           checkcn(barCode)
-                           /*if(cureentgr.equals("")){
-                               checkcn(barCode)
-                           }
-                           else{
+                               lifecycleScope.launch {
+                                   if(cureentgr.equals("")){
+                                       checkcn(barCode)
+                                   }//
+                                   else {
+                                       val a=  db.barcodeDao().getcurrengr(cureentgr)
+                                       if(cnmapbox.get(cureentgr)!!.toInt()>a){
+                                           speak("GR is missing")
+                                           val dailog=Dialog(this@AVR)
+                                           dailog.setContentView(R.layout.error_dialog)
+                                           val img_text=dailog.findViewById<TextView>(R.id.img_text)
+                                           val msg_text=dailog.findViewById<TextView>(R.id.msg_text)
+                                           val ok_btn=dailog.findViewById<TextView>(R.id.ok_btn)
+                                           val print_btn=dailog.findViewById<TextView>(R.id.print_btn)
+                                           img_text.setText(cureentgr+"\nSome boxes are missing ")
+                                           msg_text.setText("Do you still want to continue")
+                                           ok_btn.setOnClickListener {
+                                               dailog.dismiss()
+                                               checkcn(barCode)}
+                                           print_btn.setOnClickListener { dailog.dismiss() }
+                                           dailog.show()
+                                       }
+                                       else checkcn(barCode)
+                                   }
 
-                           }*/
+                           }
+                        //   checkcn(barCode)
+
+
 
                        }
 
@@ -439,7 +547,7 @@ class AVR : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSpeech.OnInitL
            }
        }
       binding.addFloatingBtn.setOnClickListener {
-          startActivity(Intent(this,AddManual::class.java))
+          startActivity(Intent(this,AddManual::class.java).putExtra("avr",binding.gateNo.text.toString()))
       }
 
 
@@ -447,10 +555,18 @@ class AVR : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSpeech.OnInitL
            if(isgateverify){
                binding.avrdetail.visibility=View.GONE
                binding.barcodedata.visibility=View.VISIBLE
+               binding.submitBtn.visibility=View.VISIBLE
+               val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+               val clip = ClipData.newPlainText("label","please don't do this ")
+                clipboard.setPrimaryClip(clip)
            }
            else
-               Utils.showDialog(this,"error","Please Verifiy Gate Entry Number",R.drawable.ic_error_outline_red_24dp)
+               Utils.showDialog(this,"error","Please Verify Gate Entry Number",R.drawable.ic_error_outline_red_24dp)
 
+       }
+
+       binding.getmiss.setOnClickListener {
+           startActivity(Intent(this@AVR,MissingList::class.java))
        }
    }
 
@@ -469,11 +585,38 @@ class AVR : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSpeech.OnInitL
                     response: Response<CnValidateResp>
                 ) {
                     pd.dismiss()
-                    if(response.code()==200){
+                    if(response.isSuccessful){
+                       response.body()?.let { body->
+                           if (body.error.equals("false", true)) {
+                               cureentgr=barcode.substring(0,barcode.length-4)
+                               cnlist.add(barcode.substring(0,barcode.length-4))
+                               cnmap.put(barcode.substring(0,barcode.length-4),response.body()!!.city.toString())
+                               cnmapbox.put(barcode.substring(0,barcode.length-4),response.body()!!.pkg.toInt())
+                               binding.GRCount.setText(cnlist.size.toString())
+                               addtolocalbarcode(barcode)
+                               lifecycleScope.launch {
+                                   val cn=CN(challan = response.body()!!.challan, box =response.body()!!.pkg,cn =cn, city = response.body()!!.city?:"", weight = "0")
+                                   db.verifydao().inserbarcode(cn)
+
+                               }
+                           }
+                       }?: run {
+                           Utils.showDialog(this@AVR, "Error", "Response body is null", R.drawable.ic_error_outline_red_24dp)
+                       }
+                    }
+                    else
+                        Utils.showDialog(
+                            this@AVR,
+                            "HTTP Error ${response.code()}",
+                            response.message(),
+                            R.drawable.ic_error_outline_red_24dp
+                        )
+                   /* if(response.code()==200){
                         if(response.body()?.error.equals("false",true)){
                             cureentgr=barcode.substring(0,barcode.length-4)
                             cnlist.add(barcode.substring(0,barcode.length-4))
                             cnmap.put(barcode.substring(0,barcode.length-4),response.body()!!.city.toString())
+                            cnmapbox.put(barcode.substring(0,barcode.length-4),response.body()!!.pkg.toInt())
                             binding.GRCount.setText(cnlist.size.toString())
                             addtolocalbarcode(barcode)
                             lifecycleScope.launch {
@@ -483,7 +626,17 @@ class AVR : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSpeech.OnInitL
                             }
                         }
                         else{
+                           *//* cureentgr=barcode.substring(0,barcode.length-4)
+                            cnlist.add(barcode.substring(0,barcode.length-4))
+                            cnmap.put(barcode.substring(0,barcode.length-4),"")
+                            cnmapbox.put(barcode.substring(0,barcode.length-4),55)
+                            binding.GRCount.setText(cnlist.size.toString())
+                            addtolocalbarcode(barcode)
+                            lifecycleScope.launch {
+                                val cn=CN(challan ="11111111111", box ="55",cn =cn, city = "", weight = "0")
+                                db.verifydao().inserbarcode(cn)
 
+                            }*//*
                             Utils.showDialog(this@AVR,response.code().toString(),response.body()!!.response,R.drawable.ic_error_outline_red_24dp)
 
                         }
@@ -491,7 +644,7 @@ class AVR : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSpeech.OnInitL
                     else{
                         Utils.showDialog(this@AVR,response.code().toString(),response.message(),R.drawable.ic_error_outline_red_24dp)
 
-                    }
+                    }*/
                 }
 
                 override fun onFailure(call: Call<CnValidateResp>, t: Throwable) {
@@ -503,6 +656,34 @@ class AVR : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSpeech.OnInitL
         }
     }
 
+    private fun testlocalbarcode(barcode: String) {
+        if(displayedData.contains(barcode)){
+
+        }
+        else{
+            displayedData.add(0,barcode)
+            barcodelist.add(0,barcode)
+            //    displayedData= ArrayList(barcodelist.subList(0, minOf(barcodelist.size, 50)))
+
+          //  binding.barcodeCount.setText(barcodelist.size.toString())
+            adapter.notifyDataSetChanged()
+            lifecycleScope.launch {
+                val barcodem=Barcode(barcode=barcode )
+                db.barcodeDao().inserbarcode(barcodem)
+               // getcureentGR(barcode)
+            }
+            lifecycleScope.launch {
+                val barcodem= RestoreBarcode(barcode=barcode )
+                db.restorebarcodedao().inserbarcode(barcodem)
+
+            }
+
+            //  speak(cnmap.get(barcode.substring(0,barcode.length-4)).toString())
+        }
+
+
+
+    }
     private fun addtolocalbarcode(barcode: String) {
         if(displayedData.contains(barcode)){
 
@@ -570,6 +751,10 @@ class AVR : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSpeech.OnInitL
                     binding.lorryNo.setText(resp.lorry_no)*/
                     isgateverify=true
                     binding.gateNo.isEnabled=false
+                    var resp: CommonRespS = it.data as CommonRespS
+                   // resp.lorry_no
+                    binding.tvTitle.setText("AVR "+OmOperation.getPreferences(Constants.BCODE,"")+"("+resp.lorry_no+")"+"\n"
+                            +OmOperation.getPreferences(Constants.EMP_CODE,""))
                 }
                 is NetworkState.Error->{
                     cp.dismiss()
@@ -635,6 +820,7 @@ class AVR : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSpeech.OnInitL
                     for (i in mycn) {
                         list.add(i.cn.toString())
                         cnmap.put(i.cn.toString(),i.city.toString())
+                        cnmapbox.put(i.cn.toString(),i.box.toInt())
 
                     }
                     withContext(Dispatchers.Main) {
@@ -673,6 +859,7 @@ class AVR : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSpeech.OnInitL
                 barcodelist.clear()
                 cnlist.clear()
                 cnmap.clear()
+                cnmapbox.clear()
                 binding.GRCount.setText("0")
                 binding.crgr.setText("0")
                 binding.barcodeCount.setText("0")
@@ -692,6 +879,17 @@ class AVR : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSpeech.OnInitL
 
 
 
+
+    }
+    fun Deletefrontend(){
+        displayedData.clear()
+        barcodelist.clear()
+        cnlist.clear()
+        cnmap.clear()
+        cnmapbox.clear()
+        binding.GRCount.setText("0")
+        binding.barcodeCount.setText("0")
+        adapter.notifyDataSetChanged()
 
     }
 
@@ -728,9 +926,8 @@ class AVR : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSpeech.OnInitL
                     db.barcodeDao().deleteBarcode(barcode)
                     db.restorebarcodedao().deleteBarcode(barcode)
                     var scancnbox:ArrayList<String>  = db.barcodeDao().checkcnexist(barcode.substring(0,barcode.length-4)) as ArrayList<String>
-               if(scancnbox.size==0){
+                if(scancnbox.size==0){
                    db.verifydao().deletecn(barcode.substring(0,barcode.length-4))
-
                    cnlist.remove(barcode.substring(0,barcode.length-4))
                    binding.GRCount.setText(cnlist.size.toString())
                }
@@ -817,5 +1014,23 @@ class AVR : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSpeech.OnInitL
             setCancelable(true)
         }.create().show()
     }
+    fun closeKeyboard(){
+        binding.barcodeText.setOnClickListener {
+
+        }
+
+
+       /* val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(binding.barcodeText.windowToken, 0)*/
+    }
+
+    override fun addgr(position: Int,ischecked : Boolean) {
+        if(ischecked) grwithotdoc.add(grdoc.get(position))
+        else  grwithotdoc.remove(grdoc.get(position))
+        Log.d("ashish",grdoc.get(position).toString().substring(1,grdoc.get(position).toString().length-1))
+        Log.d("ashish",grwithotdoc.size.toString())
+    }
 }
+
+
 

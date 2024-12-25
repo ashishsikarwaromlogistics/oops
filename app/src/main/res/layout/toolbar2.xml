@@ -1,19 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/_35sdp"
+    android:layout_height="@dimen/_80sdp"
     android:orientation="horizontal"
-    android:background="@color/colorPrimary"
+    android:background="#36000000"
     android:gravity="center_vertical"
     >
-    <ImageView
+    <TextView
         android:id="@+id/img_back"
-        android:layout_width="@dimen/_34sdp"
-        android:layout_height="@dimen/_43sdp"
+        android:layout_width="@dimen/_70sdp"
+        android:layout_height="@dimen/_70sdp"
         android:padding="@dimen/_6sdp"
-        android:src="@drawable/ic_baseline_notes_24"
+        android:background="@drawable/launcher"
         android:layout_marginLeft="@dimen/_7sdp"
         android:onClick="Back"
+        android:text=""
+        android:gravity="center"
+        android:textSize="@dimen/_25ssp"
+        android:textColor="@color/white"
         />
     <ImageView
         android:id="@+id/share"
@@ -24,7 +28,33 @@
         android:layout_marginLeft="@dimen/_7sdp"
         android:visibility="gone"
         />
-    <TextView
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginStart="@dimen/_10sdp">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Welcome "
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:fontFamily="@font/cabin_regular"
+            android:layout_marginStart="@dimen/_3sdp"
+            android:textSize="@dimen/_25ssp"
+            />
+        <TextView
+            android:id="@+id/empname"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Ashish Sikarwar "
+            android:textColor="@color/white"
+            android:fontFamily="@font/cabin_regular"
+            android:layout_marginStart="@dimen/_3sdp"
+            android:textSize="@dimen/_15ssp"
+            />
+    </LinearLayout>
+   <!-- <TextView
         android:id="@+id/tv_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -33,7 +63,7 @@
         android:layout_marginLeft="@dimen/_5sdp"
         android:textSize="@dimen/_12ssp"
         android:text="@string/app_name"
-        />
+        />-->
 
     <ImageView
         android:id="@+id/img_logout"

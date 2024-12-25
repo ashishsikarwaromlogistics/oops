@@ -58,18 +58,26 @@
                     android:inputType="textCapCharacters" />
             </com.google.android.material.textfield.TextInputLayout>
 
+
+
+
+
+
+
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Select Challan">
+               >
 
                 <AutoCompleteTextView
                     android:id="@+id/challanSpinner"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:spinnerMode="dialog" />
+                    android:spinnerMode="dialog"
+                    android:hint="Select Challan"/>
             </com.google.android.material.textfield.TextInputLayout>
+
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/descLayout"

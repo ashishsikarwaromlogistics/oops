@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.text.InputType
 import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
@@ -24,6 +25,11 @@ class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding =DataBindingUtil.setContentView(this, R.layout.activity_login)
+        binding.openguest.setOnClickListener {
+            binding.openguest.visibility= View.GONE
+            binding.empBranch.visibility= View.VISIBLE
+            binding.guest.visibility= View.VISIBLE
+        }
         cp= CustomProgress(this)
         loginviewmod=ViewModelProvider(this).get(LoginViewMod::class.java)
         binding.loginmod=loginviewmod
@@ -35,7 +41,7 @@ class LoginActivity : AppCompatActivity() {
               }
                 is NetworkState.Success<*> ->{
                     cp.dismiss()
-                startActivity(Intent(this,DashboardAct::class.java))
+                   startActivity(Intent(this,DashboardAct::class.java))
                     finish()
                 }
                 is NetworkState.Error ->{
@@ -47,6 +53,7 @@ class LoginActivity : AppCompatActivity() {
 
 
         })
+
         binding.showPasswordCheck.setOnCheckedChangeListener { button, isChecked ->
             if (isChecked) {
                 binding.showPasswordCheck.setText(R.string.hide_password)
@@ -63,11 +70,20 @@ class LoginActivity : AppCompatActivity() {
                     .getInstance()
             }
         }
-
+       binding.delete.setOnClickListener {
+           try {
+               // Clear app data
+               val runtime = Runtime.getRuntime()
+               runtime.exec("pm clear ${applicationContext.packageName}")
+           } catch (e: Exception) {
+               e.printStackTrace()
+           }
+       }
     }
 
     override fun onStop() {
         super.onStop()
         finish()
     }
+
 }

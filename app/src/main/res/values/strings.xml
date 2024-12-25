@@ -67,6 +67,14 @@
         <item>--Select remarks--</item>
         <item>Material Short</item>
         <item>Material Excess</item>
+        <item>Material load in multiple vehicle</item>
+    </string-array>
+
+    <string-array name="challan_missing_remarks">
+        <item>--Select remarks--</item>
+        <item>Material Short</item>
+        <item>Material Excess</item>
+
     </string-array>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
@@ -133,4 +141,14 @@
     </string-array>
     <string name="title_activity_my_browser">MyBrowser</string>
     <string name="content">Splash Screen LOGO</string>
+    <string name="get_paper">Get Paper</string>
+    <string name="submit">Submit</string>
+    <string name="GateEntryReport">Gate Entry Report</string>
+    <string name="back">Back</string>
+    <string-array name="cft_unit">
+        <item>Inch</item>
+        <item>MM</item>
+        <item>CM</item>
+        <item>FT</item>
+    </string-array>
 </resources>

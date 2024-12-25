@@ -9,6 +9,7 @@ import com.example.omoperation.R
 import com.example.omoperation.model.dataclass.CNWithBoxes
 
 class MissingAdapter(val missinginter:MissingInterface,val scancnbox: ArrayList<CNWithBoxes>) : RecyclerView.Adapter<MissingAdapter.MyViewHolder>() {
+
     class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val titleTextView: TextView = itemView.findViewById(R.id.barcodeNo)
     }
@@ -18,7 +19,7 @@ class MissingAdapter(val missinginter:MissingInterface,val scancnbox: ArrayList<
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-      holder.titleTextView.setText(scancnbox.get(position).cn+"--"+scancnbox.get(position).diffbox)
+      holder.titleTextView.setText(scancnbox.get(position).cn+"-->"+scancnbox.get(position).diffbox)
         holder.titleTextView.setOnClickListener { missinginter.missing(scancnbox.get(position)) }
     }
 

@@ -7,5 +7,10 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:windowAnimationStyle">@style/WindowAnimationTransition</item>
         <!--<item name="android:textColorSecondary">@color/lightwhite</item>-->
+        <item name="android:actionOverflowMenuStyle">@style/OverflowMenuStyle</item>
+    </style>
+
+    <style name="OverflowMenuStyle" parent="Widget.AppCompat.ActionButton.Overflow">
+        <item name="android:tint">#FFFFFF</item> <!-- Set tint to white -->
     </style>
 </resources>

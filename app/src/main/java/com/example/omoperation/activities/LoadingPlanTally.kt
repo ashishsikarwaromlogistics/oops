@@ -436,6 +436,13 @@ class LoadingPlanTally : AppCompatActivity(),LoadingPlanTallyAdapter.LoadingPlan
                                     }
                                     false
                                 }
+                                binding.searchBtn.setOnClickListener {
+                                    SearchCN()
+                                    binding.cnText.setText("")
+                                    binding.cnText.requestFocus()
+                                    closekeyboard()
+                                }
+
                             } else {
                                 Utils.showDialog(
                                     this@LoadingPlanTally,

@@ -1,7 +1,6 @@
 package com.example.omoperation.activities
 
 import android.app.AlertDialog
-import android.app.ProgressDialog
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
 import android.text.Editable
@@ -10,9 +9,6 @@ import android.util.Log
 import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -22,6 +18,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.omoperation.Constants
+import com.example.omoperation.CustomProgress
 import com.example.omoperation.OmOperation
 import com.example.omoperation.R
 import com.example.omoperation.Utils
@@ -46,9 +43,7 @@ class CnRewareHouse : AppCompatActivity(), ReWarehouseBarcodeListAdapter.OnDelet
     lateinit var binding:ActivityCnRewareHouseBinding
 
 
-    var formattedDateTime: String? = null
-    var URL: String? = null
-
+    private var formattedDateTime: String? = null
 
 
     private var mAdapter: ReWarehouseBarcodeListAdapter? = null
@@ -61,7 +56,7 @@ class CnRewareHouse : AppCompatActivity(), ReWarehouseBarcodeListAdapter.OnDelet
     private var reasoncodename: List<Detail>? = null
     private var cnList: LinkedHashSet<String>? = null
 
-    var GRRecords: HashMap<String, Int>? = null
+    private var GRRecords: HashMap<String, Int>? = null
     var barcodedatatime: HashMap<String, String>? = null
 
     var barcount: HashMap<String, Int>? = null
@@ -73,12 +68,12 @@ class CnRewareHouse : AppCompatActivity(), ReWarehouseBarcodeListAdapter.OnDelet
     var restoreData: HashMap<String, String>? = null
 
     private val rsrncode= HashMap<String, String> ()
-
+    val cp by lazy { CustomProgress(this) }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding=DataBindingUtil. setContentView(this,R.layout.activity_cn_reware_house)
         val  title : TextView = findViewById(R.id.title)
-        title.setText("POD Upload")
+        title.setText("CN ReWare House")
         // DATE AND TIME
         val currentDate = Date()
         val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
@@ -245,6 +240,7 @@ class CnRewareHouse : AppCompatActivity(), ReWarehouseBarcodeListAdapter.OnDelet
     }
 
     private fun submitReport() {
+        cp.show()
         val barcodelists: MutableList<BarcodeRe> = java.util.ArrayList<BarcodeRe>()
         for (i in barcodeList!!.indices) {
             val re = BarcodeRe()
@@ -283,6 +279,7 @@ class CnRewareHouse : AppCompatActivity(), ReWarehouseBarcodeListAdapter.OnDelet
         lifecycleScope.launch {
            val response= ApiClient.getClient().create(ServiceInterface::class.java).cnRewh(Utils.getheaders(),mod)
       if(response.code()==200){
+          cp.dismiss()
           if(response.body()!!.error.equals("false")){
               Utils.showDialog(this@CnRewareHouse,"Success","",R.drawable.ic_success)
                 //showAlert("SUCCESS", response.body().getResponse(), null, 1, "")
@@ -291,6 +288,7 @@ class CnRewareHouse : AppCompatActivity(), ReWarehouseBarcodeListAdapter.OnDelet
               //  showAlert("ERROR OCCURRED", response.body().getResponse(), null, 2, "")
           }
       }
+            else cp.dismiss()
         }
 
 
@@ -305,12 +303,12 @@ class CnRewareHouse : AppCompatActivity(), ReWarehouseBarcodeListAdapter.OnDelet
     }
 
 
-    override fun onDelete(barcode: String?, lastGR: String?) {
-        val res = barcodeList!!.remove(barcode!!)
+    override fun onDelete(barcode: String, lastGR: String) {
+        val res = barcodeList!!.remove(barcode)
         if (res) {
             //barcodeCount.setText(String.valueOf(barcodeList.size()));
             //GRCount.setText(String.valueOf(barcodeList.size() == 0 ? "0" : AppController.getIntanceHandler().getCurrentGRCount(lastGR)));
-            val CN_NO = barcode!!.substring(0, barcode!!.length - 4)
+            val CN_NO = barcode.substring(0, barcode.length - 4)
 
         } else {
             Toast.makeText(this, "can't remove", Toast.LENGTH_SHORT).show()

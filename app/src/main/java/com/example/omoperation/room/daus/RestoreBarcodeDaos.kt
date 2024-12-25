@@ -6,6 +6,9 @@ import androidx.room.Query
 import com.example.omoperation.model.dataclass.CNWithBoxes
 import com.example.omoperation.room.tables.CN2
 import com.example.omoperation.room.tables.RestoreBarcode
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 @Dao
 interface RestoreBarcodeDaos {
@@ -58,5 +61,22 @@ interface RestoreBarcodeDaos {
     suspend fun restoreselecteddata(selectedbarcode : List<String>):Int
 
 
+    @Query("delete from RestoreBarcode where barcode  IN (:selectedbarcode)")
+    suspend fun delete_from_restore(selectedbarcode : List<String>):Int
+
+
+
+    @Query("DELETE FROM RestoreBarcode WHERE timestamp < :timeThreshold")
+    suspend fun deleteAfter24Hours(timeThreshold: String)
+
+
+
+
+    companion object {
+
+        fun getCurrentTimestamp(): String {
+            return SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date())
+        }
+    }
 
 }

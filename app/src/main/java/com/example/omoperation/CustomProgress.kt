@@ -1,36 +1,33 @@
 package com.example.omoperation
 
-import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
 import android.widget.TextView
 
 
-class CustomProgress(val con: Context) {
-    lateinit var dialog : Dialog
-    lateinit var tv_msg : TextView
-    init{
-        dialog=Dialog(con)
+class CustomProgress(con: Context) {
+    private var dialog: Dialog = Dialog(con)
+    private  lateinit var tv_msg : TextView
+    init {
+
+        dialog.setContentView(R.layout.custom_progress)
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent) // Use safe call for getWindow
+        tv_msg = dialog.findViewById(R.id.tv_msg)
     }
-      fun show() {
-        val alertBox = android.app.AlertDialog.Builder(
-            con
-        )
-
-
-          dialog.getWindow()!!.setBackgroundDrawableResource(android.R.color.transparent);
-          dialog.setContentView(R.layout.custom_progress)
-          tv_msg=dialog.findViewById<TextView>(R.id.tv_msg)
-          dialog.show()
+    fun show() {
+        if (!dialog.isShowing) { // Show only if not already showing
+            dialog.show()
+        }
     }
 
-      fun setmsg( msg : String) {
-          tv_msg.setText(msg)
-
+    fun setmsg(msg: String) {
+        if (::tv_msg.isInitialized) { // Check if tv_msg is initialized before setting text
+            tv_msg.text = msg
+        }
     }
 
-    fun dismiss(){
-        if(dialog.isShowing){
+    fun dismiss() {
+        if (dialog.isShowing) {
             dialog.dismiss()
         }
     }

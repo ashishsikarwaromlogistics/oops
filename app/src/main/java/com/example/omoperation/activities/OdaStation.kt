@@ -2,6 +2,8 @@ package com.example.omoperation.activities
 
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -34,10 +36,25 @@ class OdaStation : AppCompatActivity() , ODAStationAdapter.ContactsAdapterListen
         finddata()
 
     }
+    fun calltofilter(){
+        binding.edtsearch.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                // No action needed here
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                adapter.filter.filter(s)
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                // No action needed here
+            }
+        })
+    }
     fun finddata(){
         val mod= CommonMod()
         mod.status="challan"
-        // mod.branch="1328"
+       // mod.branch="5393"
         mod.bcode= OmOperation.getPreferences(Constants.BCODE,"")
         ApiClient.getClient().create(ServiceInterface::class.java).oda_station(Utils.getheaders(),mod).enqueue(object :
             Callback<OdaResp> {
@@ -46,6 +63,7 @@ class OdaStation : AppCompatActivity() , ODAStationAdapter.ContactsAdapterListen
                 {
                     adapter= ODAStationAdapter(this@OdaStation,resp.body()!!.emp_enquiry,this@OdaStation)
                     binding.recyOda.adapter=adapter
+                    calltofilter()
                 }
                 else{
                     Utils.showDialog(this@OdaStation,"error","Loading Plan not found",R.drawable.ic_error_outline_red_24dp)

@@ -32,12 +32,20 @@ class CnEnqueryRepository {
                    response: Response<Myquery>
                ) {
                    cp.dismiss()
-                   if(response.code()==200){
-
+                   if(response.isSuccessful){
+                       response.body()?.let {
+                           _livedata.postValue(response.body())
+                       }?:run  {
+                          Utils.showDialog(context,"error","Response body is null",R.drawable.ic_error_outline_red_24dp)
+                       }
                    }
-                  if(response.body()!=null){
-                      _livedata.postValue(response.body())
-                  }
+                   else  Utils.showDialog(
+                       context,
+                       "HTTP Error ${response.code()}",
+                       response.message(),
+                       R.drawable.ic_error_outline_red_24dp
+                   )
+
                }
 
                override fun onFailure(call: Call<Myquery>, t: Throwable) {

@@ -13,6 +13,17 @@
         android:layout_height="match_parent"
         tools:context=".activities.OdaStation"
         android:orientation="vertical">
+        <EditText
+            android:id="@+id/edtsearch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/_5sdp"
+            android:padding="@dimen/_5sdp"
+            android:background="@null"
+            android:hint="Search"
+
+            />
+
 <androidx.recyclerview.widget.RecyclerView
     android:id="@+id/recy_oda"
     android:layout_width="match_parent"

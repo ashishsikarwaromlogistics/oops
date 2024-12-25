@@ -13,8 +13,8 @@ android {
         applicationId = "com.example.omoperation"
         minSdk = 24
         targetSdk = 35
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 10
+        versionName = "2.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -66,7 +66,9 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
-
+    lint {
+        baseline = file("lint-baseline.xml")
+    }
 }
 kapt {
     correctErrorTypes = true
@@ -99,6 +101,9 @@ dependencies {
     implementation(libs.roomrun)
     implementation(libs.hilt)
     implementation(libs.glide)
+    implementation(libs.zxing)
+    implementation (libs.zxingandroidembedded)
+    //implementation 'com.shuhart.stepview:stepview:1.5.1'
     //implementation 'com.github.bumptech.glide:glide:4.15.0'
    // implementation(libs.twilio)
   //  implementation(libs.commons)

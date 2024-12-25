@@ -21,5 +21,10 @@ interface VerifyCnDao {
     @Query("DELETE FROM cn")
     suspend fun deleteCN()
 
+    @Query("delete from cn where cn  IN (:cnvalue)")
+    suspend fun delete_from_verify(cnvalue : List<String>):Int
+
+    @Query("select box from cn where cn  = (:cnvalue)")
+    suspend fun getbox(cnvalue : String):String
 
 }

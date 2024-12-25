@@ -132,39 +132,6 @@
                     </RelativeLayout>
                 </androidx.cardview.widget.CardView>
 
-                <androidx.cardview.widget.CardView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="5dp"
-                    app:cardElevation="5dp">
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:padding="15dp">
-
-                        <ImageView
-                            android:id="@+id/img_input_from"
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:layout_centerVertical="true"
-                            app:srcCompat="@drawable/cn" />
-
-                        <EditText
-                            android:id="@+id/seal_no"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_centerVertical="true"
-                            android:layout_marginLeft="15dp"
-                            android:layout_toRightOf="@+id/img_input_from"
-                            android:background="@null"
-                            android:hint="Seal Number"
-                            android:inputType="textCapCharacters"
-                            android:maxLength="10"
-                            android:textSize="15sp"
-                            android:textStyle="bold" />
-                    </RelativeLayout>
-                </androidx.cardview.widget.CardView>
 
                 <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
@@ -297,7 +264,8 @@
                             android:layout_toRightOf="@+id/img_input_oda_station"
                             android:background="@null"
                             android:inputType="number"
-                            android:text="Select ODA Station"
+                            android:text=""
+                            android:hint="Select ODA Station"
                             android:textColor="@color/hint_color"
                             android:textSize="15sp"
                             android:textStyle="bold" />

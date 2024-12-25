@@ -49,6 +49,8 @@ class VehicleImage : AppCompatActivity() , ImageAdapter.ImageInterface {
      var imagelist= ArrayList<String>()
      var bitmaplist= ArrayList<String>()
     private val CAMERA_IMAGE_CODE = 100
+    val pd : CustomProgress by lazy { CustomProgress(this) }
+    var isvalid=false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding=DataBindingUtil.setContentView(this,R.layout.activity_vehicle_image)
@@ -60,6 +62,7 @@ class VehicleImage : AppCompatActivity() , ImageAdapter.ImageInterface {
         binding.vehiclemod=VEHCLEVIEWMOD
         binding.lifecycleOwner=this
         VEHCLEVIEWMOD.livedata.observe(this, Observer{
+            isvalid=false
             when(it)
             {
               is NetworkState.Loading->{
@@ -71,6 +74,7 @@ class VehicleImage : AppCompatActivity() , ImageAdapter.ImageInterface {
                     Utils.showDialog(this,it.title,it.message,R.drawable.ic_error_outline_red_24dp)
                 }
                 is NetworkState.Success<*> -> {
+                    isvalid=true
                     val a=it.data.toString()
                     Utils.showDialog(this,"Success","Vehicle Verified Successfully",R.drawable.ic_success)
                      binding.vehcleno.isEnabled=false
@@ -82,7 +86,9 @@ class VehicleImage : AppCompatActivity() , ImageAdapter.ImageInterface {
             pickImage()
         }
         binding.submit.setOnClickListener {
+            if(isvalid)
             submit()
+            else Utils.showDialog(this,"error","Please validate vehicle first",R.drawable.ic_error_outline_red_24dp)
         }
 
 
@@ -182,7 +188,7 @@ class VehicleImage : AppCompatActivity() , ImageAdapter.ImageInterface {
         for ((permission, isGranted) in results) {
             // Handle each permission result here
             if (isGranted) {
-                // proceedWithFunctionality();
+                  proceedWithFunctionality();
             } else {
             }
         }
@@ -354,6 +360,7 @@ class VehicleImage : AppCompatActivity() , ImageAdapter.ImageInterface {
 
     fun submit(){
         bitmaplist.clear()
+        pd.show()
         for (path in imagelist) {
             val uri = Uri.fromFile(File(path))
             //base64Images.add(imageToString(bitmap));
@@ -372,6 +379,7 @@ class VehicleImage : AppCompatActivity() , ImageAdapter.ImageInterface {
         lifecycleScope.launch {
            val resp= ApiClient.getClient().create(ServiceInterface::class.java).image_upload_lorry(Utils.getheaders(),mod)
            if(resp.code()==200){
+               pd.dismiss()
                if(resp.body()!!.error.equals("false")){
                    Utils.showDialog(
                        this@VehicleImage,
@@ -382,8 +390,10 @@ class VehicleImage : AppCompatActivity() , ImageAdapter.ImageInterface {
 
                }
 
-           }else Utils.showDialog(this@VehicleImage,"error",resp.code().toString(),R.drawable.ic_error_outline_red_24dp)
-        }
+           }else {
+               pd.dismiss()
+               Utils.showDialog(this@VehicleImage,"error",resp.code().toString(),R.drawable.ic_error_outline_red_24dp)
+        }}
 
     }
 //4505241000845

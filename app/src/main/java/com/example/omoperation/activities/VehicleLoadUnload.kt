@@ -1,29 +1,39 @@
 package com.example.omoperation.activities
 
 import android.Manifest
-import android.R.attr
-import android.content.ContentValues
 import android.content.DialogInterface
 import android.content.Intent
-import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
+import android.text.TextUtils
+import android.view.MotionEvent
+import android.view.View
+import android.view.View.OnFocusChangeListener
+import android.view.View.OnTouchListener
+import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.omoperation.Constants
+import com.example.omoperation.CustomProgress
 import com.example.omoperation.OmOperation
 import com.example.omoperation.R
 import com.example.omoperation.Utils
 import com.example.omoperation.adapters.ImageAdapter
 import com.example.omoperation.databinding.ActivityVehicleLoadUnloadBinding
+import com.example.omoperation.model.CommonMod
 import com.example.omoperation.model.vehicleloadunload.VehcleLoadUnloadMod
+import com.example.omoperation.network.ApiClient
+import com.example.omoperation.network.ServiceInterface
+import kotlinx.coroutines.launch
 import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
@@ -39,29 +49,70 @@ class VehicleLoadUnload : AppCompatActivity(), ImageAdapter.ImageInterface {
     lateinit var title : TextView
     val REQUEST_IMAGE_CAPTURE=1
     val REQUEST_IMAGE_BROWSE=2
+    lateinit var listist: List<String>
+    private var arraydapter: ArrayAdapter<String>? = null
+    var status="loadChallan"
+    val cp:CustomProgress by lazy { CustomProgress(this) }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding=DataBindingUtil.setContentView(this, R.layout.activity_vehicle_load_unload)
+        listist=ArrayList()
         title=findViewById(R.id.title)
         title.setText("Vehicle Load/Unload")
        binding.recyimage.setHasFixedSize(false)
         binding.recyimage.layoutManager=LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL, false
         )
+        binding.fieldVehicleNo.setOnFocusChangeListener(OnFocusChangeListener { v: View?, hasFocus: Boolean ->
+            if (!hasFocus) {
+                val vehicle: String = binding.fieldVehicleNo.getText().toString().trim { it <= ' ' }
+                if (TextUtils.isEmpty(vehicle)) {
+                    binding.fieldVehicleNo.setError(getString(R.string.required))
+                } else {
+                    getChallanList(vehicle)
+                }
+            }
+        })
         adapter= ImageAdapter(this,images)
         binding.recyimage.adapter=adapter
         binding.subBtn.setOnClickListener {
             if(validate()){
                 if(Utils.haveInternet(this)){
-                  val mod=  VehcleLoadUnloadMod(
-                      OmOperation.getPreferences(Constants.BCODE,""),
-                      binding.challanSpinner.text.toString(),
-                      OmOperation.getPreferences(Constants.EMP_CODE,""),
-                      images,
-                      binding.remarks.text.toString(),
-                      selecttype,
-                      binding.fieldVehicleNo.text.toString()
+                    cp.show()
 
-                  )
+                    lifecycleScope.launch {
+                        val mod=  VehcleLoadUnloadMod(
+                            OmOperation.getPreferences(Constants.BCODE,""),
+                            binding.challanSpinner.text.toString(),
+                            OmOperation.getPreferences(Constants.EMP_CODE,""),
+                            images,
+                            binding.remarks.text.toString(),
+                            selecttype,
+                            binding.fieldVehicleNo.text.toString()
+
+                        )
+                        val response=ApiClient.getClient().create(ServiceInterface::class.java).vluimage(Utils.getheaders(),mod)
+                        cp.dismiss()
+                        if(response!!.code()==200){
+
+                            if(response.body()?.error.equals("false")){
+                                images.clear()
+                                binding.fieldVehicleNo.setText("")
+                                binding.challanSpinner.setText("")
+                                binding.remarks.setText("")
+                                adapter.notifyDataSetChanged()
+
+                               Utils.showDialog(this@VehicleLoadUnload,"Success",response.body()?.response.toString(),R.drawable.ic_success)
+                            }
+                            else{
+                                Utils.showDialog(this@VehicleLoadUnload,"Fail",response.body()!!.response.toString(),R.drawable.ic_error_outline_red_24dp)
+                            }
+                        }
+                        else
+                            Utils.showDialog(this@VehicleLoadUnload,"error code${response.code()}","${response.message()}",R.drawable.ic_error_outline_red_24dp)
+
+                    }
+
+
                 }
             }
         }
@@ -178,16 +229,22 @@ class VehicleLoadUnload : AppCompatActivity(), ImageAdapter.ImageInterface {
         val builder = AlertDialog.Builder(this@VehicleLoadUnload)
         builder.setItems(items) { dialog: DialogInterface, item: Int ->
             if(item==0){
+                status="loadChallan"
                  selecttype="imageloading"
+                binding.challanSpinner.setHint("Select Challan Number")
+
             }
             else{
+                status="unloadChallan"
                 selecttype="imageUnloading"
+                binding.challanSpinner.setHint("Select Gate Entry No.")
             }
             binding.select.setText( items[item])
             dialog.dismiss()
         }
         builder.show()
     }
+
 
     override fun sendPosition(position: Int) {
        // TODO("Not yet implemented")
@@ -204,5 +261,52 @@ class VehicleLoadUnload : AppCompatActivity(), ImageAdapter.ImageInterface {
         }
         return filePath
     }
+    private fun getChallanList(vehicleNo: String) {
+        val mod: CommonMod = CommonMod()
+        //mod.status="loadChallan"
+        mod.status=status
+        mod.bcode=OmOperation.getPreferences(Constants.BCODE,"")
+        mod.lorryno=vehicleNo
+        lifecycleScope.launch {
+           val response= ApiClient.getClient().create(ServiceInterface::class.java).vluimage(Utils.getheaders(),mod)
+           if(response.code()==200){
+               if(response.body()?.error.equals("false")){
+                  /* listist = response.body()?.response!! as List<String>
+                   arraydapter =ArrayAdapter<String>(this@VehicleLoadUnload, R.layout.challan_list_item, listist)
+                   binding.challanSpinner.setAdapter<ArrayAdapter<String>>(arraydapter)
+                  */
 
+                   // Create a list of data for the spinner
+
+
+                   // Create an ArrayAdapter using the string array and a default spinner layout
+                   listist = response.body()?.response!! as List<String>
+                   arraydapter =
+                       ArrayAdapter<String>(this@VehicleLoadUnload, R.layout.challan_list_item, listist)
+
+                   // Specify the layout to use when the list of choices appears
+
+                   // Apply the adapter to the spinner
+                  binding.challanSpinner.setAdapter(arraydapter)
+                   //binding.challanSpinner.setText(listist.get(0))
+                   binding. challanSpinner.setOnTouchListener(OnTouchListener { v: View, event: MotionEvent? ->
+                       (v as AutoCompleteTextView).showDropDown()
+                       false
+                   })
+               }
+               else{
+                   Utils.showDialog(this@VehicleLoadUnload,"error true${response.code()}",response.body().toString(),R.drawable.ic_error_outline_red_24dp)
+                   listist = ArrayList()
+                   arraydapter =
+                       ArrayAdapter (this@VehicleLoadUnload, R.layout.challan_list_item, listist)
+                   binding.challanSpinner.setAdapter<ArrayAdapter<String>>(arraydapter)
+                   binding.challanSpinner.setText("")
+               }
+           }
+            else Utils.showDialog(this@VehicleLoadUnload,"error code${response.code()}","${response.message()}",R.drawable.ic_error_outline_red_24dp)
+
+
+        }
+
+    }
 }

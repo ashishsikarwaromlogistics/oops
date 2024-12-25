@@ -6,4 +6,7 @@ package com.example.omoperation.model.cnvaridate
     var cn_no: String?=null
     var from: String?=null
     var to: String?=null
+    var vno: String?=null
+    var status: String?=null
+    var loading_plan: String?=null
 }

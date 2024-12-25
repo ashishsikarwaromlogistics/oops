@@ -28,6 +28,22 @@
         android:layout_height="wrap_content"
 
         android:textColor="@color/black"/>
+
+
+    <TextView
+        android:id="@+id/loadingdate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:textColor="@color/black"/>
+
+
+    <TextView
+        android:id="@+id/enterdate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:textColor="@color/black"/>
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"

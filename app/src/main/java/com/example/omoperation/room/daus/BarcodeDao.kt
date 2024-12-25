@@ -12,7 +12,7 @@ import com.example.omoperation.room.tables.ManualAvr
 
 @Dao
 interface BarcodeDao {
-    @Query("select * from Barcode")
+    @Query("select * from Barcode order by barcode")
    suspend fun getAll() : List<Barcode>
 
     @Insert
@@ -26,10 +26,12 @@ interface BarcodeDao {
             "group by substr(barcode, 1, length(barcode) - 4)")
     suspend fun cnwithboxes() : List<CNWithBoxes>
 
+   val prefix: String
+       get() = "%"
 
     @Query("select barcode " +
             "from barcode\n" +
-            "where barcode like :cnvalue || '%'")
+            "where barcode like '%' || :cnvalue || '%' order by barcode")
     suspend fun getscan(cnvalue: String) : List<String>
 
  @Query("select (substr(barcode, 1, length(barcode) - 4)) cn " +
@@ -68,6 +70,8 @@ interface BarcodeDao {
          "UNION all " +
          "SELECT uid,cn  CN_No ,boxes  BARCODE  from ManualAvr")
  suspend fun getcnboxes():List<CN2>
+
+
  @Query("select count() from barcode where SUBSTR(barcode.barcode, 1, LENGTH(barcode.barcode) - 4)=:cn")
  suspend fun getcurrengr(cn : String):Int
 
@@ -76,6 +80,16 @@ interface BarcodeDao {
  @Query("delete from barcode where SUBSTR(barcode.barcode, 1, LENGTH(barcode.barcode) - 4)  IN (:selectedbarcode)")
  suspend fun restoreselecteddata(selectedbarcode : List<String>):Int
 
+  @Query("SELECT barcode " +
+          "FROM barcode " +
+          "WHERE " +
+          "    SUBSTR(barcode, 1, LENGTH(barcode) - 4) = :cn " +
+          "    AND CAST(SUBSTR(barcode, LENGTH(barcode) - 3, 4) AS INTEGER) > :box order by barcode")
+   suspend fun Extrascan(cn : String,box : Int): List<String>
+
+  /*  @Query("SELECT barcode " +
+            "FROM barcode ")
+    suspend fun Extrascan(cn : String,box : Int): List<String>*/
 
 
 }

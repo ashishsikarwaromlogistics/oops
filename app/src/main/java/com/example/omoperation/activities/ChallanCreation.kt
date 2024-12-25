@@ -1,6 +1,9 @@
 package com.example.omoperation.activities
 
 import android.app.Activity
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
@@ -22,7 +25,11 @@ import com.example.omoperation.databinding.ActivityChallanCreationBinding
 import com.example.omoperation.model.CommonMod
 import com.example.omoperation.network.ApiClient
 import com.example.omoperation.network.ServiceInterface
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeout
+import kotlinx.coroutines.withTimeoutOrNull
 
 
 class ChallanCreation : AppCompatActivity() {
@@ -30,11 +37,21 @@ class ChallanCreation : AppCompatActivity() {
     lateinit var cp: CustomProgress
     var touchingBranch=""
     var des_branch_code=""
+    var type=""
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding=DataBindingUtil.setContentView(this,R.layout.activity_challan_creation)
         cp=CustomProgress(this)
         binding.source.setText(OmOperation.getPreferences(Constants.BCODE,""))
+
+        type= intent.getStringExtra("type").toString()?:""
+        if(type.equals("offlinechallan")){
+           binding.source.setText("9996")
+           binding.destination.setText(OmOperation.getPreferences(Constants.BCODE,""))
+        }
+
+      //  get//offlinechallan
+
         setclick()
 
 
@@ -108,7 +125,16 @@ class ChallanCreation : AppCompatActivity() {
         binding.scanBtn.setOnClickListener {
             if(validate()){
                 if(Utils.haveInternet(this)){
-                    checkLorry()
+                    val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                    val clip = ClipData.newPlainText("label","Can not copy this")
+                    clipboard.setPrimaryClip(clip)
+                    try{
+                        checkLorry()
+                    }
+                    catch (e:Exception){
+                        Utils.showDialog(this@ChallanCreation,"error","Internet not working properly",R.drawable.ic_error_outline_red_24dp)
+                    }
+
                     //https://api.omlogistics.co.in/vehicle_validate_checklist.php
                     //I  {"lorryno":"OM","type":"challan"}
                 }
@@ -139,56 +165,76 @@ class ChallanCreation : AppCompatActivity() {
 
     private fun checkLorry() {
         cp.show()
-        val mod= CommonMod()
-        mod.lorryno=binding.lorryNo.text.toString().uppercase()
-        mod.type="Challan"
+        val mod= CommonMod().apply {
+            lorryno = binding.lorryNo.text.toString().uppercase()
+            type = "Challan"
+        }
+      /*  mod.lorryno=binding.lorryNo.text.toString().uppercase()
+        mod.type="Challan"*/
         lifecycleScope.launch {
-            val resp=ApiClient.getClient().create(ServiceInterface::class.java).vehicle_validate_checklist(Utils.getheaders(),mod)
-            if(resp.code()==200){
-                cp.dismiss()
-                if(resp.body()!!.error.toString().equals("false"))
-                {
-                    val bundle = Bundle()
-                    bundle.putString("loading_plan", binding.edtLoadingPlan.getText().toString())
-                    bundle.putString("to", binding.destination.text.toString())
-                    bundle.putString("lorry", binding.lorryNo.text.toString())
-                    bundle.putString("seal", binding.sealNo.text.toString())
-                    bundle.putString("driverName", binding.driverName.text.toString())
-                    bundle.putString("driverMob", binding.driverMob.text.toString())
-                    bundle.putString("oda_station_code", binding.odaStation.text.toString())
-                    bundle.putString("touchingFlg", binding.touchingFlg.selectedItem.toString())
-                    bundle.putString("touchingBranch",touchingBranch)
-                    bundle.putString("_weight", binding.weight.text.toString())
-
-                    bundle.putInt(
-                        "airbag",
-                        Utils.check_null_Int(binding.edtAir.getText().toString())
-                    )
-                    bundle.putInt(
-                        "sheetbelt",
-                        Utils.check_null_Int(binding.edtSheet.getText().toString())
-                    )
-                    bundle.putInt(
-                        "lashingbelt",
-                        Utils.check_null_Int(binding.edtLashing.getText().toString())
-                    )
-                    bundle.putInt(
-                        "cargo",
-                        Utils.check_null_Int(binding.edtCargo.getText().toString())
-                    )
-                  val intent=  Intent(this@ChallanCreation,BarcodeScanning::class.java)
-                    intent.apply { putExtras(bundle) }
-
-                    startActivity(intent)
-                 //   Utils.showDialog(this@ChallanCreation,"success","good",R.drawable.ic_success)
-
+           // val resp=ApiClient.getClient().create(ServiceInterface::class.java).vehicle_validate_checklist(Utils.getheaders(),mod)
+            val resp = withTimeoutOrNull(15000L) { // Set timeout to 15 seconds
+                try {
+                    ApiClient.getClient().create(ServiceInterface::class.java).vehicle_validate_checklist(Utils.getheaders(), mod)
+                } catch (e: Exception) {
+                    Utils.showDialog(this@ChallanCreation,"error{${e.toString()}}","Net Connection is not working properly",R.drawable.ic_error_outline_red_24dp)
+                    null // Return null on exception, e.g., network failure
                 }
             }
-            else{
-                cp.dismiss()
-                Utils.showDialog(this@ChallanCreation,"error","Please enter valid lorry number",R.drawable.ic_error_outline_red_24dp)
 
-            }
+
+
+                if (resp?.body() != null) {
+                    cp.dismiss()
+                    if(resp.body()!!.error.toString().equals("false"))
+                    {
+                        val bundle = Bundle()
+                        bundle.putString("loading_plan", binding.edtLoadingPlan.getText().toString())
+                        bundle.putString("to", binding.destination.text.toString())
+                        bundle.putString("from", binding.source.text.toString())
+                        bundle.putString("lorry", binding.lorryNo.text.toString())
+                        bundle.putString("driverName", binding.driverName.text.toString())
+                        bundle.putString("driverMob", binding.driverMob.text.toString())
+                        bundle.putString("oda_station_code", binding.odaStation.text.toString())
+                        bundle.putString("touchingFlg", binding.touchingFlg.selectedItem.toString())
+                        bundle.putString("touchingBranch",touchingBranch)
+                        bundle.putString("_weight", binding.weight.text.toString())
+
+                        bundle.putInt(
+                            "airbag",
+                            Utils.check_null_Int(binding.edtAir.getText().toString())
+                        )
+                        bundle.putInt(
+                            "sheetbelt",
+                            Utils.check_null_Int(binding.edtSheet.getText().toString())
+                        )
+                        bundle.putInt(
+                            "lashingbelt",
+                            Utils.check_null_Int(binding.edtLashing.getText().toString())
+                        )
+                        bundle.putInt(
+                            "cargo",
+                            Utils.check_null_Int(binding.edtCargo.getText().toString())
+                        )
+                        val intent=  Intent(this@ChallanCreation,BarcodeScanning::class.java)
+                        intent.apply { putExtras(bundle) }
+
+                        startActivity(intent)
+                        //   Utils.showDialog(this@ChallanCreation,"success","good",R.drawable.ic_success)
+
+                    }
+                    else{
+                        Utils.showDialog(this@ChallanCreation,"error",resp.body()!!.response,R.drawable.ic_error_outline_red_24dp)
+
+                    }
+                }
+                else{
+                    cp.dismiss()
+                    Utils.showDialog(this@ChallanCreation,"error","Net Connection is not working properly",R.drawable.ic_error_outline_red_24dp)
+
+                }
+
+
         }
 
     }
@@ -205,6 +251,16 @@ class ChallanCreation : AppCompatActivity() {
          else if(binding.driverName.text.toString().equals("") ||
              binding.driverName.text.toString().length<2){
            Utils.showDialog(this,"error","Please Enter Driver name ",R.drawable.ic_error_outline_red_24dp)
+         return false
+         }
+
+         else if(binding.destination.text.toString().equals("") ){
+             Utils.showDialog(this,"error","Please select Destination station ",R.drawable.ic_error_outline_red_24dp)
+             return false
+         }
+         else if(binding.destination.text.toString().equals("9995") &&
+             binding.odaStation.text.toString().equals("")){
+           Utils.showDialog(this,"error","Please select ODA station ",R.drawable.ic_error_outline_red_24dp)
          return false
          }
         return true

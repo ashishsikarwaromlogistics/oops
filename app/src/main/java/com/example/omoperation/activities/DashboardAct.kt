@@ -16,6 +16,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.omoperation.Constants
@@ -27,8 +28,13 @@ import com.example.omoperation.Utils
 import com.example.omoperation.adapters.Dash_Adapt
 import com.example.omoperation.adapters.DrawerAdapter
 import com.example.omoperation.databinding.ActivityDashboardBinding
+import com.example.omoperation.room.AppDatabase
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -38,11 +44,12 @@ class DashboardAct : AppCompatActivity()   {
     lateinit var binding : ActivityDashboardBinding
     var drawerLayout: DrawerLayout? = null
     var actionBarDrawerToggle: ActionBarDrawerToggle? = null
-  lateinit  var tvemp: TextView
+    lateinit  var tvemp: TextView
     lateinit var tvname: TextView
+    lateinit var empname: TextView
     @Inject
     lateinit var dashadap: Dash_Adapt
- @Inject
+    @Inject
     lateinit var draweadpter: DrawerAdapter
 
     @Inject
@@ -52,12 +59,22 @@ class DashboardAct : AppCompatActivity()   {
     lateinit var userrepo: UserRepository
     private val CAMERA_IMAGE_CODE = 100
     private val CAMERA_REQUEST_CODE = 101
+    lateinit var db :AppDatabase
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding=DataBindingUtil.setContentView(this,R.layout.activity_dashboard)
+        db=AppDatabase.getDatabase(this)
+        lifecycleScope.launch {
+            val timeThreshold = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+                .format(Date(System.currentTimeMillis() - 24 * 60 * 60 * 1000))
+            db.restorebarcodedao().deleteAfter24Hours(timeThreshold)
+        }
+
+        empname=findViewById(R.id.empname)
        // WhatsAppService.sendWhatsAppMessage("+918285497507", "Your otp is 1234567");
+        empname.setText(OmOperation.getPreferences(Constants.EMPNAME,""))
         LoggerService.print()
         userrepo.saveUser()
         tvemp = findViewById(R.id.tvemp)

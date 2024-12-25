@@ -1,16 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#001270</color>
+    <!--<color name="colorPrimary">#001270</color>-->
+    <!--<color name="colorPrimary">#8295EF</color>-->
+    <!--<color name="colorPrimary">#000000</color>-->
+    <color name="colorPrimary">#004872</color>
     <color name="text_pink">#B1254F</color>
     <color name="text_aqua">#046D7A</color>
     <color name="text_yellow">#B88A00</color>
     <color name="text_green">#017166</color>
     <color name="grey">#C8C8C8</color>
+    <color name="greydark">#2A2A2A</color>
     <color name="hint_color">#CFD1D1</color>
-    <color name="colorPrimaryDark">#010C47</color>
+    <color name="colorPrimaryDark">#000000</color>
+   <!-- <color name="colorPrimaryDark">#6B7AC3</color>-->
     <color name="colorAccent">#FF3700B3</color>
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <color name="color1">#B1254F</color>
+    <color name="color2">#046D7A</color>
+    <color name="color3">#B88A00</color>
+    <color name="color4">#FA5622</color>
+    <color name="color5">#300380</color>
+    <color name="color6">#255F59</color>
+    <color name="color7">#2C9531</color>
+    <color name="color8">#8A6F1E</color>
+    <color name="color9">#A00C3E</color>
+    <color name="color10">#2588B4</color>
+    <color name="color11">#384E1D</color>
+    <color name="color12">#06707E</color>
 </resources>

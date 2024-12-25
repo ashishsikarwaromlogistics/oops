@@ -20,7 +20,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:visibility="gone">
 
             <TextView
                 android:layout_width="0dp"
@@ -41,7 +42,13 @@
 
                 />
         </LinearLayout>
-
+       <TextView
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:textColor="@color/color9"
+           android:textStyle="bold"
+           android:text="The backup will be available for 24 hours, after this it will be deleted automatically.
+बैकअप 24 घंटे तक उपलब्ध रहेगा इसके बाद यह अपने आप डिलीट हो जाएगा"/>
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recy_restore"
             android:layout_width="match_parent"
@@ -49,14 +56,37 @@
             tools:listitem="@layout/custom_restore"
 android:layout_weight="1"
             />
-        <Button
-            android:id="@+id/restore"
-            android:text="Restore"
-            android:background="@drawable/btn_rect"
-            android:textColor="@color/white"
+       <LinearLayout
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:orientation="horizontal"
+           >
+           <Button
+               android:id="@+id/restore"
+               android:text="Restore"
+               android:background="@drawable/btn_rect"
+               android:textColor="@color/white"
+               android:layout_width="0dp"
+               android:layout_weight="1"
+               android:layout_height="wrap_content"/>
+           <Button
+               android:id="@+id/cancel"
+               android:text="Cancel"
+               android:background="@drawable/btn_rect"
+               android:textColor="@color/white"
+               android:layout_width="0dp"
+               android:layout_weight="1"
+               android:layout_height="wrap_content"/>
+           <Button
+               android:id="@+id/deleteall"
+               android:text="Delete ALL"
+               android:background="@drawable/btn_rect"
+               android:textColor="@color/white"
+               android:layout_width="0dp"
+               android:layout_weight="1"
+               android:layout_height="wrap_content"/>
+       </LinearLayout>
 
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
 
     </LinearLayout>
 </layout>
