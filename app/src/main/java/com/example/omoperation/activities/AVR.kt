@@ -97,7 +97,7 @@ class AVR : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSpeech.OnInitL
     lateinit var doc:String
     private lateinit var textToSpeech: TextToSpeech
    var isscroll=false
-    var isgateverify=false;
+    var isgateverify=false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -466,10 +466,10 @@ class AVR : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSpeech.OnInitL
                    binding.barcodeText.setText("")
                    val avr = binding.gateNo.getText().toString().trim()
                    binding.barcodeText.setText("")
-                   if (barCode.startsWith("O")) {
+                   /*if (barCode.startsWith("O")) {
                        barCode = barCode.substring(1, barCode.length)
                        barCode = Utils.revertTransform(barCode)
-                   }
+                   }*/
                    if (barCode.contains(getString(R.string.NBC_Sticker_Identification))) {
                        val CustomerBarcode =
                            barCode.split(getString(R.string.NBC_Sticker_Identification).toRegex())
@@ -477,14 +477,33 @@ class AVR : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSpeech.OnInitL
                                .toTypedArray()
                        barCode =
                            getString(R.string.NBC_Prefix) + CustomerBarcode[1] + CustomerBarcode[4]
-                   } else {
+                   }
+                   else {
                        if (barCode.contains("-")) {
-                           val builder = StringBuilder(barCode)
+
+
+                          /* val builder = StringBuilder(barCode)
                            barCode = builder.deleteCharAt(builder.indexOf("-") + 1)
                                .deleteCharAt(builder.indexOf("-")).toString()
-                               .replaceFirst("^0+(?!$)".toRegex(), "")
-                       } else if (barCode.startsWith("0")) {
+                               .replaceFirst("^0+(?!$)".toRegex(), "")*/
+                           val input = barCode
+                           val parts = input.split("-")
+
+                           // Print each part
+                           for (part in parts) {
+                               println(part)
+                           }
+
+                           barCode=parts[1]+"0"+parts[2].substring(1,parts[2].length)
+                           Log.d("ashish",barCode);
+                       }
+                       else if (barCode.startsWith("0"))
+                       {
                            barCode =barCode.trim { it <= ' ' }.replaceFirst("^0+(?!$)".toRegex(), "")
+                       }
+                       else{
+                           barCode = barCode.substring(1, barCode.length)
+                           barCode = Utils.revertTransform(barCode)
                        }
                    }
                    if (barCode.isEmpty()) {
@@ -932,7 +951,7 @@ class AVR : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSpeech.OnInitL
                    binding.GRCount.setText(cnlist.size.toString())
                }
                     binding.barcodeCount.setText(barcodelist.size.toString())
-
+                   adapter.notifyDataSetChanged()
                 }
 
 

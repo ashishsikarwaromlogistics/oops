@@ -10,6 +10,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.example.omoperation.OmOperation
 import com.example.omoperation.activities.AVR
+import com.example.omoperation.activities.BarcodeModule
 import com.example.omoperation.activities.BarcodePrint
 import com.example.omoperation.activities.BranchesAct
 import com.example.omoperation.activities.ChallanCreation
@@ -26,6 +27,7 @@ import com.example.omoperation.activities.RestoreActivity
 import com.example.omoperation.activities.StockAudit
 import com.example.omoperation.activities.TripChallan
 import com.example.omoperation.activities.VehicleImage
+import com.example.omoperation.activities.VehicleLoadUnload
 import com.example.omoperation.activities.VideoList
 import com.example.omoperation.adapters.Dash_Adapt
 import com.example.omoperation.model.tally.TallyResp
@@ -66,7 +68,7 @@ class DasboardRepo @Inject constructor(): Dash_Adapt.DashInterface {
                     1
                 )
             } else {
-                con. startActivity(Intent(con, BarcodePrint::class.java))
+                con. startActivity(Intent(con, BarcodeModule::class.java))
 
             }
         }
@@ -104,14 +106,24 @@ class DasboardRepo @Inject constructor(): Dash_Adapt.DashInterface {
 
         }
         else if(value==14){
-
+            openAVRWithtGate()
            // OmOperation.logoutdevice()
-            con.startActivity(Intent(con, VideoList::class.java))
+
 
         }
         else if(value==15){
+            con.startActivity(Intent(con, VehicleLoadUnload::class.java).putExtra("loadtype",2))
 
 
+
+        }
+        else if(value==16){
+            con.startActivity(Intent(con, VideoList::class.java))
+
+
+
+        }
+        else if(value==17){
             exitApp()
         }
     }
@@ -169,7 +181,7 @@ class DasboardRepo @Inject constructor(): Dash_Adapt.DashInterface {
 
 
     }
-    fun openAVR( ) {
+    fun openAVR() {
         val alertBox = android.app.AlertDialog.Builder(con)
         alertBox.setMessage("Do you want to use BackUp ?\n" +
                 "क्या आप बैकअप का उपयोग करना चाहते हैं?").setCancelable(false)
@@ -192,6 +204,38 @@ class DasboardRepo @Inject constructor(): Dash_Adapt.DashInterface {
             }
             .setNeutralButton("Not Now/अभी नहीं"){  dialog, _ ->
                      con.startActivity(Intent(con, RestoreActivity::class.java).putExtra("value",2)
+                    .putExtra("isdelete","NOT NOW"))
+                dialog.dismiss()
+            }
+
+        val alert = alertBox.create()
+        alert.show()
+
+
+    }
+    fun openAVRWithtGate() {
+        val alertBox = android.app.AlertDialog.Builder(con)
+        alertBox.setMessage("Do you want to use BackUp ?\n" +
+                "क्या आप बैकअप का उपयोग करना चाहते हैं?").setCancelable(false)
+            .setPositiveButton(
+                "YES/हाँ"
+            ) { dialog, which ->
+
+                con.startActivity(Intent(con, RestoreActivity::class.java).putExtra("value",4)
+                    .putExtra("isdelete","YES"))
+                //   con.startActivity(Intent(con, RestoreActivity::class.java).putExtra("value",2))
+                // val activityManager = con.getSystemService(Context.ACTIVITY_SERVICE) as android.app.ActivityManager
+                //  activityManager.restartPackage(con.packageName)
+
+            }.setNegativeButton("NO/नहीं") { dialog, _ ->
+
+                con.startActivity(Intent(con, RestoreActivity::class.java).putExtra("value",4)
+                    .putExtra("isdelete","NO"))
+
+                dialog.dismiss() // Close the dialog
+            }
+            .setNeutralButton("Not Now/अभी नहीं"){  dialog, _ ->
+                con.startActivity(Intent(con, RestoreActivity::class.java).putExtra("value",4)
                     .putExtra("isdelete","NOT NOW"))
                 dialog.dismiss()
             }

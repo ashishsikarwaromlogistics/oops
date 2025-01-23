@@ -25,6 +25,10 @@ import com.example.omoperation.network.ServiceInterface
 import com.example.omoperation.viewmodel.ValidateViewMod
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeoutOrNull
+import okhttp3.ResponseBody
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 //13422420007710  //
 class Splash : AppCompatActivity() {
@@ -32,6 +36,7 @@ class Splash : AppCompatActivity() {
    // private lateinit var mediaPlayer: MediaPlayer
     private lateinit var viewmod: ValidateViewMod
     lateinit var cp: CustomProgress
+    lateinit var ap:String
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding=DataBindingUtil.setContentView(this,R.layout.activity_splash)
@@ -42,7 +47,8 @@ class Splash : AppCompatActivity() {
         binding.viewmode=viewmod
         binding.lifecycleOwner=this
 
-
+      //  Thread.setDefaultUncaughtExceptionHandler(  CustomCrashHandler(this));
+      //  Log.d("ashish",ap)
       //  mediaPlayer = MediaPlayer.create(this, R.raw.a) // Add your audio file here
         /*if (!mediaPlayer.isPlaying) {
             mediaPlayer.start()
@@ -60,7 +66,7 @@ class Splash : AppCompatActivity() {
            }.start()
 
 
-
+        //fetchHeadCode()
 
 
 
@@ -84,30 +90,34 @@ class Splash : AppCompatActivity() {
                 }
 
 
+              if(response!=null){
+                  if(response.code() ==200){
+                      try {
+                          val pInfo = packageManager.getPackageInfo(packageName, 0)
+                          val versionCode = pInfo.versionCode  // Deprecated in API 28
+                          val versionName = pInfo.versionName
+                          if(response.body()?.ver.toString().toInt()>versionCode.toInt()){
+                              Utils.showDialog(this@Splash,"error","Please Update your App by MDM",R.drawable.ic_error_outline_red_24dp)
+                          }
+                          else validate()
+                          Log.d("Version Code", "Version code: $versionCode")
+                          Log.d("Version Name", "Version name: $versionName")
+                      } catch (e: PackageManager.NameNotFoundException) {
+                          e.printStackTrace()
+                          validate()
+                      }
 
+                  }
+                  else {
+                      validate()
+                  }
+              }
+                else
+                    Utils.showDialog(this@Splash,"No response","Server error or network connection break",R.drawable.ic_error_outline_red_24dp)
                 //val response=
 
 
-                if(response?.code()==200){
-                    try {
-                        val pInfo = packageManager.getPackageInfo(packageName, 0)
-                        val versionCode = pInfo.versionCode  // Deprecated in API 28
-                        val versionName = pInfo.versionName
-                        if(response.body()?.ver.toString().toInt()>versionCode.toInt()){
-                            Utils.showDialog(this@Splash,"error","Please Update your App by MDM",R.drawable.ic_error_outline_red_24dp)
-                        }
-                        else validate()
-                        Log.d("Version Code", "Version code: $versionCode")
-                        Log.d("Version Name", "Version name: $versionName")
-                    } catch (e: PackageManager.NameNotFoundException) {
-                        e.printStackTrace()
-                        validate()
-                    }
 
-                }
-                else {
-                    validate()
-                }
             }
         }
     }
@@ -165,8 +175,35 @@ class Splash : AppCompatActivity() {
             finish()
         }
     }
+    fun fetchHeadCode() {
+        val token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIxMDAzOSIsIm5hbWUiOiJLYXNoaW5hdGggVGhhbGthciIsImp0aSI6ImM4YTk0YTEwLTk4NzgtNGZlMy04MzdmLWEyZDRjNzFmMmVmZiIsImV4cCI6MTczNTgwNDU1NywiaXNzIjoiaHR0cHM6Ly9sb2NhbGhvc3Q6NDQzNjgvIiwiYXVkIjoiaHR0cHM6Ly9sb2NhbGhvc3Q6NDQzNjgvIn0.d0amPI5N3yknZhVoOW4qhFS7lWbSOODKxqty1Gd9ueI"
 
+        ApiClient.getClient().create(ServiceInterface::class.java).getHeadCodeByUserID(
 
+            zpid = 3,
+            deptId = 9,
+            userId = 10036,
+           //  Utils.getheaders2()
+        ).enqueue(object : Callback<ResponseBody> {
+            override fun onResponse(
+                call: Call<ResponseBody>,
+                response: Response<ResponseBody>
+            ) {
+                if (response.isSuccessful) {
+                    response.body()?.let {
+                        val responseString = it.string()
+                        println(responseString)
+                    }
+                } else {
+                    println("Error: ${response.message()}")
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                println("Failure: ${t.message}")
+            }
+        })
+    }
 
     override fun onBackPressed() {
         super.onBackPressed()

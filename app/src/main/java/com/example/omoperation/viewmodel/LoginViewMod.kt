@@ -11,6 +11,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.omoperation.Constants
 import com.example.omoperation.NetworkState
 import com.example.omoperation.OmOperation
+import com.example.omoperation.R
 import com.example.omoperation.Utils
 import com.example.omoperation.network.ApiClient
 import com.example.omoperation.network.ServiceInterface
@@ -62,29 +63,36 @@ class LoginViewMod( application: Application) : AndroidViewModel(application) {
 
                 viewModelScope.launch {
                     val response= ApiClient.getClient().create(ServiceInterface::class.java).LogIN(mod)
-                    if(response.code()==200){
-                        if(response.body()!!.error!!.toString().equals("false",false)){
-                            _livedata.value=NetworkState.Success(response.body()!!.user)
-                            OmOperation.savePreferences(Constants.EMP_CODE,edtemp.value.toString())
-                            response.body()!!.user!!.JWTTOKEN?.let {
-                                OmOperation.savePreferences(Constants.JWTTOKEN,
-                                    it
-                                )
+                    if(response!=null){
+                        if(response.code()==200){
+                            if(response.body()!!.error!!.toString().equals("false",false)){
+                                _livedata.value=NetworkState.Success(response.body()!!.user)
+                                OmOperation.savePreferences(Constants.EMP_CODE,edtemp.value.toString())
+                                response.body()!!.user!!.JWTTOKEN?.let {
+                                    OmOperation.savePreferences(Constants.JWTTOKEN,
+                                        it
+                                    )
+                                }
+                                OmOperation.savePreferences(Constants.EMP_PASS,edtpass.value.toString())
+                                OmOperation.savePreferences(Constants.BCODE,response.body()!!.user!!.BCODE.toString())
+                                OmOperation.savePreferences(Constants.BNAME,response.body()!!.user!!.BNAME.toString())
+                                OmOperation.savePreferences(Constants.ISLOGIN,"1")
+                                OmOperation.savePreferences(Constants.EMPNAME,response.body()!!.user!!.Name.toString())
                             }
-                             OmOperation.savePreferences(Constants.EMP_PASS,edtpass.value.toString())
-                             OmOperation.savePreferences(Constants.BCODE,response.body()!!.user!!.BCODE.toString())
-                             OmOperation.savePreferences(Constants.BNAME,response.body()!!.user!!.BNAME.toString())
-                             OmOperation.savePreferences(Constants.ISLOGIN,"1")
-                             OmOperation.savePreferences(Constants.EMPNAME,response.body()!!.user!!.Name.toString())
+                            else{
+                                _livedata.value=NetworkState.Error("error true",response.message())
+                            }
+
                         }
                         else{
-                            _livedata.value=NetworkState.Error("error true",response.message())
+                            _livedata.value=NetworkState.Error(response.code().toString(),response.message())
                         }
-
                     }
                     else{
-                        _livedata.value=NetworkState.Error(response.code().toString(),response.message())
+                        _livedata.value=NetworkState.Error("No Response ","Server Error or break network connection")
+
                     }
+
 
                 }
 
@@ -128,29 +136,44 @@ class LoginViewMod( application: Application) : AndroidViewModel(application) {
 
                 viewModelScope.launch {
                     val response= ApiClient.getClient().create(ServiceInterface::class.java).LogIN(mod)
-                    if(response.code()==200){
-                        if(response.body()!!.error!!.toString().equals("false",false)){
-                            _livedata.value=NetworkState.Success(response.body()!!.user)
-                            OmOperation.savePreferences(Constants.EMP_CODE,edtemp.value.toString())
-                            response.body()!!.user!!.JWTTOKEN?.let {
-                                OmOperation.savePreferences(Constants.JWTTOKEN,
-                                    it
-                                )
-                            }
-                            OmOperation.savePreferences(Constants.EMP_PASS,edtpass.value.toString())
-                            OmOperation.savePreferences(Constants.BCODE,edtbrnach.value.toString())
-                          //  OmOperation.savePreferences(Constants.BNAME,response.body()!!.user!!.BNAME.toString())
-                            OmOperation.savePreferences(Constants.ISLOGIN,"1")
-                            OmOperation.savePreferences(Constants.EMPNAME,response.body()!!.user!!.Name.toString())
-                        }
-                        else{
-                            _livedata.value=NetworkState.Error("error true",response.message())
-                        }
+                   if(response!=null){
+                       if(response.code()==200){
+                           if(response.body()!!.error!!.toString().equals("false",false)){
+                               if(!response.body()!!.user?.BCODE.toString().equals("1306")){
+                                   _livedata.value=NetworkState.Error("error  ","You are not allow to branch login")
 
-                    }
-                    else{
-                        _livedata.value=NetworkState.Error(response.code().toString(),response.message())
-                    }
+                                   return@launch
+                               }
+                               else
+                                   _livedata.value=NetworkState.Success(response.body()!!.user)
+                               OmOperation.savePreferences(Constants.EMP_CODE,edtemp.value.toString())
+                               response.body()!!.user!!.JWTTOKEN?.let {
+                                   OmOperation.savePreferences(Constants.JWTTOKEN,
+                                       it
+                                   )
+                               }
+                               OmOperation.savePreferences(Constants.EMP_PASS,edtpass.value.toString())
+                               OmOperation.savePreferences(Constants.BCODE,edtbrnach.value.toString())
+                               // else OmOperation.savePreferences(Constants.BCODE,response.body()!!.user?.BCODE.toString())
+
+                               //  OmOperation.savePreferences(Constants.BNAME,response.body()!!.user!!.BNAME.toString())
+                               OmOperation.savePreferences(Constants.ISLOGIN,"1")
+                               OmOperation.savePreferences(Constants.EMPNAME,response.body()!!.user!!.Name.toString())
+                           }
+                           else{
+                               _livedata.value=NetworkState.Error("error true",response.message())
+                           }
+
+                       }
+                       else{
+                           _livedata.value=NetworkState.Error(response.code().toString(),response.message())
+                       }
+                   }
+                    else {
+                       _livedata.value=NetworkState.Error("No Response ","Server Error or break network connection")
+
+                   }
+
 
                 }
 

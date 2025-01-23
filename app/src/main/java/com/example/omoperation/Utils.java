@@ -326,7 +326,10 @@ public class Utils {
                  .setCancelable(false)
                  .setPositiveButton("OK", (dialog, id) -> dialog.dismiss())
                  .show();
-     }catch (Exception e){}
+     }catch (Exception e){
+         String name="1234567890";
+         name=name.substring(1,name.length()-1);
+     }
 
     }
     public static void showCopyDialog(Context con,String title, String msg, int icon) {
@@ -505,6 +508,19 @@ public class Utils {
         map.put("EMP_CODE",OmOperation.getPreferences(Constants.EMP_CODE, ""));
       return map;
     }
+
+
+    public static HashMap<String, String> getheaders2(){
+        String token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIxMDAzOSIsIm5hbWUiOiJLYXNoaW5hdGggVGhhbGthciIsImp0aSI6ImM4YTk0YTEwLTk4NzgtNGZlMy04MzdmLWEyZDRjNzFmMmVmZiIsImV4cCI6MTczNTgwNDU1NywiaXNzIjoiaHR0cHM6Ly9sb2NhbGhvc3Q6NDQzNjgvIiwiYXVkIjoiaHR0cHM6Ly9sb2NhbGhvc3Q6NDQzNjgvIn0.d0amPI5N3yknZhVoOW4qhFS7lWbSOODKxqty1Gd9ueI";
+
+        HashMap<String, String> map =new  HashMap<String, String>();
+        map.put("Accept","application/json");
+        map.put("Host","nicmapi.mhlprs.com");
+        map.put("Authorization",token);
+     //   map.put("EMP_CODE",OmOperation.getPreferences(Constants.EMP_CODE, ""));
+      return map;
+    }
+
 
     public static String getUUID(Context context) {
         String uuid = Build.BOARD.length() % 10 + Build.BRAND.length() % 10 + Build.DEVICE.length() % 10 + Build.DISPLAY.length() % 10 +

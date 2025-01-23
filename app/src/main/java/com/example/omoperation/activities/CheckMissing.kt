@@ -50,7 +50,8 @@ class CheckMissing : AppCompatActivity() {
 
     private fun findValue() {
         lifecycleScope.launch {
-            totalbox=db.verifydao().getbox(cn).toInt()
+            totalbox=0
+            //totalbox=db.verifydao().getbox(cn).toInt()
             /*if(totalbox==0){
                 totalbox=db.verifydao().getbox(cn).toInt()
             }*/
@@ -67,7 +68,16 @@ class CheckMissing : AppCompatActivity() {
                             if(response.body()!!.error.equals("false")){
                                 try{
                                     lifecycleScope.launch {
-                                        totalbox=response.body()!!.cn_enquiry.get(0).NO_OF_PKG.toInt()
+                                        totalbox=0
+                                       // totalbox=response.body()!!.cn_enquiry.get(0).NO_OF_PKG.toInt()
+                                       /* for(i in response.body()!!.cn_enquiry){
+                                            totalbox=response.body()!!.cn_enquiry.get(i).NO_OF_PKG.toInt()
+                                        }*/
+                                        for (item in response.body()!!.cn_enquiry) {
+                                            totalbox += item.NO_OF_PKG.toInt()
+                                        }
+
+
                                         val allbarcode=db.barcodeDao().getAll()
                                         val scanbarcodes=ArrayList<String>()
                                         for(i in allbarcode){

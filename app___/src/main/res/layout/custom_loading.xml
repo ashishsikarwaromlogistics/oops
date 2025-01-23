@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@color/white"
+    android:padding="@dimen/_5sdp"
+    android:layout_margin="@dimen/_5sdp"
+    android:id="@+id/ll"
+    >
+<TextView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+
+    android:textColor="@color/black"/>
+
+
+    <TextView
+        android:id="@+id/loadingplan"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+     android:textStyle="bold"
+        android:textColor="@color/black"/>
+
+    <TextView
+        android:id="@+id/branch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:textColor="@color/black"/>
+
+
+    <TextView
+        android:id="@+id/loadingdate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:textColor="@color/black"/>
+
+
+    <TextView
+        android:id="@+id/enterdate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:textColor="@color/black"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/black"
+        />
+</LinearLayout>

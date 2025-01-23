@@ -15,6 +15,7 @@ import com.example.omoperation.activities.LoadingPlanByGate
 import com.example.omoperation.activities.LoadingPlanTally
 import com.example.omoperation.activities.MyBrowser
 import com.example.omoperation.activities.PodUploadAct
+import com.example.omoperation.activities.PrintCN
 import com.example.omoperation.activities.VehicleLoadUnload
 import com.example.omoperation.activities.VideoList
 import com.example.omoperation.adapters.DrawerAdapter
@@ -56,6 +57,9 @@ class DrawerRepo @Inject constructor():DrawerAdapter.Drawerinterface {
    }
         else  if(pos==9){
             con.startActivity(Intent(con, EmptyChallan::class.java))
+        }
+        else  if(pos==10){
+            con.startActivity(Intent(con, PrintCN::class.java))
         }
 
     }

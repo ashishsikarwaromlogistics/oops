@@ -21,6 +21,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.omoperation.Constants
+import com.example.omoperation.CustomProgress
 import com.example.omoperation.OmOperation
 import com.example.omoperation.R
 import com.example.omoperation.Utils
@@ -60,9 +61,10 @@ class LoadingPlanTally : AppCompatActivity(),LoadingPlanTallyAdapter.LoadingPlan
     lateinit var adapter: LoadingPlanTallyAdapter
     lateinit var send_lorryType: String
     var check_lorryType: Int = 0
-    lateinit var detail: ArrayList<Detail>
+      val detail: ArrayList<Detail> by lazy { ArrayList() }
     lateinit var Lodinginterfaces: LoadingPlanTallyAdapter.LoadingPlanInterface
     var remarks = ""
+      val cp :CustomProgress by lazy { CustomProgress(this)}
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -93,86 +95,109 @@ class LoadingPlanTally : AppCompatActivity(),LoadingPlanTallyAdapter.LoadingPlan
             }
         })
         binding.search.setOnClickListener {
+            if(binding.edtToBranch.text.toString().isEmpty() || binding.edtToBranch.text.toString().equals("")){
+                    Utils.showDialog(this,"error","Please enter to Branch ",R.drawable.ic_error_outline_red_24dp)
+                    return@setOnClickListener
+            }
             val mod = LorryMod()
             mod.status = "search"
             mod.from_branch = OmOperation.getPreferences(Constants.BCODE,"")
             // mod.from_branch="1314"
             mod.tally_by = tally_by
             mod.to_branch = binding.edtToBranch.text.toString()
-            // mod.setEwayBillNo("331563650565");
-            // mod.setEwayBillNo("331563650565");
-           lifecycleScope.launch {
-             val response=  ApiClient.getClientsanchar().create(ServiceInterface::class.java).Tall_Search(Utils.getheaders(),mod)
-            if(response.code()==200){
-                if(response.body()!!.error.equals("false")){
-                    binding.cnText.requestFocus()
-                    closekeyboard()
+            if(Utils.haveInternet(this)){
+                cp.show()
+                lifecycleScope.launch {
+                    val response=  ApiClient.getClientsanchar().create(ServiceInterface::class.java).Tall_Search(Utils.getheaders(),mod)
+                   if(response!=null){
+                       if(response.code()==200){
+                           cp.dismiss()
+                           if(response.body()!!.error.equals("false")){
+                               binding.cnText.requestFocus()
+                               closekeyboard()
 
-                    total_weight = 0.0
-                    sacn_weight = 0.0
-                    detail = ArrayList()
-                    for (i in 0 until response!!.body()!!.detail!!.size) {
-                        total_weight =
-                            (total_weight + response!!.body()!!.detail!!.get(i).WT!!.toDouble())
-                        detail.add(
-                            Detail(
-                                response!!.body()!!.detail!!.get(i).CEE,
-                                response!!.body()!!.detail!!.get(i).CEE_CUSTOMER_NAME,
-                                response!!.body()!!.detail!!.get(i).CNR,
-                                response!!.body()!!.detail!!.get(i).CN_CN_DATE,
-                                response!!.body()!!.detail!!.get(i).CN_CN_NO,
-                                response!!.body()!!.detail!!.get(i).CN_FREIGHT_PAID_MODE,
-                                response!!.body()!!.detail!!.get(i).CN_MAMUAL_CN_DATE,
-                                response!!.body()!!.detail!!.get(i).CUSTOMER_CUSTOMER_NAME,
-                                response!!.body()!!.detail!!.get(i).DEL_POINT,
-                                response!!.body()!!.detail!!.get(i).DESTINATION_BRANCH_NAME,
-                                response!!.body()!!.detail!!.get(i).DEST_CODE,
-                                response!!.body()!!.detail!!.get(i).FRIGHT_MODE,
-                                response!!.body()!!.detail!!.get(i).M_CN_NO,
-                                response!!.body()!!.detail!!.get(i).ORIGIN,
-                                response!!.body()!!.detail!!.get(i).PKG,
-                                response!!.body()!!.detail!!.get(i).QTY,
-                                response!!.body()!!.detail!!.get(i).REASON,
-                                response!!.body()!!.detail!!.get(i).SOURCE_BRANCH_NAME,
-                                response!!.body()!!.detail!!.get(i).STATUS,
-                                response!!.body()!!.detail!!.get(i).TMODE,
-                                response!!.body()!!.detail!!.get(i).TPTR_MODE,
-                                response!!.body()!!.detail!!.get(i).T_S_MODE,
-                                response!!.body()!!.detail!!.get(i).WT,
-                                response!!.body()!!.detail!!.get(i).CHRGWT,
-                                "*",
-                                response!!.body()!!.detail!!.get(i).COLOR_BY,
-                                response!!.body()!!.detail!!.get(i).CN_AGE,
-                                false,
-                            )
-                        )
+                               total_weight = 0.0
+                               sacn_weight = 0.0
+                               detail.clear()
+                               for (i in 0 until response!!.body()!!.detail!!.size) {
+                                   total_weight =
+                                       (total_weight + response!!.body()!!.detail!!.get(i).WT!!.toDouble())
+                                   detail.add(
+                                       Detail(
+                                           response!!.body()!!.detail!!.get(i).CEE,
+                                           response!!.body()!!.detail!!.get(i).CEE_CUSTOMER_NAME,
+                                           response!!.body()!!.detail!!.get(i).CNR,
+                                           response!!.body()!!.detail!!.get(i).CN_CN_DATE,
+                                           response!!.body()!!.detail!!.get(i).CN_CN_NO,
+                                           response!!.body()!!.detail!!.get(i).CN_FREIGHT_PAID_MODE,
+                                           response!!.body()!!.detail!!.get(i).CN_MAMUAL_CN_DATE,
+                                           response!!.body()!!.detail!!.get(i).CUSTOMER_CUSTOMER_NAME,
+                                           response!!.body()!!.detail!!.get(i).DEL_POINT,
+                                           response!!.body()!!.detail!!.get(i).DESTINATION_BRANCH_NAME,
+                                           response!!.body()!!.detail!!.get(i).DEST_CODE,
+                                           response!!.body()!!.detail!!.get(i).FRIGHT_MODE,
+                                           response!!.body()!!.detail!!.get(i).M_CN_NO,
+                                           response!!.body()!!.detail!!.get(i).ORIGIN,
+                                           response!!.body()!!.detail!!.get(i).PKG,
+                                           response!!.body()!!.detail!!.get(i).QTY,
+                                           response!!.body()!!.detail!!.get(i).REASON,
+                                           response!!.body()!!.detail!!.get(i).SOURCE_BRANCH_NAME,
+                                           response!!.body()!!.detail!!.get(i).STATUS,
+                                           response!!.body()!!.detail!!.get(i).TMODE,
+                                           response!!.body()!!.detail!!.get(i).TPTR_MODE,
+                                           response!!.body()!!.detail!!.get(i).T_S_MODE,
+                                           response!!.body()!!.detail!!.get(i).WT,
+                                           response!!.body()!!.detail!!.get(i).CHRGWT,
+                                           "*",
+                                           response!!.body()!!.detail!!.get(i).COLOR_BY,
+                                           response!!.body()!!.detail!!.get(i).CN_AGE,
+                                           false,
+                                       )
+                                   )
+                               }
+
+
+                               //  detail= (response.body()!!.detail as ArrayList<Detail>?)!!
+                               grcount_num = 0
+                               if (detail.size > 0)
+                                   binding.barcodeCount.setText("Total GR = " + detail.size.toString())
+                               else binding.barcodeCount.setText("Scanned GR =0")
+                               binding.GRCount.setText("" + grcount_num)
+                               binding.tvTotWeight.setText("Total Weight = " + df.format(total_weight))
+                               grcount_num = 0
+                               adapter = LoadingPlanTallyAdapter(detail, Lodinginterfaces)
+                               binding.recyCn.adapter = adapter
+
+                           }
+                           else{
+                               Utils.showDialog(this@LoadingPlanTally,"error","Data not found",R.drawable.ic_error_outline_red_24dp)
+                           }
+                       }
+                       else{
+                           Utils.showDialog(this@LoadingPlanTally,"error ${response.code()}",response.message(),R.drawable.ic_error_outline_red_24dp)
+
+                           cp.dismiss()
+                       }
+                   }
+                    else {
+                       Utils.showDialog(this@LoadingPlanTally,"error","response not found",R.drawable.ic_error_outline_red_24dp)
+                       cp.dismiss()
+
                     }
 
 
-                    //  detail= (response.body()!!.detail as ArrayList<Detail>?)!!
-                    grcount_num = 0
-                    if (detail.size > 0)
-                        binding.barcodeCount.setText("Total GR = " + detail.size.toString())
-                    else binding.barcodeCount.setText("Scanned GR =0")
-                    binding.GRCount.setText("" + grcount_num)
-                    binding.tvTotWeight.setText("Total Weight = " + df.format(total_weight))
-                    grcount_num = 0
-                    adapter = LoadingPlanTallyAdapter(detail, Lodinginterfaces)
-                    binding.recyCn.adapter = adapter
 
-                }
-                else{
-                    Utils.showDialog(this@LoadingPlanTally,"error","Data not found",R.drawable.ic_error_outline_red_24dp)
                 }
             }
-            else{}
 
-
-           }
 
         }
         binding. save.setOnClickListener {
             var a = 0
+            if(detail.size==0){
+                Utils.showDialog(this,"error","Please Add some GR",R.drawable.ic_error_outline_red_24dp)
+                return@setOnClickListener
+            }
             for (i in 0 until detail.size) {
                 if (detail.get(i).remarks.equals("*") && detail.get(i).checkvarue != true) {
                     a = a + 1
@@ -221,35 +246,52 @@ class LoadingPlanTally : AppCompatActivity(),LoadingPlanTallyAdapter.LoadingPlan
                         )
                 }
                 mod.cnlist = array
-            lifecycleScope.launch {
-                val response= ApiClient.getClientsanchar().create(ServiceInterface::class.java).GenerateTally(Utils.getheaders(),mod)
-                if(response!!.code()==200){
-                    if (response.body()!!.error.equals("false", ignoreCase = true)) {
+          if(Utils.haveInternet(this)){
+              cp.show()
+              lifecycleScope.launch {
+                  val response= ApiClient.getClientsanchar().create(ServiceInterface::class.java).GenerateTally(Utils.getheaders(),mod)
+                if(response!=null){
+                    if(response!!.code()==200){
+                        cp.dismiss()
+                        if (response.body()!!.error.equals("false", ignoreCase = true)) {
+                            Utils.showDialog(
+                                this@LoadingPlanTally,
+                                "Success",
+                                response.body()!!.response,
+                                R.drawable.ic_success
+                            )
+                        } else {
+                            Utils.showDialog(
+                                this@LoadingPlanTally,
+                                "Fail",
+                                response.body()!!.error,
+                                R.drawable.ic_error_outline_red_24dp
+                            )
+                        }
+                    }
+                    else{
+                        cp.dismiss()
                         Utils.showDialog(
                             this@LoadingPlanTally,
-                            "Success",
-                            response.body()!!.response,
-                            R.drawable.ic_success
-                        )
-                    } else {
-                        Utils.showDialog(
-                            this@LoadingPlanTally,
-                            "Fail",
-                            response.body()!!.error,
+                            "code : "+ response.code(),
+                            response.message(),
                             R.drawable.ic_error_outline_red_24dp
                         )
+
                     }
                 }
                 else{
+                    cp.dismiss()
                     Utils.showDialog(
                         this@LoadingPlanTally,
-                        "code : "+ response.code(),
-                        response.message(),
+                        "error",
+                       "response not found",
                         R.drawable.ic_error_outline_red_24dp
                     )
 
                 }
-            }
+              }
+          }
 
 
 

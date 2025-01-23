@@ -41,6 +41,7 @@ import com.example.omoperation.model.offline.Offline_C_Resp
 import com.example.omoperation.model.pod.PodMod
 import com.example.omoperation.model.pod.getpoddetails
 import com.example.omoperation.model.print.PrintBarcodeMod
+import com.example.omoperation.model.print.PrintCNMod
 import com.example.omoperation.model.rewarehouse.ReDetailResp
 import com.example.omoperation.model.rewarehouse.ReWarehouseMod
 import com.example.omoperation.model.savegatepass.SaveDataPassMod
@@ -52,12 +53,15 @@ import com.example.omoperation.model.vehicleloadunload.VehcleLoadUnloadMod
 import com.example.omoperation.model.verifyCNE.VerifyCneMod
 import com.example.omoperation.model.verifyCNE.VerifyCneResp
 import com.omlogistics.deepak.omlogistics.model.calculate_charge.CalculateResp
+import com.omlogistics.deepak.omlogistics.model.print.PrintResp
+import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.HeaderMap
 import retrofit2.http.Headers
 import retrofit2.http.POST
+import retrofit2.http.Query
 import retrofit2.http.Url
 
 interface ServiceInterface   {
@@ -104,7 +108,7 @@ interface ServiceInterface   {
     ): Call<CnValidateResp>
 
     @POST("/login.php")
-    suspend fun LogIN(@Body mod: LoginMod): Response<LoginResp>
+    suspend fun LogIN(@Body mod: LoginMod): Response<LoginResp>?
 
     @POST("/branch_networkdir.php")
     suspend fun branch_networkdir(@HeaderMap headers: Map<String, String>,@Body mod: CommonMod): Response<BranchesResp>
@@ -318,7 +322,7 @@ interface ServiceInterface   {
     @POST("omstaffAppVersion.php")//https://api.omlogistics.co.in/omstaffAppVersion.php
     suspend fun omstaffAppVersion(
         @Body mod: CommonMod
-    ): Response<VersionResp>
+    ): Response<VersionResp>?
 
 
     @Headers("Content-Type: application/json;charset=UTF-8")
@@ -347,6 +351,26 @@ interface ServiceInterface   {
     suspend fun emptrychallan(
         @Body mod: EmptyMod
     ): Response<CommonRespS?>?
+
+    @Headers(
+        "Accept: application/json",
+        "Content-Type: application/json",
+        "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIxMDAzOSIsIm5hbWUiOiJLYXNoaW5hdGggVGhhbGthciIsImp0aSI6ImM4YTk0YTEwLTk4NzgtNGZlMy04MzdmLWEyZDRjNzFmMmVmZiIsImV4cCI6MTczNTgwNDU1NywiaXNzIjoiaHR0cHM6Ly9sb2NhbGhvc3Q6NDQzNjgvIiwiYXVkIjoiaHR0cHM6Ly9sb2NhbGhvc3Q6NDQzNjgvIn0.d0amPI5N3yknZhVoOW4qhFS7lWbSOODKxqty1Gd9ueI"
+    )
+    @POST("api/HeadCodeType/GetHeadCodeByUserID")
+    fun getHeadCodeByUserID(
+        @Query("ZPID") zpid: Int,
+        @Query("DeptID") deptId: Int,
+        @Query("UserID") userId: Int,
+       // @HeaderMap headers: Map<String, String?>
+    ): Call<ResponseBody>
+
+    @POST("/oracle/android_api/ewaybill/ewbSingle.php")
+    fun printvalue(
+        @HeaderMap headers: Map<String?, String?>?,
+        @Body mod: PrintCNMod?
+    ): Call<PrintResp>?
+
 
 //https://api.omlogistics.co.in/emp_networkdir.php
     //https://api.omlogistics.co.in/oda_station.php

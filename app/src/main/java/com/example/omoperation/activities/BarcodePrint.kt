@@ -70,7 +70,7 @@ class BarcodePrint : AppCompatActivity() {
         val navigation = findViewById<BottomNavigationView>(R.id.navigation)
         navigation.setOnItemSelectedListener(mOnNavigationItemSelectedListener)
         binding.edtRemarks.setOnClickListener { openDialog() }
-
+       binding.llprint.visibility=View.VISIBLE
         mDeviceList = ArrayList()
         getPairedDevices()
 
@@ -105,7 +105,7 @@ class BarcodePrint : AppCompatActivity() {
          lifecycleScope.launch {
              var currentBox=0;
              var cn=binding.inputCn.text.toString();
-              for(i in 0 until binding.inputNoOfBox1.text.toString().toInt()){
+              for(i in 0 until binding.inputNoOfBox.text.toString().toInt()){
                   currentBox=currentBox+1
                   var bar: String = if (currentBox < 10) {
                       cn + "000" + currentBox
@@ -118,7 +118,7 @@ class BarcodePrint : AppCompatActivity() {
                   }
                   bar = "O" + Utils.transformNumber(bar.toLong())
 
-                  printdata(binding.inputNoOfBox1.text.toString(),bar,binding.inputCn.text.toString(),binding.inputFrom.text.toString(),binding.inputTo.text.toString(),currentBox.toString(),binding.manualNo.text.toString())
+                  printdata(binding.inputNoOfBox.text.toString(),bar,binding.inputCn.text.toString(),binding.inputFrom.text.toString(),binding.inputTo.text.toString(),currentBox.toString(),binding.manualNo.text.toString())
 
               }
 
@@ -152,11 +152,11 @@ class BarcodePrint : AppCompatActivity() {
                         }
                         bar = "O" + Utils.transformNumber(bar.toLong())
 
-                        printdata(binding.inputNoOfBox1.text.toString(),bar,binding.inputCn.text.toString(),binding.inputFrom.text.toString(),binding.inputTo.text.toString(),currentBox.toString(),binding.manualNo.text.toString())
+                        printdata(binding.inputTotalBox1.text.toString(),bar,binding.inputCn1.text.toString(),binding.inputFrom1.text.toString(),binding.inputTo1.text.toString(),currentBox.toString(),binding.manualNo1.text.toString())
 
                     }
 
-                    savesticker()
+                    savesticker2()
                 }
             }
             else {
@@ -187,7 +187,7 @@ class BarcodePrint : AppCompatActivity() {
                           binding.inputFrom.setText(response.body()?.cn_enquiry?.get(0)?.BFROM.toString())
                           binding.inputTo.setText(response.body()?.cn_enquiry?.get(0)?.BTO.toString())
                           binding.manualNo.setText(response.body()?.cn_enquiry?.get(0)?.CN_REMARKS.toString()?:"-")
-                          binding.inputNoOfBox1.setText(response.body()?.cn_enquiry?.get(0)?.NO_OF_PKG.toString())
+                          binding.inputNoOfBox.setText(response.body()?.cn_enquiry?.get(0)?.NO_OF_PKG.toString())
                           //binding.inputFrom.setText(response.body()?.cn_enquiry?.get(0)?.BFROM.toString())
                       }
                         else {
@@ -228,7 +228,7 @@ class BarcodePrint : AppCompatActivity() {
                             binding.inputFrom1.setText(response.body()?.cn_enquiry?.get(0)?.BFROM.toString())
                             binding.inputTo1.setText(response.body()?.cn_enquiry?.get(0)?.BTO.toString())
                             binding.manualNo1.setText(response.body()?.cn_enquiry?.get(0)?.CN_REMARKS.toString()?:"-")
-                            binding.inputTotalBox.setText(response.body()?.cn_enquiry?.get(0)?.NO_OF_PKG.toString())
+                            binding.inputTotalBox1.setText(response.body()?.cn_enquiry?.get(0)?.NO_OF_PKG.toString())
                             //binding.inputFrom.setText(response.body()?.cn_enquiry?.get(0)?.BFROM.toString())
                         }
                         else {
@@ -306,16 +306,18 @@ class BarcodePrint : AppCompatActivity() {
                     "\"\r\n",
             "CODEPAGE 1252\r\n",
 
-            "BOX 8,135,300,170,3\r\n",//x y w , h from y axis,radius
-            ("TEXT 10,140,\"ROMAN.TTF\",0,2,12,\"" + cn
-                    + "\"\r\n"),
+          //  "BOX 8,135,300,170,3\r\n",//x y w , h from y axis,radius
+            /*("TEXT 10,140,\"ROMAN.TTF\",0,2,12,\"" + cn
+                    + "\"\r\n"),*/
+            ("TEXT 10,140,\"ROMAN.TTF\",0,2,11,\"CN:"
+                    + cn  + "\"\r\n"),
             "TEXT 540,20,\"ROMAN.TTF\",0,2,12,\"" + STICKER_COUNT
                     + "\"\r\n",
            // "BOX 8,175,300,205,3\r\n",
-            ("TEXT 10,180,\"ROMAN.TTF\",0,2,9,\"" + from
+            ("TEXT 10,180,\"ROMAN.TTF\",0,2,9,\"from " + from
                     + "\"\r\n"),
            // "BOX 8,215,400,250,3\r\n",
-            (" TEXT 10,220,\"ROMAN.TTF\",0,2,11,\""
+            (" TEXT 10,220,\"ROMAN.TTF\",0,2,11,\"to "
                     + to + "\"\r\n"),
           //  "BOX 8,255,400,290,3\r\n",
             ("TEXT 10,260,\"ROMAN.TTF\",0,2,11,\"PKT   : "
@@ -538,12 +540,13 @@ class BarcodePrint : AppCompatActivity() {
            val mod=
                PrintBarcodeMod(
                    OmOperation.getPreferences(Constants.BCODE,""),
-                   binding.inputNoOfBox1.text.toString(),
+                   binding.inputNoOfBox.text.toString(),
                    binding.inputCn.text.toString(),
                    OmOperation.getPreferences(Constants.EMP_CODE,""),
                    binding.inputFrom.text.toString(),
                    BTMAC,
-                   binding.inputTo.text.toString()
+                   binding.inputTo.text.toString(),
+                   "First TIme"
 
                )
 
@@ -555,6 +558,29 @@ class BarcodePrint : AppCompatActivity() {
        }
        }
    }
+    fun savesticker2(){
+        // https:// api. omlogistics. co. in/ barcode_print. php
+        lifecycleScope.launch {
+            val mod=
+                PrintBarcodeMod(
+                    OmOperation.getPreferences(Constants.BCODE,""),
+                    binding.inputTotalBox1.text.toString(),
+                    binding.inputCn1.text.toString(),
+                    OmOperation.getPreferences(Constants.EMP_CODE,""),
+                    binding.inputFrom1.text.toString(),
+                    BTMAC,
+                    binding.inputTo1.text.toString(),
+                   binding.edtRemarks.text.toString()+binding.frombox.text.toString()+"-"+binding.tobox.text.toString()
+                )
+
+            val response= ApiClient.getClient().create(ServiceInterface::class.java).barcode_print(Utils.getheaders(),mod)
+            if(response.code()==200){
+                if(response.body()?.error.equals("false")){
+                    Toast.makeText(this@BarcodePrint,"Printed",Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
 
     private fun dismissProgressDialog() {
         progressDialog.dismiss()
@@ -604,7 +630,7 @@ class BarcodePrint : AppCompatActivity() {
 
             return false
         }
-        else if(binding.inputTotalBox.text.toString().trim().isEmpty()){
+        else if(binding.inputTotalBox1.text.toString().trim().isEmpty()){
             Utils.showDialog(this,"Fail","Please enter total box",R.drawable.ic_error_outline_red_24dp)
 
             return false
@@ -627,7 +653,7 @@ class BarcodePrint : AppCompatActivity() {
             Utils.showDialog(this,"Fail","TO Box should be greater and equal to from box",R.drawable.ic_error_outline_red_24dp)
             return false
         }
-        else if(binding.inputTotalBox.text.toString().toInt()<binding.tobox.text.toString().toInt()){
+        else if(binding.inputTotalBox1.text.toString().toInt()<binding.tobox.text.toString().toInt()){
             Utils.showDialog(this,"Fail","total box should be greate equal to TO box",R.drawable.ic_error_outline_red_24dp)
             return false
         }

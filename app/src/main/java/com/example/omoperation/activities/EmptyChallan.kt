@@ -106,7 +106,7 @@ class EmptyChallan : AppCompatActivity() {
         cp.show()
         val mod= EmptyMod(
             binding.destination.text.toString(),OmOperation.getPreferences(Constants.EMP_CODE,""),binding.lorryNo.text.toString(),binding.source.text.toString()
-        ,binding.approveby.text.toString())
+        ,binding.approveby.text.toString(),"creation")
         lifecycleScope.launch {
             val resp=   ApiClient.getClient().create(ServiceInterface::class.java).emptrychallan(mod)
             cp.dismiss()

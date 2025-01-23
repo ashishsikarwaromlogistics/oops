@@ -10,6 +10,7 @@ import android.speech.tts.TextToSpeech
 import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
+import android.util.Log
 import android.view.Gravity
 import android.view.KeyEvent
 import android.view.LayoutInflater
@@ -219,10 +220,10 @@ class BarcodeScanning : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSp
                     //viewmode.checkdata(binding.barcodeText.getText().toString().trim())
                     var barCode = binding.barcodeText.getText().toString().trim()
                     binding.barcodeText.setText("")
-                    if (barCode.startsWith("O")) {
+                   /* if (barCode.startsWith("O")) {
                         barCode = barCode.substring(1, barCode.length)
                         barCode = Utils.revertTransform(barCode)
-                    }
+                    }*/
                     if (barCode.contains(getString(R.string.NBC_Sticker_Identification))) {
                         val CustomerBarcode =
                             barCode.split(getString(R.string.NBC_Sticker_Identification).toRegex())
@@ -233,13 +234,27 @@ class BarcodeScanning : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSp
                     }
                     else {
                         if (barCode.contains("-")) {
-                            val builder = StringBuilder(barCode)
+                            val input = barCode
+                            val parts = input.split("-")
+
+                            // Print each part
+                            for (part in parts) {
+                                println(part)
+                            }
+
+                            barCode=parts[1]+"0"+parts[2].substring(1,parts[2].length)
+                            Log.d("ashish",barCode);
+                           /* val builder = StringBuilder(barCode)
                             barCode = builder.deleteCharAt(builder.indexOf("-") + 1)
                                 .deleteCharAt(builder.indexOf("-")).toString()
-                                .replaceFirst("^0+(?!$)".toRegex(), "")
+                                .replaceFirst("^0+(?!$)".toRegex(), "")*/
                         } else if (barCode.startsWith("0")) {
                             barCode =
                                 barCode.trim { it <= ' ' }.replaceFirst("^0+(?!$)".toRegex(), "")
+                        }
+                        else{
+                             barCode = barCode.substring(1, barCode.length)
+                             barCode = Utils.revertTransform(barCode)
                         }
                     }
                     if (barCode.isEmpty()) {
@@ -388,7 +403,6 @@ class BarcodeScanning : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSp
            Utils.showDialog(this, "No Internet", "Please check your internet connection", R.drawable.ic_error_outline_red_24dp)
           return
        }
-
        cp.show()
        val cn = barcode.substring(0, barcode.length - 4)
 
@@ -826,6 +840,7 @@ class BarcodeScanning : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSp
                     }
 
                     binding.barcodeCount.setText(barcodelist.size.toString())
+                    adapter.notifyDataSetChanged()
                 } }.setNegativeButton("NO", null)
 
         val alert = alertBox.create()
@@ -905,3 +920,4 @@ class BarcodeScanning : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSp
     }
 
 }
+//

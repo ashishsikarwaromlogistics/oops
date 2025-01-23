@@ -15,7 +15,7 @@ class DrawerAdapter @Inject constructor()
     : RecyclerView.Adapter<DrawerAdapter.MyViewHolder>() {
     val titlename= arrayOf("CN Creation","Loading Plan Tally","Vehicle Load/Unload",
         "POD Upload","Bill Submission","CN ReWare House",
-        "OTPL CN Creation","Get Paper IN","Gate Pass(Out)","Empty Challan")
+        "OTPL CN Creation","Get Paper IN","Gate Pass(Out)","Empty Challan","Print Docket")
 
     @Inject
     @Named("drawer")

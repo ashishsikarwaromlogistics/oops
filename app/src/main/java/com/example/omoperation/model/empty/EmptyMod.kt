@@ -5,5 +5,6 @@ data class EmptyMod(
     val emp: String,
     val lorry_no: String,
     val source: String,
-    val approveby: String
+    val approveby: String,
+    val status: String
 )

@@ -18,7 +18,7 @@ class VideoList : AppCompatActivity() , CommonAdapter.CommonInterface {
         "Loading By Scanning",
         "Use Of Barcode Module",
         "Unloading By Scanning",
-        "Video 4",
+        "V-Measure Machine Process",
         "Video 5",
     )
     var icon: Array<Int> = arrayOf(
@@ -81,7 +81,7 @@ class VideoList : AppCompatActivity() , CommonAdapter.CommonInterface {
             3          -> {
                 startActivity(Intent(this, VideoSample::class.java)
                     .putExtra("title","Video 4")
-                    .putExtra("url","https://omapp.omlogistics.co.in/assets/videos/4.mp4")
+                    .putExtra("url","https://omsl.omlogistics.co.in/omvideo/video/V-Measure-New.mp4")
                 )
             }
             4          -> {

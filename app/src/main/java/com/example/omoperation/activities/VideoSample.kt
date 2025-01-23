@@ -56,7 +56,7 @@ class VideoSample : AppCompatActivity() {
         handler!!.post(checkVideoStatusRunnable as Runnable)
         back.setOnClickListener {
          //   Toast.makeText(this,""+seconds,0).show()
-           // finish()
+            finish()
            // startActivity(Intent(this,MainActivity2::class.java))
         }
 

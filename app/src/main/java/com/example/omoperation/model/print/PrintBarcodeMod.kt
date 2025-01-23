@@ -7,5 +7,6 @@ data class PrintBarcodeMod(
     val ecode: String,
     val from: String,
     val macAddress: String,
-    val to: String
+    val to: String,
+    val remark: String
 )

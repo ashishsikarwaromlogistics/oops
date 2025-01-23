@@ -53,9 +53,11 @@ class VehicleLoadUnload : AppCompatActivity(), ImageAdapter.ImageInterface {
     private var arraydapter: ArrayAdapter<String>? = null
     var status="loadChallan"
     val cp:CustomProgress by lazy { CustomProgress(this) }
+    var loadtype=1
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding=DataBindingUtil.setContentView(this, R.layout.activity_vehicle_load_unload)
+        loadtype=intent.getIntExtra("loadtype",1).toInt()
         listist=ArrayList()
         title=findViewById(R.id.title)
         title.setText("Vehicle Load/Unload")
@@ -124,6 +126,13 @@ class VehicleLoadUnload : AppCompatActivity(), ImageAdapter.ImageInterface {
         binding.select.setOnClickListener {
             opend()
         }
+        if(loadtype==2){
+            binding.select.setText("Unloading")
+            status="unloadChallan"
+            selecttype="imageUnloading"
+            binding.challanSpinner.setHint("Select Gate Entry No.")
+        }
+
     }
     private fun dispatchTakePictureIntent() {
         val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
@@ -229,12 +238,13 @@ class VehicleLoadUnload : AppCompatActivity(), ImageAdapter.ImageInterface {
         val builder = AlertDialog.Builder(this@VehicleLoadUnload)
         builder.setItems(items) { dialog: DialogInterface, item: Int ->
             if(item==0){
-                status="loadChallan"
+                 status="loadChallan"
                  selecttype="imageloading"
-                binding.challanSpinner.setHint("Select Challan Number")
+                 binding.challanSpinner.setHint("Select Challan Number")
 
             }
             else{
+
                 status="unloadChallan"
                 selecttype="imageUnloading"
                 binding.challanSpinner.setHint("Select Gate Entry No.")

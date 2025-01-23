@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+    </data>
+
+    <LinearLayout
+        android:id="@+id/main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@color/white"
+        tools:context=".activities.VehicleLoadUnload">
+<include
+    layout="@layout/toolbar"></include>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+               android:textColor="@color/black"
+                android:hint="Separator Sheet"
+               android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_10sdp"
+               android:layout_marginStart="@dimen/_5sdp"
+                android:text="Select Type"/>
+
+
+            <TextView
+                android:id="@+id/select"
+               android:textColor="@color/black"
+                android:hint="Separator Sheet"
+               android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+               android:textSize="@dimen/_14ssp"
+                android:background="@drawable/rect"
+                android:padding="@dimen/_5sdp"
+                android:layout_margin="@dimen/_5sdp"
+                android:text="Loading"/>
+
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/layoutVehicleNo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Vehicle Number">
+
+                <EditText
+                    android:id="@+id/fieldVehicleNo"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:inputType="textCapCharacters" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+
+
+
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+               >
+
+                <AutoCompleteTextView
+                    android:id="@+id/challanSpinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:spinnerMode="dialog"
+                    android:hint="Select Challan"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/descLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/remarks"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="top"
+                    android:hint="Description"
+                    android:lines="3" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+           <androidx.recyclerview.widget.RecyclerView
+               android:id="@+id/recyimage"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"/>
+            <Button
+                android:id="@+id/browse"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/colorPrimary"
+                android:text="Browse Image"
+                android:textColor="@android:color/white" />
+
+            <Button
+                android:id="@+id/subBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/colorPrimary"
+                android:text="Submit"
+                android:textColor="@android:color/white" />
+        </LinearLayout>
+    </LinearLayout>
+</layout>

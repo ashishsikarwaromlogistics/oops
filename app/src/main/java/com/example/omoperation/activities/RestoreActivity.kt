@@ -31,7 +31,7 @@ class RestoreActivity : AppCompatActivity(), RestoreAdapter.SendValue {
     //  lateinit var mylist : List<CNWithBoxes>
     private var mylist: MutableList<CNWithBoxes> = mutableListOf()
     private var restorecnlist: MutableList<RestoreCN> = mutableListOf()
-    var value = 0//0 finish 1=loading 2=avr
+    var value = 0//0 finish 1=loading 2=avr 4=avr witjout gate
     lateinit var cp: CustomProgress
     var isdelete=""
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -113,6 +113,9 @@ class RestoreActivity : AppCompatActivity(), RestoreAdapter.SendValue {
                     }else if (value == 3) {
                         startActivity(Intent(this@RestoreActivity, ChallanCreation::class.java).putExtra("type","offlinechallan"))
                         finish()
+                    }else if (value == 4) {
+                        startActivity(Intent(this@RestoreActivity, AVRWithtGate::class.java).putExtra("type","offlinechallan"))
+                        finish()
                     }
             }
             cp.dismiss()
@@ -144,6 +147,8 @@ class RestoreActivity : AppCompatActivity(), RestoreAdapter.SendValue {
                             startActivity(Intent(this, AVR::class.java))
                         else if(value==3)
                             startActivity(Intent(this, ChallanCreation::class.java).putExtra("type","offlinechallan"))
+ else if(value==4)
+                            startActivity(Intent(this, AVRWithtGate::class.java).putExtra("type","offlinechallan"))
 
                        dialog.dismiss()
                         finish()
@@ -172,6 +177,8 @@ class RestoreActivity : AppCompatActivity(), RestoreAdapter.SendValue {
                 startActivity(Intent(this, ChallanCreation::class.java).putExtra("type","offlinechallan"))
             else if (value == 2)
                 startActivity(Intent(this, AVR::class.java))
+           else if (value == 4)
+                startActivity(Intent(this, AVRWithtGate::class.java))
            else
             finish()
         }
@@ -231,6 +238,7 @@ class RestoreActivity : AppCompatActivity(), RestoreAdapter.SendValue {
                 }
 
                 2 -> startActivity(Intent(this@RestoreActivity, AVR::class.java))
+                4 -> startActivity(Intent(this@RestoreActivity, AVRWithtGate::class.java))
                 else -> finish()
             }
 

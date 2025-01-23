@@ -53,28 +53,35 @@ class ValidateViewMod(application: Application) : AndroidViewModel(application) 
 
                 viewModelScope.launch {
                     val response= ApiClient.getClient().create(ServiceInterface::class.java).LogIN(mod)
-                    if(response.code()==200){
-                        if(response.body()!!.error!!.toString().equals("false",false)){
-                            _livedata.value=NetworkState.Success(response.body()!!.user)
-                            response.body()!!.user!!.JWTTOKEN?.let {
-                                OmOperation.savePreferences(
-                                    Constants.JWTTOKEN,
-                                    it
-                                )
-                            }
-                            OmOperation.savePreferences(Constants.BCODE,response.body()!!.user!!.BCODE.toString())
-                            OmOperation.savePreferences(Constants.BNAME,response.body()!!.user!!.BNAME.toString())
-                            OmOperation.savePreferences(Constants.ISLOGIN,"1")
-                            OmOperation.savePreferences(Constants.EMPNAME,response.body()!!.user!!.Name.toString())
-                        }
-                        else{
-                            _livedata.value=NetworkState.Error("error true",response.message())
-                        }
+                  if(response!=null){
+                      if(response.code()==200){
+                          if(response.body()!!.error!!.toString().equals("false",false)){
+                              _livedata.value=NetworkState.Success(response.body()!!.user)
+                              response.body()!!.user!!.JWTTOKEN?.let {
+                                  OmOperation.savePreferences(
+                                      Constants.JWTTOKEN,
+                                      it
+                                  )
+                              }
+                              OmOperation.savePreferences(Constants.BCODE,response.body()!!.user!!.BCODE.toString())
+                              OmOperation.savePreferences(Constants.BNAME,response.body()!!.user!!.BNAME.toString())
+                              OmOperation.savePreferences(Constants.ISLOGIN,"1")
+                              OmOperation.savePreferences(Constants.EMPNAME,response.body()!!.user!!.Name.toString())
+                          }
+                          else{
+                              _livedata.value=NetworkState.Error("error true",response.message())
+                          }
 
-                    }
+                      }
+                      else{
+                          _livedata.value=NetworkState.Error(response.code().toString(),response.message())
+                      }
+                  }
                     else{
-                        _livedata.value=NetworkState.Error(response.code().toString(),response.message())
-                    }
+                      _livedata.value=NetworkState.Error("No, Response ","Response not getting ")
+
+                  }
+
 
                 }
 

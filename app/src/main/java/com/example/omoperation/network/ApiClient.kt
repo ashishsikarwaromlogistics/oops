@@ -65,7 +65,8 @@ public class ApiClient @Inject constructor() {
                 .retryOnConnectionFailure(true)
                 .build()
             Retrofit.Builder()
-                .baseUrl(ServiceInterface.omapi)
+                 .baseUrl(ServiceInterface.omapi)
+               // .baseUrl("http://nicmapi.mhlprs.com/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(client)
                 .build()
@@ -77,6 +78,15 @@ public class ApiClient @Inject constructor() {
 
 
 
+
     }
+
+
+
+
+
+
+
+
 
 }

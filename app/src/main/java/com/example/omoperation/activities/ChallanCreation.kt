@@ -289,6 +289,7 @@ class ChallanCreation : AppCompatActivity() {
             // There are no request codes
             val data: Intent? = result.data
             binding.touchingBranch.setText(data!!.getStringExtra("branchcode"))
+            touchingBranch=data!!.getStringExtra("branchcode").toString()
         }
     }
     var odalauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->

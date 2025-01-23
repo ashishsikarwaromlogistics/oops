@@ -166,6 +166,7 @@
                         android:layout_marginTop="@dimen/_5sdp"
                         android:background="@drawable/rect"
                         android:padding="3dp"
+
                         android:text="Branch Login"
                          android:textColor="@color/colorPrimary"
                         android:textSize="@dimen/_12ssp"
