@@ -37,5 +37,6 @@ data class CnEnquiry(
     val TO_BR: String,
     val QTY: String,
     val BILLING_NAME: String,
-    val MCN_NO: String
+    val MCN_NO: String,
+    val CCN_NO: String
 )

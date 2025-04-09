@@ -8,5 +8,6 @@ data class CnValidateResp(
     val city: String,
     var cn_date: String,
     var cn_wt: String,
+    var cn_no: String,
     val response: String
 )

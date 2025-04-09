@@ -34,7 +34,8 @@ class ValidateViewMod(application: Application) : AndroidViewModel(application) 
                     context.getContentResolver(),
                     Settings.Secure.ANDROID_ID
                 )
-                mod.Serial=amdroid_id
+               // mod.Serial=amdroid_id
+                mod.Serial=Utils.getImei(context)
                 mod.password=OmOperation.getPreferences(Constants.EMP_PASS,"")
                 mod.android_ver= Build.VERSION.SDK_INT
                 mod.user_id = OmOperation.getPreferences(Constants.EMP_CODE,"")
@@ -42,7 +43,7 @@ class ValidateViewMod(application: Application) : AndroidViewModel(application) 
                 mod.type = "validate"
                 mod.android_ver = Build.VERSION.SDK_INT
                 mod.device_name = Build.MODEL
-                mod.Serial = Build.USER
+               // mod.Serial = Build.USER
                 mod.manufacturer = "ITTEST"
 
                 try {

@@ -20,16 +20,28 @@ class OmOperation : Application() {
                 Constants.PREF_NAME,
                 MODE_PRIVATE
             )
+        sharedPreferences2 =
+            this.applicationContext.getSharedPreferences(
+                "MIS",
+                MODE_PRIVATE
+            )
 
     }
     companion object{
         lateinit var context : Context
         lateinit var sharedPreferences: SharedPreferences
+        lateinit var sharedPreferences2: SharedPreferences
         lateinit var omOperation:  OmOperation
         var appDatabase: AppDatabase?=null
         @Synchronized
         fun getInstance(): OmOperation {
             return omOperation
+        }
+
+
+
+        fun logoutdevice(){
+            sharedPreferences.edit().clear().commit()
         }
 
 
@@ -43,11 +55,6 @@ class OmOperation : Application() {
                 e.printStackTrace()
             }
         }
-
-        fun logoutdevice(){
-            sharedPreferences.edit().clear().commit()
-        }
-
         @JvmStatic
         fun getPreferences( key : String,value : String): String {
             var value = ""
@@ -62,7 +69,38 @@ class OmOperation : Application() {
             }
             return value
         }
+
+        fun savePreferences2( key : String,   value : String) {
+            try {
+                val editor: SharedPreferences.Editor =
+                    sharedPreferences2.edit()
+                editor.putString(key, value)
+                editor.apply()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+        @JvmStatic
+        fun getPreferences2( key : String,value : String): String {
+            var value = ""
+            try {
+                value =
+                    sharedPreferences2.getString(
+                        key,
+                        value
+                    ).toString()
+            } catch (e: java.lang.Exception) {
+                e.printStackTrace()
+            }
+            return value
+        }
     }
+
+
+
+
+
+
 
 
 }

@@ -65,22 +65,29 @@ import retrofit2.http.Query
 import retrofit2.http.Url
 
 interface ServiceInterface   {
-    companion object{
-        val omapi: String by lazy { "https://api.omlogistics.co.in/"
+     companion object{
+        val omapi: String by lazy {
+            "https://scmomsanchar.omlogistics.co.in/oracle/android_api/"
+            //"https://qa.omlogistics.co.in/oracle/android_api/"
         }
 
-        val omsanchar: String by lazy { "https://omsanchar.omlogistics.co.in/"
+        val omsanchar: String by lazy {
+            //"https://omsanchar.omlogistics.co.in/"
+            "https://scmomsanchar.omlogistics.co.in/"
         }
 
-        val omapp: String by lazy { "https://omapp.omlogistics.co.in/"
+        val omapp: String by lazy {
+           // "https://omapp.omlogistics.co.in/"
+            "https://scm.omlogistics.co.in/"
         }
-     val omsl: String by lazy { "https://omsl.omlogistics.co.in/"
+     val omsl: String by lazy { "https://scmomsanchar.omlogistics.co.in/"
         }
 
     }
 
+
     @Headers("Content-Type: application/json;charset=UTF-8")
-    @POST("/challanUnloading.php")
+    @POST("challanUnloading.php")
     fun challanUnloading(
         @HeaderMap headers: Map<String, String?>,
         @Body mod: CommonMod
@@ -100,6 +107,12 @@ interface ServiceInterface   {
         @Body mod: CnValidateMod
     ): Call<CnValidateResp>
 
+    @POST("cn_validate1_bajaj.php")
+    fun cn_validate1_bajaj(
+        @HeaderMap headers: Map<String, String>,
+        @Body mod: CnValidateMod
+    ): Call<CnValidateResp>
+
     @POST
     fun cn_validateurl(
         @Url url : String,
@@ -107,10 +120,10 @@ interface ServiceInterface   {
         @Body mod: CnValidateMod
     ): Call<CnValidateResp>
 
-    @POST("/login.php")
+    @POST("login.php")
     suspend fun LogIN(@Body mod: LoginMod): Response<LoginResp>?
 
-    @POST("/branch_networkdir.php")
+    @POST("branch_networkdir.php")
     suspend fun branch_networkdir(@HeaderMap headers: Map<String, String>,@Body mod: CommonMod): Response<BranchesResp>
     @POST("vehicle_validate_checklist.php")
     suspend fun vehicle_validate_checklist(@HeaderMap headers: Map<String, String>,@Body mod: Any): Response<CommonRespS>
@@ -119,11 +132,19 @@ interface ServiceInterface   {
     suspend fun loading_barcode(@Url url : String,@HeaderMap headers: Map<String, String>,@Body mod: Any): Response<CommonRespS>
 
     @Headers("Content-Type: application/json;charset=UTF-8")
-    @POST("/cn_validate.php")
+    @POST("cn_validate.php")
     fun cn_validate(
         @HeaderMap headers: Map<String, String>,
         @Body mod: Any
     ): Call<CommonRespS>
+
+    @Headers("Content-Type: application/json;charset=UTF-8")
+    @POST("cn_validate_bajaj.php")
+    fun cn_validate_bajaj(
+        @HeaderMap headers: Map<String, String>,
+        @Body mod: Any
+    ): Call<CommonRespS>
+
 
 
     @Headers("Content-Type: application/json;charset=UTF-8")
@@ -168,21 +189,21 @@ interface ServiceInterface   {
 
 
     @Headers("Content-Type: application/json;charset=UTF-8")
-    @POST("/image_upload_lorry.php")
+    @POST("image_upload_lorry.php")
     suspend fun image_upload_lorry(
         @HeaderMap headers: Map<String, String>,
         @Body mod: VehcleImageMod
     ): Response<CommonRespS>
 
     @Headers("Content-Type: application/json;charset=UTF-8")
-    @POST("/cnentry.php")
+    @POST("cnentry.php")
     suspend fun findcustomer(
         @HeaderMap headers: Map<String, String>,
         @Body mod: CustomerMod
     ): Response<CustomerResp>
 
     @Headers("Content-Type: application/json;charset=UTF-8")
-    @POST("/cnentry.php")
+    @POST("cnentry.php")
     suspend fun CNCreation(
         @HeaderMap headers: Map<String, String>,
         @Body mod: CnCreationMod
@@ -200,7 +221,7 @@ interface ServiceInterface   {
         @Body mod: LorryMod
     ): Response<TallyResp>
 
-    @POST("/oracle/android_api/tally.php")
+    @POST("oracle/android_api/tally.php")
     suspend fun GenerateTally(
         @HeaderMap headers: Map<String?, String?>?,
         @Body mod: GenerateTallYMod?
@@ -208,14 +229,14 @@ interface ServiceInterface   {
 
 
     @Headers("Content-Type: application/json;charset=UTF-8")
-    @POST("/cn_detail.php")
+    @POST("cn_detail.php")
     suspend fun cn_detail(
         @HeaderMap headers: Map<String, String>,
         @Body mod: CommonMod
     ): Response<getpoddetails>
 
     @Headers("Content-Type: application/json;charset=UTF-8")
-    @POST("/cn_pod_upload1.php")
+    @POST("cn_pod_upload1.php")
     suspend fun podupload(
         @HeaderMap headers: Map<String, String>,
         @Body mod: PodMod
@@ -223,27 +244,27 @@ interface ServiceInterface   {
 
 
     @Headers("Content-Type: application/json;charset=UTF-8")
-    @POST("/submission_enq.php")
+    @POST("submission_enq.php")
     suspend fun submission_enq(
         @HeaderMap headers: Map<String, String>,
         @Body mod: CommonMod
     ): Response<SubmissionResp>
 @Headers("Content-Type: application/json;charset=UTF-8")
-    @POST("/cnValidateRewh.php")
+    @POST("cnValidateRewh.php")
     suspend fun cnValidateRewh(
         @HeaderMap headers: Map<String, String>,
         @Body mod: CommonMod
     ): Response<ReDetailResp>
 
     @Headers("Content-Type: application/json;charset=UTF-8")
-    @POST("/cnRewh.php")
+    @POST("cnRewh.php")
     suspend fun cnRewh(
         @HeaderMap headers: Map<String, String>,
         @Body mod: ReWarehouseMod
     ): Response<ReDetailResp>
 
     @Headers("Content-Type: application/json;charset=UTF-8")
-    @POST("/offline_challan.php")
+    @POST("offline_challan.php")
     suspend fun offline_challan(
         @HeaderMap headers: Map<String, String?>,
         @Body mod: CommonMod?
@@ -326,14 +347,14 @@ interface ServiceInterface   {
 
 
     @Headers("Content-Type: application/json;charset=UTF-8")
-    @POST("/vluimage.php")
+    @POST("vluimage.php")
     suspend fun vluimage(
         @HeaderMap headers: Map<String, String?>,
         @Body mod: CommonMod?
     ): Response<VehcleUnloadResp>
 
     @Headers("Content-Type: application/json;charset=UTF-8")
-    @POST("/vluimage.php")
+    @POST("vluimage.php")
     suspend fun vluimage(
         @HeaderMap headers: Map<String, String?>,
         @Body mod: VehcleLoadUnloadMod
@@ -341,7 +362,7 @@ interface ServiceInterface   {
 
 
     @Headers("Content-Type: application/json;charset=UTF-8")
-    @POST("/online_audit_scanning1.php?status=audit")
+    @POST("online_audit_scanning1.php?status=audit")
     suspend fun online_audit_scanning(
         @HeaderMap headers: Map<String, String>,
         @Body mod: AuditMod
@@ -365,7 +386,7 @@ interface ServiceInterface   {
        // @HeaderMap headers: Map<String, String?>
     ): Call<ResponseBody>
 
-    @POST("/oracle/android_api/ewaybill/ewbSingle.php")
+    @POST("oracle/android_api/ewaybill/ewbSingle.php")
     fun printvalue(
         @HeaderMap headers: Map<String?, String?>?,
         @Body mod: PrintCNMod?

@@ -6,18 +6,53 @@ import com.example.omoperation.R
 
 class VideoListViewModel(application: Application) : AndroidViewModel(application) {
     val name = arrayOf(
+        "Pre-booking planning",
+        "Dangerous goods",
+        "Client PRQ request",
+        "CN creation through e-waybill",
+        "Short excess token generation",
+        "Quality Check of shipment",
+        "Transit-worthy shipments",
+        "KOM PRQ",
+        "Branch PRQ",
+
+        "V-Measure Machine Process",
+        "Print of CN on A5-sized paper",
+        "Loading Plan Tally",
+
+
         "Loading By Scanning",
         "Use Of Barcode Module",
-        "Unloading By Scanning",
-        "Video 4",
-        "Video 5"
+        "Unloading By Scanning"
+    )
+    var icon: Array<Int> = arrayOf(
+        R.drawable.ic_video_camera,
+        R.drawable.ic_video_camera,
+        R.drawable.ic_video_camera,
+        R.drawable.ic_video_camera,
+        R.drawable.ic_video_camera,
+        R.drawable.ic_video_camera,
+        R.drawable.ic_video_camera,
+        R.drawable.ic_video_camera,
+        R.drawable.ic_video_camera,
+        R.drawable.ic_video_camera,
+        R.drawable.ic_video_camera,
+        R.drawable.ic_video_camera,
+        R.drawable.ic_video_camera,
+        R.drawable.ic_video_camera,
+        R.drawable.ic_video_camera,
+        R.drawable.ic_video_camera,
+        R.drawable.ic_video_camera,
+        R.drawable.ic_video_camera,
+        R.drawable.ic_video_camera,
+        R.drawable.ic_video_camera,
+        R.drawable.ic_video_camera,
+        R.drawable.ic_video_camera,
+        R.drawable.ic_video_camera,
+        R.drawable.ic_video_camera,
+        R.drawable.ic_video_camera,
+        R.drawable.ic_video_camera,
+        R.drawable.ic_video_camera
     )
 
-    val icon = arrayOf(
-        R.drawable.banner_covid,
-        R.drawable.plan,
-        R.drawable.challan,
-        R.drawable.rewarehouse,
-        R.drawable.challan
-    )
 }

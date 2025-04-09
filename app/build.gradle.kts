@@ -13,8 +13,8 @@ android {
         applicationId = "com.example.omoperation"
         minSdk = 24
         targetSdk = 35
-        versionCode = 11
-        versionName = "2.2"
+        versionCode = 20
+        versionName = "3.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -103,12 +103,23 @@ dependencies {
     implementation(libs.glide)
     implementation(libs.zxing)
     implementation (libs.zxingandroidembedded)
+
+
+    /*implementation ("com.google.mlkit:text-recognition:16.0.0")
+
+    // CameraX dependencies
+    implementation ("androidx.camera:camera-core:1.3.0")
+    implementation ("androidx.camera:camera-camera2:1.3.0")
+    implementation ("androidx.camera:camera-lifecycle:1.3.0")
+    implementation ("androidx.camera:camera-view:1.3.0")*/
+
     //implementation 'com.shuhart.stepview:stepview:1.5.1'
     //implementation 'com.github.bumptech.glide:glide:4.15.0'
    // implementation(libs.twilio)
   //  implementation(libs.commons)
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
+    implementation(libs.play.services.location)
     kapt(libs.roomCompiler)
     kapt(libs.hiltcompiler)
 

@@ -35,9 +35,9 @@ class MissingList : AppCompatActivity() , MissingAdapter.MissingInterface {
           missingcnbox=ArrayList()
           db=AppDatabase.getDatabase(this)
           misingcn= ArrayList()
-         binding.recymissing.setHasFixedSize(true)
+          binding.recymissing.setHasFixedSize(true)
          binding.recymissing.layoutManager=LinearLayoutManager(this)
-          adapter=MissingAdapter(myinterface,scancnbox)
+         adapter=MissingAdapter(myinterface,scancnbox)
         binding.recymissing.adapter=adapter
         lifecycleScope.launch {  finddiff()  }
 

@@ -61,6 +61,7 @@ class BarcodePrint : AppCompatActivity() {
     var isvalid=false
     var iszebraprint=false
     var STICKER_COUNT=""
+    var myprintcn=""
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_barcode_print)
@@ -104,7 +105,8 @@ class BarcodePrint : AppCompatActivity() {
           if(isConnected()){
          lifecycleScope.launch {
              var currentBox=0;
-             var cn=binding.inputCn.text.toString();
+             var cn=myprintcn
+            // var cn=binding.inputCn.text.toString();
               for(i in 0 until binding.inputNoOfBox.text.toString().toInt()){
                   currentBox=currentBox+1
                   var bar: String = if (currentBox < 10) {
@@ -118,7 +120,7 @@ class BarcodePrint : AppCompatActivity() {
                   }
                   bar = "O" + Utils.transformNumber(bar.toLong())
 
-                  printdata(binding.inputNoOfBox.text.toString(),bar,binding.inputCn.text.toString(),binding.inputFrom.text.toString(),binding.inputTo.text.toString(),currentBox.toString(),binding.manualNo.text.toString())
+                  printdata(binding.inputNoOfBox.text.toString(),bar,myprintcn,binding.inputFrom.text.toString(),binding.inputTo.text.toString(),currentBox.toString(),binding.manualNo.text.toString())
 
               }
 
@@ -136,7 +138,8 @@ class BarcodePrint : AppCompatActivity() {
            else if(isConnected()){
                 lifecycleScope.launch {
                  //   var currentBox=0;
-                    var cn=binding.inputCn1.text.toString()
+                    var cn=myprintcn
+                    //var cn=binding.inputCn1.text.toString()
                     val frombox =binding.frombox.text.toString().toInt()
                     val tobox =binding.tobox.text.toString().toInt()
                     for(currentBox in frombox until tobox+1){
@@ -152,7 +155,7 @@ class BarcodePrint : AppCompatActivity() {
                         }
                         bar = "O" + Utils.transformNumber(bar.toLong())
 
-                        printdata(binding.inputTotalBox1.text.toString(),bar,binding.inputCn1.text.toString(),binding.inputFrom1.text.toString(),binding.inputTo1.text.toString(),currentBox.toString(),binding.manualNo1.text.toString())
+                        printdata(binding.inputTotalBox1.text.toString(),bar,myprintcn,binding.inputFrom1.text.toString(),binding.inputTo1.text.toString(),currentBox.toString(),binding.manualNo1.text.toString())
 
                     }
 
@@ -182,6 +185,7 @@ class BarcodePrint : AppCompatActivity() {
                     cp.dismiss()
                     if(response.code()==200){
                       if(response.body()?.error.equals("false")){
+                          myprintcn=response.body()?.cn_enquiry?.get(0)?.CNNO.toString()
                           isvalid=true
                           STICKER_COUNT=response.body()?.cn_enquiry?.get(0)?.STICKER_COUNT.toString()
                           binding.inputFrom.setText(response.body()?.cn_enquiry?.get(0)?.BFROM.toString())
@@ -223,6 +227,7 @@ class BarcodePrint : AppCompatActivity() {
                     cp.dismiss()
                     if(response.code()==200){
                         if(response.body()?.error.equals("false")){
+                            myprintcn=response.body()?.cn_enquiry?.get(0)?.CNNO.toString()
                             isvalid=true
                             STICKER_COUNT=response.body()?.cn_enquiry?.get(0)?.STICKER_COUNT.toString()
                             binding.inputFrom1.setText(response.body()?.cn_enquiry?.get(0)?.BFROM.toString())
@@ -232,6 +237,7 @@ class BarcodePrint : AppCompatActivity() {
                             //binding.inputFrom.setText(response.body()?.cn_enquiry?.get(0)?.BFROM.toString())
                         }
                         else {
+
                             isvalid=false
                             Utils.showDialog(this@BarcodePrint,"error","Invalid CN ",R.drawable.ic_error_outline_red_24dp)
                         }
@@ -546,7 +552,7 @@ class BarcodePrint : AppCompatActivity() {
                    binding.inputFrom.text.toString(),
                    BTMAC,
                    binding.inputTo.text.toString(),
-                   "First TIme"
+                   "First Time"
 
                )
 

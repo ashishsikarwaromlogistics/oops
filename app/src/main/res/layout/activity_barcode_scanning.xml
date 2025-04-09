@@ -1,16 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    >
 
     <data>
 
     </data>
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:keepScreenOn="true">
+        android:keepScreenOn="true"
+        android:orientation="vertical"
+        android:weightSum="1"
+        >
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
@@ -105,6 +108,7 @@
             </RelativeLayout>
         </androidx.appcompat.widget.Toolbar>
 
+
         <androidx.cardview.widget.CardView
             android:id="@+id/card_barcode"
             android:layout_width="match_parent"
@@ -158,9 +162,8 @@
                         android:layout_width="35dp"
                         android:layout_height="35dp"
                         android:layout_alignParentRight="true"
-                        android:background="@null"
-                        android:foreground="?android:attr/selectableItemBackground"
-                        android:visibility="gone"
+
+                        android:background="@drawable/ic_video_camera"
                           />
                 </RelativeLayout>
             </LinearLayout>
@@ -183,69 +186,75 @@
 
             </androidx.appcompat.widget.SearchView>
         </androidx.cardview.widget.CardView>
+       <RelativeLayout
+           android:layout_width="match_parent"
+           android:layout_height="match_parent">
 
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_above="@+id/submitBtn"
-            android:layout_below="@+id/search_card"
-            android:layout_marginLeft="1dp"
-            android:layout_marginRight="1dp"
-            android:fillViewport="true">
+           <androidx.recyclerview.widget.RecyclerView
+               android:id="@+id/recy_avr"
+               android:layout_width="match_parent"
+               android:layout_height="match_parent"
+                android:layout_marginBottom="@dimen/_38sdp"
+               android:layout_weight="1"/>
 
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginBottom="2dp"
-                android:background="@android:drawable/editbox_background_normal"
-                app:cardElevation="5dp">
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recy_avr"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
-            </androidx.cardview.widget.CardView>
-        </ScrollView>
+           <Button
+               android:id="@+id/submitBtn"
+               android:layout_width="match_parent"
+               android:layout_height="@dimen/_38sdp"
+               android:layout_alignParentBottom="true"
+               android:background="@color/colorAccent"
+               android:clickable="true"
+               android:foreground="?android:attr/selectableItemBackground"
+               android:text="Submit"
+               android:textAllCaps="false"
+               android:textColor="@android:color/white" />
 
-        <Button
-            android:id="@+id/submitBtn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:background="@color/colorAccent"
-            android:clickable="true"
-            android:foreground="?android:attr/selectableItemBackground"
-            android:text="Submit"
-            android:textAllCaps="false"
-            android:textColor="@android:color/white" />
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_marginEnd="20dp"
-            android:layout_marginStart="20dp"
-            android:layout_marginBottom="80dp"
+           <LinearLayout
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_alignParentBottom="true"
+               android:layout_marginEnd="20dp"
+               android:layout_marginStart="20dp"
+               android:orientation="vertical"
+               android:layout_marginBottom="@dimen/_40sdp"
+               >
 
-            >
-            <ImageView
-                android:id="@+id/getmiss"
-                android:layout_width="@dimen/_44sdp"
-                android:layout_height="@dimen/_44sdp"
-                android:contentDescription="Missing"
-                android:src="@drawable/ic_missing"
-                android:padding="@dimen/_9sdp"
-                android:background="@drawable/solid_circle"
-                />
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/addManualGRBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                android:layout_alignParentRight="true"
-                android:contentDescription="ADD"
-                android:src="@drawable/baseline_add_24"
-                />
-        </RelativeLayout>
 
-    </RelativeLayout>
+               <ImageView
+                   android:id="@+id/getmiss"
+                   android:layout_width="@dimen/_44sdp"
+                   android:layout_height="@dimen/_44sdp"
+                   android:contentDescription="Missing"
+                   android:src="@drawable/ic_missing"
+                   android:padding="@dimen/_9sdp"
+                   android:background="@drawable/solid_circle"
+                   />
+
+
+
+
+               <com.google.android.material.floatingactionbutton.FloatingActionButton
+                   android:id="@+id/addManualGRBtn"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+
+                  android:layout_alignBottom="@+id/getmiss"
+                   android:contentDescription="ADD"
+                   android:src="@drawable/baseline_add_24"
+                   />
+               <TextView
+                   android:id="@+id/version"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:layout_centerHorizontal="true"
+                   android:textSize="@dimen/_11sdp"
+
+                   android:text="@string/version"
+                   android:textColor="#ff0000" />
+           </LinearLayout>
+
+       </RelativeLayout>
+
+    </LinearLayout>
 </layout>

@@ -87,6 +87,10 @@ interface BarcodeDao {
           "    AND CAST(SUBSTR(barcode, LENGTH(barcode) - 3, 4) AS INTEGER) > :box order by barcode")
    suspend fun Extrascan(cn : String,box : Int): List<String>
 
+    @Query("DELETE FROM Barcode WHERE uid NOT IN (SELECT MIN(uid) FROM Barcode GROUP BY barcode)")
+    suspend fun deleteDuplicateBarcodes()
+
+
   /*  @Query("SELECT barcode " +
             "FROM barcode ")
     suspend fun Extrascan(cn : String,box : Int): List<String>*/

@@ -11,5 +11,11 @@
         android:orderInCategory="100"
         android:title="Missing Boxes"
         app:showAsAction="collapseActionView" />
+    <item
+        android:id="@+id/duplicate"
+        android:orderInCategory="100"
+        android:title="Delete Duplicate"
+        app:showAsAction="collapseActionView" />
+
 
 </menu>
