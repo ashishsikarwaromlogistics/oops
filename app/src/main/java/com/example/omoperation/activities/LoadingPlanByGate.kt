@@ -207,9 +207,9 @@ class LoadingPlanByGate : AppCompatActivity() , GatePlanAdapter.GatePassInterfac
         var isfind : Boolean=false
         var currentCn=""
         for(i in 0 until myresp.count()){
-            currentCn= cn_text.text.toString()
-            if(cn_text.text.toString().equals(myresp.get(i).CN_NO) && !myresp.get(i).isChecked!! ){
-                checkcnlist.add(cn_text.text.toString())
+            currentCn= cn_text.text.toString().trimStart('0')
+            if(cn_text.text.toString().trimStart('0').equals(myresp.get(i).CN_NO) && !myresp.get(i).isChecked!! ){
+                checkcnlist.add(cn_text.text.toString().trimStart('0'))
                 isfind=true
                 scan_gr_count=scan_gr_count+1
                 sacn_weight=sacn_weight+ myresp.get(i).ACT_WT!!.toDouble()
@@ -260,7 +260,7 @@ class LoadingPlanByGate : AppCompatActivity() , GatePlanAdapter.GatePassInterfac
         pd.show()
         val mod= CommonMod()
         mod.lorryno= edt_lorry_type!!.text.toString()
-            .toUpperCase(
+            .uppercase(
                 Locale.US
             )
         mod.type="Challan"
@@ -271,7 +271,7 @@ class LoadingPlanByGate : AppCompatActivity() , GatePlanAdapter.GatePassInterfac
                 if(resp.body()!!.error.toString().equals("false"))
                 {
                     isvehiclevalidate=true
-                    vehiclenum=edt_lorry_type!!.text.toString().toUpperCase()
+                    vehiclenum=edt_lorry_type!!.text.toString().uppercase(Locale.getDefault())
                     pd.show()
                     cn_text.requestFocus()
                     findData()

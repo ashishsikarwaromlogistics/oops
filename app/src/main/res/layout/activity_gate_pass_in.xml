@@ -143,7 +143,6 @@
                             android:layout_width="match_parent"
                             android:layout_height="48dp"
                             android:layout_marginLeft="5dp"
-                            android:layout_toLeftOf="@+id/searchByVoice"
                             android:background="@null"
                             android:hint="Enter Gate Number"
                             android:inputType="text"

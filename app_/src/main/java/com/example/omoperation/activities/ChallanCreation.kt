@@ -38,6 +38,7 @@ class ChallanCreation : AppCompatActivity() {
     var touchingBranch=""
     var des_branch_code=""
     var type=""
+    var a=0
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding=DataBindingUtil.setContentView(this,R.layout.activity_challan_creation)
@@ -114,8 +115,13 @@ class ChallanCreation : AppCompatActivity() {
 
         }
         binding.edtLoadingPlan.setOnClickListener {
-            val intent = Intent(this, LoadingPlan::class.java)
-            loadinglauncher.launch(intent)
+            if(a==0){
+                val intent = Intent(this, LoadingPlan::class.java)
+                loadinglauncher.launch(intent)
+            }
+            else Utils.showDialog(this,"error","You can not edit this ",R.drawable.ic_error_outline_red_24dp)
+
+
 
         }
         binding.edtAir.setOnClickListener(View.OnClickListener { opend(binding.edtAir) })
@@ -220,6 +226,7 @@ class ChallanCreation : AppCompatActivity() {
                         intent.apply { putExtras(bundle) }
 
                         startActivity(intent)
+                        a=1
                         //   Utils.showDialog(this@ChallanCreation,"success","good",R.drawable.ic_success)
 
                     }
@@ -304,6 +311,12 @@ class ChallanCreation : AppCompatActivity() {
             // There are no request codes
             val data: Intent? = result.data
             binding.edtLoadingPlan.setText(data!!.getStringExtra("loadingno"))
+
         }
+    }
+
+    override fun onStop() {
+        super.onStop()
+
     }
 }

@@ -64,10 +64,14 @@ class GetPaper : AppCompatActivity()  , GatePassInAdap.GatePassInterface {
     private var speech: TextToSpeech? = null
     var checkcnlist=kotlin.collections.ArrayList<String>()
     lateinit var cp: CustomProgress
+
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding=DataBindingUtil.  setContentView(this, R.layout.activity_unloading_plan)
         init()
+
 
         myviewmod=ViewModelProvider(this).get(GetPaperViewMod::class.java)
         binding.viewmod=myviewmod
@@ -81,6 +85,8 @@ class GetPaper : AppCompatActivity()  , GatePassInAdap.GatePassInterface {
             }
         }
 */
+
+
         myviewmod.responsedata.observe(this, Observer {
             when(it){
                 is NetworkState.Error -> {
@@ -177,7 +183,7 @@ class GetPaper : AppCompatActivity()  , GatePassInAdap.GatePassInterface {
         binding.cnText.setOnEditorActionListener { v: TextView?, actionId: Int, event: KeyEvent? ->
             if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_UNSPECIFIED) {
                 if(myresp.size>0){
-                   if(binding.cnText.text.toString().equals(""))
+                   if(binding.cnText.text.toString().trimStart('0').equals(""))
                        Log.d("ashish","value blank")
                        else
                     SearchCN()
@@ -385,11 +391,11 @@ class GetPaper : AppCompatActivity()  , GatePassInAdap.GatePassInterface {
     }
     fun SearchCN(){
         var isfind : Boolean=false
-        var currentCn=binding.cnText.text.toString()
+        var currentCn=binding.cnText.text.toString().trimStart('0')
         for(i in 0 until myresp.count()){
            // currentCn=
-            if(binding.cnText.text.toString().equals(myresp.get(i).CN_NO) && !myresp.get(i).isChecked!! ){
-                checkcnlist.add(binding.cnText.text.toString())
+            if(binding.cnText.text.toString().trimStart('0').equals(myresp.get(i).CN_NO) && !myresp.get(i).isChecked!! ){
+                checkcnlist.add(binding.cnText.text.toString().trimStart('0'))
                 isfind=true
                 scan_gr_count=scan_gr_count+1
                 sacn_weight=sacn_weight+ myresp.get(i).CN_ACT_WT!!.toDouble()

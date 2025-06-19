@@ -146,22 +146,25 @@
                         android:layout_margin="5dp"
                         app:cardElevation="5dp">
 
-                        <RelativeLayout
+                        <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:padding="15dp">
+                            android:layout_height="@dimen/_38sdp"
+                            android:gravity="center"
+                            android:orientation="horizontal">
 
                             <ImageView
                                 android:id="@+id/img_input_cn"
                                 android:layout_width="20dp"
                                 android:layout_height="20dp"
+                                android:layout_marginStart="@dimen/_6sdp"
                                 android:layout_centerVertical="true"
                                 app:srcCompat="@drawable/cn" />
 
                             <EditText
                                 android:id="@+id/input_cn"
-                                android:layout_width="match_parent"
+                                android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_weight="1"
                                 android:layout_centerVertical="true"
                                 android:layout_marginLeft="15dp"
                                 android:layout_toRightOf="@+id/img_input_cn"
@@ -171,7 +174,16 @@
                                 android:maxLength="14"
                                 android:textSize="15sp"
                                 android:textStyle="bold" />
-                        </RelativeLayout>
+                            <ImageView
+                                android:id="@+id/img_search"
+                                android:layout_width="@dimen/_28sdp"
+                                android:layout_height="match_parent"
+                                android:layout_marginRight="@dimen/_3sdp"
+                                android:layout_toRightOf="@+id/input_cn"
+
+                                android:layout_centerVertical="true"
+                                app:srcCompat="@android:drawable/ic_menu_search" />
+                        </LinearLayout>
                     </androidx.cardview.widget.CardView>
 
                     <androidx.cardview.widget.CardView
@@ -193,7 +205,7 @@
                                 android:layout_centerVertical="true"
                                 app:srcCompat="@drawable/cn" />
 
-                            <EditText
+                            <TextView
                                 android:id="@+id/manual_no"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
@@ -227,7 +239,7 @@
                                 android:layout_centerVertical="true"
                                 app:srcCompat="@drawable/current_location_primary" />
 
-                            <EditText
+                            <TextView
                                 android:id="@+id/input_from"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
@@ -261,7 +273,7 @@
                                 android:layout_centerVertical="true"
                                 app:srcCompat="@drawable/location" />
 
-                            <EditText
+                            <TextView
                                 android:id="@+id/input_to"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
@@ -295,7 +307,7 @@
                                 android:layout_centerVertical="true"
                                 app:srcCompat="@drawable/boxes" />
 
-                            <EditText
+                            <TextView
                                 android:id="@+id/input_no_of_box"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"

@@ -44,12 +44,13 @@ class Dash_Adapt @Inject constructor() : RecyclerView.Adapter<Dash_Adapt.MyViewH
         , R.color.color4, R.color.color5, R.color.color7,
         R.color.color10,R.color.color1,R.color.color1,R.color.color1,R.color.color6
        )
-    val titleimage= arrayOf(R.drawable.enquiry1,R.drawable.ic_avr,R.drawable.branch,
-        R.drawable.ic_loading,R.drawable.challan,R.drawable.enquiry1,
-        R.drawable.ic_loading,
-        R.drawable.enquiry1, R.drawable.rewarehouse,R.drawable.vehicletrack,
-       R.drawable.vehicletrack,R.drawable.ic_loading,R.drawable.rewarehouse,
-        R.drawable.ic_loading,R.drawable.ic_avr,R.drawable.training,R.drawable.training,R.drawable.logout
+    //37595
+    val titleimage= arrayOf(R.drawable.enquiry1,R.drawable.avr,R.drawable.branch,
+        R.drawable.loading,R.drawable.challan,R.drawable.enquiry1,
+        R.drawable.ic_loading, R.drawable.enquiry1, R.drawable.restore,
+        R.drawable.vehicletrack,R.drawable.vehicletrack,R.drawable.ic_loading,
+        R.drawable.rewarehouse,R.drawable.ic_loading,R.drawable.ic_avr,
+        R.drawable.gate_entry,R.drawable.training,R.drawable.logout
 
        )
     @Inject

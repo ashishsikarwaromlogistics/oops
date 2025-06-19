@@ -22,10 +22,16 @@ class ValidateViewMod(application: Application) : AndroidViewModel(application) 
     val context:Context=application.applicationContext
     val _livedata= MutableLiveData<NetworkState>()
     val livedata: LiveData<NetworkState> =_livedata
+
+    val _issavedeviceid= MutableLiveData<NetworkState>()
+    val issavedeviceid : LiveData<NetworkState> = _issavedeviceid
+
+    val _savedata= MutableLiveData<NetworkState>()
+    val savedata : LiveData<NetworkState> = _savedata
+
+
    fun checkvalidate (){
-        _livedata.value=NetworkState.Loading
-
-
+        _livedata.value = NetworkState.Loading
             if(Utils.haveInternet(context)){
 
                 val mod= LoginMod()
@@ -93,5 +99,43 @@ class ValidateViewMod(application: Application) : AndroidViewModel(application) 
        else {
                 _livedata.value=NetworkState.Error("error","Internet not connect")
        }
+    }
+
+    fun trackdeviceid(){
+        _issavedeviceid.value= NetworkState.Loading
+        viewModelScope.launch {
+     val response=ApiClient.getClient().create(ServiceInterface::class.java).trackdeviceid()
+     if(response!=null){
+         if(response.code()==200){
+             if(response.body()!!.error.equals("false")){
+                 checkvalidate()
+             }
+             else{
+
+             }
+         }
+         else _issavedeviceid.value= NetworkState.Error("error code","${response.code()}")
+     }
+            else _issavedeviceid.value= NetworkState.Error("Body not found","no response found")
+        }
+    }
+    fun savedeviceid(device_id:String,oll : String){
+        _savedata.value= NetworkState.Loading
+        viewModelScope.launch {
+            val response=ApiClient.getClient().create(ServiceInterface::class.java).trackdeviceid()
+            if(response!=null){
+                if(response.code()==200){
+                    if(response.body()!!.error.equals("false")){
+                        _savedata.value= NetworkState.Success(response.body())
+                        checkvalidate()
+                    }
+                    else{
+
+                    }
+                }
+                else _savedata.value= NetworkState.Error("error code","${response.code()}")
+            }
+            else _savedata.value= NetworkState.Error("Body not found","no response found")
+        }
     }
 }

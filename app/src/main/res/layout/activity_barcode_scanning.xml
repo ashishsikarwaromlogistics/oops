@@ -30,9 +30,19 @@
                     style="@style/TextAppearance.AppCompat.Title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:gravity="center"
+
                     android:text="Scanning"
+                    android:textSize="@dimen/_11ssp"
+                    android:textColor="@android:color/white" />
+ <TextView
+                    android:id="@+id/tvweight"
+                    style="@style/TextAppearance.AppCompat.Title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+
+                    android:text="weight"
+     android:layout_below="@id/tvtitle"
                     android:textSize="@dimen/_11ssp"
                     android:textColor="@android:color/white" />
 

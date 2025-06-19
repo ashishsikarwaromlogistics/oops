@@ -44,7 +44,8 @@ class LoginViewMod( application: Application) : AndroidViewModel(application) {
                     context.getContentResolver(),
                     Settings.Secure.ANDROID_ID
                 )
-                mod.Serial=amdroid_id
+               // mod.Serial=amdroid_id
+                mod.Serial=Utils.getImei(context)
                 mod.password=edtpass.value
                 mod.android_ver= Build.VERSION.SDK_INT
                 mod.user_id = edtemp.value
@@ -52,7 +53,7 @@ class LoginViewMod( application: Application) : AndroidViewModel(application) {
                 mod.type = "login"
                 mod.android_ver = Build.VERSION.SDK_INT
                 mod.device_name = Build.MODEL
-                mod.Serial = Build.USER
+                //mod.Serial = Build.USER
                 mod.manufacturer = "ITTEST"
 
                 try {
@@ -117,7 +118,8 @@ class LoginViewMod( application: Application) : AndroidViewModel(application) {
                     context.getContentResolver(),
                     Settings.Secure.ANDROID_ID
                 )
-                mod.Serial=amdroid_id
+              //  mod.Serial=amdroid_id
+                mod.Serial=Utils.getImei(context)
                 mod.password=edtpass.value
                 mod.android_ver= Build.VERSION.SDK_INT
                 mod.user_id = edtemp.value
@@ -125,7 +127,7 @@ class LoginViewMod( application: Application) : AndroidViewModel(application) {
                 mod.type = "login"
                 mod.android_ver = Build.VERSION.SDK_INT
                 mod.device_name = Build.MODEL
-                mod.Serial = Build.USER
+             //   mod.Serial = Build.USER
                 mod.manufacturer = "ITTEST"
 
                 try{

@@ -20,7 +20,57 @@
             android:layout_height="match_parent"
             tools:context=".activities.OdaStation"
             android:orientation="vertical">
+            <androidx.cardview.widget.CardView
+                android:id="@+id/card_spinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/header_card"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginBottom="5dp"
+                app:cardElevation="5dp">
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/background_light"
+                    android:orientation="vertical">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@android:drawable/editbox_background_normal"
+                        android:padding="8dp">
+
+                        <ImageView
+                            android:id="@+id/img_department"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_centerVertical="true"
+                            app:srcCompat="@drawable/cn" />
+
+                        <EditText
+                            android:id="@+id/edtloading"
+                            android:layout_width="match_parent"
+                            android:layout_height="48dp"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="5dp"
+                            android:layout_toRightOf="@+id/img_department"
+                            android:background="@null"
+                            android:hint="Search "
+                            android:imeOptions="actionSearch"
+                            android:inputType="number"
+                            android:textColorHint="#78909C"
+                            android:textSize="15sp"
+                            android:textStyle="bold" />
+
+
+
+
+                    </RelativeLayout>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recy_loading"
                 android:layout_width="match_parent"

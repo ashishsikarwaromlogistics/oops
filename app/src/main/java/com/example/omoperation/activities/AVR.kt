@@ -107,14 +107,24 @@ class AVR : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSpeech.OnInitL
     var isgateverify=false
 
     var bajajlist= ArrayList<String>()
-    var bajajbox= HashMap<String,Int>()
-
+    var bajajlist_with_realtion= HashMap<String,String>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding=DataBindingUtil.setContentView(this,R.layout.activity_avr)
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
         toolbar.overflowIcon?.setTint(ContextCompat.getColor(this, android.R.color.white))
+        try{
+            bajajlist= Gson().fromJson(
+                OmOperation.getPreferences(Constants.BAJAJ, ""),
+                object : TypeToken<ArrayList<String>>() {}.type
+            )
+            bajajlist_with_realtion= Gson().fromJson(
+                OmOperation.getPreferences(Constants.bajajlist_with_realtion, ""),
+                object : TypeToken<HashMap<String,String>>() {}.type
+            )
+        }
+        catch (e:Exception){}
         textToSpeech = TextToSpeech(this, this)
         //binding=new DataBindingU setContentView(R.layout.activity_avr);
         setSupportActionBar(binding.toolbar)
@@ -560,6 +570,7 @@ class AVR : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSpeech.OnInitL
                        if (barCode.contains("-")){
                            clearBarcodeEdittext()
                            if(bajajlist.contains(barCode)){
+                               showCustomBackgroundToast("Duplicate Barcode")
                                speak("Duplicate Barcode")
                            }
                            else  checkcnBajaj(barCode)
@@ -570,6 +581,7 @@ class AVR : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSpeech.OnInitL
                        else{
                            barCode = barCode.substring(1, barCode.length)
                            barCode = Utils.revertTransform(barCode)
+                           barCode=barCode.trimStart('0')
                        }
                    }
                    if (barCode.isEmpty()) {
@@ -632,6 +644,7 @@ class AVR : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSpeech.OnInitL
                return@setOnEditorActionListener false
            }
        }
+       binding.addFloatingBtn.visibility=View.GONE
       binding.addFloatingBtn.setOnClickListener {
           startActivity(Intent(this,AddManual::class.java).putExtra("avr",binding.gateNo.text.toString()))
       }
@@ -675,46 +688,102 @@ class AVR : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSpeech.OnInitL
                     if(response.isSuccessful){
                         response.body()?.let { body->
                             if (body.error.equals("false", true)) {
-                                cureentgr= response.body()!!.cn_no
-                               /* if(!cnlist.contains(cureentgr)){
-                                    cnlist.add(cureentgr)
-                                }*/
-                                bajajlist.add(barcode)
-                                cnmap.put(cureentgr,response.body()!!.city.toString())
-                                cnmapbox.put(cureentgr,response.body()!!.pkg.toInt())
-                                binding.GRCount.setText(cnlist.size.toString())
-                                bajajbox.put(cureentgr,bajajbox.getOrDefault(cureentgr, 0)+1)
-                                val bajajboxno=bajajbox.get(cureentgr)
-                                var myboxnum=""
+                                if(bajajlist.contains(barcode)){}
+                                else{
+                                    cureentgr= response.body()!!.mcn//here we take only manual number
+                                    bajajlist.add(barcode)
+                                    OmOperation.savePreferences(Constants.BAJAJ,Gson().toJson(bajajlist).toString())
+                                    cnmap.put(cureentgr,response.body()!!.city.toString())
+                                    cnmapbox.put(cureentgr,response.body()!!.pkg.toInt())
+                                    binding.GRCount.setText(cnlist.size.toString())
+                                    lifecycleScope.launch {
+                                        /*var   bajajboxno=  db.barcodeDao()getboxcn(cureentgr)
+                                        bajajboxno=bajajboxno+1
+                                        var   myboxnum=  ""
 
-                                if(bajajboxno!!>=1000){
-                                    myboxnum=""+bajajboxno
-                                }
-                                else if(bajajboxno >=100){
-                                    myboxnum="0"+bajajboxno
-                                }
-                                else if(bajajboxno!!>=10){
-                                    myboxnum="00"+bajajboxno
-                                }
-                                else {
-                                    myboxnum="000"+bajajboxno
-                                }
-                                addtolocalbajaj(cureentgr+myboxnum)
-                               // addtolocalbarcode(barcode)
-                                lifecycleScope.launch {
-                                    if(!cnlist.contains(cureentgr)) {
-                                        cnlist.add(cureentgr)
-                                        val cn = CN(
-                                            challan = response.body()!!.challan,
-                                            box = response.body()!!.pkg,
-                                            cn = cureentgr,
-                                            city = response.body()!!.city ?: "",
-                                            weight = "0"
-                                        )
-                                        db.verifydao().inserbarcode(cn)
+                                        if(bajajboxno!!>=1000){
+                                            myboxnum=""+bajajboxno
+                                        }
+                                        else if(bajajboxno >=100){
+                                            myboxnum="0"+bajajboxno
+                                        }
+                                        else if(bajajboxno>=10){
+                                            myboxnum="00"+bajajboxno
+                                        }
+                                        else {
+                                            myboxnum="000"+bajajboxno
+                                        }
+                                        addtolocalbajaj(barcode,cureentgr+myboxnum,body.city.toString())
+                                    */
+                                        var   cnboxlist=  db.barcodeDao()gettotalboxofcn(cureentgr)
+                                        var mynextnumber=cureentgr.toString()+"0001"
+                                        val allNumbers = mutableSetOf<Long>()
+
+                                        for(i in cnboxlist){
+                                            allNumbers.add(i.toLong())
+                                        }
+
+                                        try{
+                                            if (allNumbers.isEmpty()) mynextnumber =cureentgr.toString()+"0001"
+                                            val min = allNumbers.minOrNull()!!
+                                            val max = allNumbers.maxOrNull()!!
+
+                                            // Check for missing numbers
+
+
+                                            // No missing, return next incremented number
+                                            var next = max + 1
+                                            while (allNumbers.contains(next)) {
+                                                next++ // just in case someone duplicated
+                                            }
+                                            mynextnumber=  next. toString()
+
+                                            for (i in min..max) {
+                                                if (i !in allNumbers) {
+                                                    mynextnumber= i.toString() // first missing
+                                                }
+                                            }
+
+                                            if(!cnboxlist.contains(cureentgr.toString()+"0001")){
+                                                mynextnumber=cureentgr.toString()+"0001"
+                                            }
+
+                                        }
+                                        catch (e: Exception){}
+
+
+                                        addtolocalbajaj(barcode,mynextnumber,body.city.toString())
+
+
+                                    }
+                                    lifecycleScope.launch {
+                                        if(!cnlist.contains(cureentgr)) {
+                                            cnlist.add(cureentgr)
+                                            val cn = CN(
+                                                challan = response.body()!!.challan,
+                                                box = response.body()!!.pkg,
+                                                cn = cureentgr,
+                                                city = response.body()!!.city ?: "",
+                                                weight = "0"
+                                            )
+                                            db.verifydao().inserbarcode(cn)
+                                        }
+                                        else{
+                                            /*  val cn = CN(
+                                                  challan = response.body()!!.challan,
+                                                  box = response.body()!!.pkg,
+                                                  cn = cureentgr,
+                                                  city = response.body()!!.city ?: "",
+                                                  weight = "0"
+                                              )
+                                              db.verifydao().inserbarcode(cn)*/
+                                        }
                                     }
                                 }
+
                             }
+                            else Utils.showDialog(this@AVR, "Error", body.response, R.drawable.ic_error_outline_red_24dp)
+
                         }?: run {
                             Utils.showDialog(this@AVR, "Error", "Response body is null", R.drawable.ic_error_outline_red_24dp)
                         }
@@ -737,11 +806,18 @@ class AVR : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSpeech.OnInitL
             })
         }
     }
-    private fun addtolocalbajaj(barcode: String) {
+    private fun addtolocalbajaj(scanbarcode :String ,barcode: String,city:String) {
         if(displayedData.contains(barcode)){
 
         }
         else{
+            bajajlist_with_realtion[barcode]=scanbarcode//this will add barcode
+
+            //  OmOperation.savePreferences(Constants.bajajlist_with_realtion,Gson().toJson(bajajlist_with_realtion).toString())
+            OmOperation.savePreferences(Constants.bajajlist_with_realtion, Gson().toJson(bajajlist_with_realtion))
+
+            writetextinback(city)
+            speak(city)
             displayedData.add(0,barcode)
             barcodelist.add(0,barcode)
             //    displayedData= ArrayList(barcodelist.subList(0, minOf(barcodelist.size, 50)))
@@ -749,7 +825,7 @@ class AVR : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSpeech.OnInitL
             binding.barcodeCount.setText(barcodelist.size.toString())
             adapter.notifyDataSetChanged()
             lifecycleScope.launch {
-                val barcodem=Barcode(barcode=barcode )
+                val barcodem=Barcode(barcode=barcode , timestamp = Utils.getCurrentTimestamp())
                 db.barcodeDao().inserbarcode(barcodem)
                 getcureentGR(barcode)
             }
@@ -760,6 +836,7 @@ class AVR : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSpeech.OnInitL
             }
             cnmap.get(barcode.substring(0, barcode.length - 4))?.let {
                 speak(it.toString())
+                writetextinback(it.toString())
             } ?: speak("Unknown barcode")
             //  speak(cnmap.get(barcode.substring(0,barcode.length-4)).toString())
         }
@@ -797,6 +874,9 @@ class AVR : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSpeech.OnInitL
                                    db.verifydao().inserbarcode(cn)
 
                                }
+                           }
+                           else {
+                               Utils.showDialog(this@AVR,"Error" ,body.response, R.drawable.ic_error_outline_red_24dp)
                            }
                        }?: run {
                            Utils.showDialog(this@AVR, "Error", "Response body is null", R.drawable.ic_error_outline_red_24dp)
@@ -865,7 +945,7 @@ class AVR : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSpeech.OnInitL
             binding.barcodeCount.setText(barcodelist.size.toString())
             adapter.notifyDataSetChanged()
             lifecycleScope.launch {
-                val barcodem=Barcode(barcode=barcode )
+                val barcodem=Barcode(barcode=barcode , timestamp = Utils.getCurrentTimestamp())
                 db.barcodeDao().inserbarcode(barcodem)
                 getcureentGR(barcode)
             }
@@ -876,6 +956,7 @@ class AVR : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSpeech.OnInitL
             }
             cnmap.get(barcode.substring(0, barcode.length - 4))?.let {
                 speak(it.toString())
+                writetextinback(it.toString())
             } ?: speak("Unknown barcode")
           //  speak(cnmap.get(barcode.substring(0,barcode.length-4)).toString())
         }
@@ -900,7 +981,7 @@ class AVR : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSpeech.OnInitL
     }
 
     private fun speak(city : String){
-        textToSpeech.speak(city.toLowerCase(), TextToSpeech.QUEUE_FLUSH, null, null)
+        textToSpeech.speak(city.lowercase(Locale.getDefault()), TextToSpeech.QUEUE_FLUSH, null, null)
     }
     override fun onDestroy() {
         if (textToSpeech != null) {
@@ -959,7 +1040,7 @@ class AVR : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSpeech.OnInitL
         }*/
          adapter.notifyDataSetChanged()
     }
-    private suspend fun checkrestoredata() {
+    private   fun checkrestoredata() {
       lifecycleScope.launch {
          val mybarcode= db.barcodeDao().getAll()
           if(mybarcode.size>0){
@@ -981,25 +1062,30 @@ class AVR : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSpeech.OnInitL
 
           }
       }
-      lifecycleScope.launch {
-            val mycn= db.verifydao().getAll()
-            if(mycn.size>0){
-                withContext(Dispatchers.IO) {
-                    val list = mutableListOf<String>()
-                    for (i in mycn) {
-                        list.add(i.cn.toString())
-                        cnmap.put(i.cn.toString(),i.city.toString())
-                        cnmapbox.put(i.cn.toString(),i.box.toInt())
+        lifecycleScope.launch {
+            val mycn = withContext(Dispatchers.IO) { db.verifydao().getAll() }
+            val selectedcn = withContext(Dispatchers.IO) { db.barcodeDao().cnwithboxes().map { it.cn } }
+
+            if (mycn.isNotEmpty()) {
+                val list = mutableListOf<String>()
+
+                for (i in mycn) {
+                    val cn = i.cn.toString()
+                    if (selectedcn.contains(cn)) {
+                        list.add(cn)
+                        cnmap[cn] = i.city.toString()
+                        cnmapbox[cn] = i.box.toInt()
 
                     }
-                    withContext(Dispatchers.Main) {
-                        cnlist.addAll(list)
-                        binding.GRCount.setText(cnlist.size.toString())
-                    }
+
                 }
 
+                cnlist.addAll(list)
+                binding.GRCount.setText(cnlist.size.toString())
             }
         }
+
+
 
     }
     private fun clearBarcodeEdittext() {
@@ -1029,6 +1115,9 @@ class AVR : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSpeech.OnInitL
                 cnlist.clear()
                 cnmap.clear()
                 cnmapbox.clear()
+                OmOperation.savePreferences(Constants.BAJAJ,"")
+                OmOperation.savePreferences(Constants.bajajlist_with_realtion,"")
+                bajajlist.clear()
                 binding.GRCount.setText("0")
                 binding.crgr.setText("0")
                 binding.barcodeCount.setText("0")
@@ -1051,6 +1140,8 @@ class AVR : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSpeech.OnInitL
 
     }
     fun Deletefrontend(){
+          barcodelist.clear()
+        OmOperation.savePreferences(Constants.BAJAJ,"")
         displayedData.clear()
         barcodelist.clear()
         cnlist.clear()
@@ -1097,7 +1188,20 @@ class AVR : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSpeech.OnInitL
         alertBox.setMessage("Do you really want to remove this $barcode?").setCancelable(false)
             .setPositiveButton(
                 "YES"
-            ) { dialog, which -> barcodelist.remove(barcode)
+            ) { dialog, which ->
+                try{
+                    val a= bajajlist_with_realtion.get(barcode)
+                    bajajlist.remove(a)
+                    bajajlist_with_realtion.remove(barcode)
+                    OmOperation.savePreferences(Constants.bajajlist_with_realtion, Gson().toJson(bajajlist_with_realtion))
+                    OmOperation.savePreferences(Constants.BAJAJ,Gson().toJson(bajajlist))
+                }
+                catch (e:Exception){
+
+                }
+
+
+                barcodelist.remove(barcode)
                 displayedData.remove(barcode)
                 adapter.notifyDataSetChanged()
                 lifecycleScope.launch {
@@ -1207,6 +1311,22 @@ class AVR : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSpeech.OnInitL
         else  grwithotdoc.remove(grdoc.get(position))
         Log.d("ashish",grdoc.get(position).toString().substring(1,grdoc.get(position).toString().length-1))
         Log.d("ashish",grwithotdoc.size.toString())
+    }
+    private fun writetextinback(message: String) {
+        try{
+            val inflater = layoutInflater
+            val layout = inflater.inflate(R.layout.custom_toast, null)
+            val text: TextView = layout.findViewById(R.id.toast_text)
+            text.text = message
+
+            val toast = Toast(applicationContext)
+            toast.duration = Toast.LENGTH_LONG
+            toast.setGravity(Gravity.CENTER, 0, 0)
+            toast.view = layout
+            toast.show()
+
+        }
+        catch (e:Exception){}
     }
 }
 

@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.omoperation.R;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class ReWarehouseBarcodeListAdapter extends RecyclerView.Adapter<ReWarehouseBarcodeListAdapter.MyViewHolder> implements Filterable {
     private ArrayList<String> list;
@@ -73,7 +74,7 @@ public class ReWarehouseBarcodeListAdapter extends RecyclerView.Adapter<ReWareho
                 } else {
                     ArrayList<String> filteredList = new ArrayList<>();
                     for (String row : filtered) {
-                        if (row.toLowerCase().contains(charString.toLowerCase())) {
+                        if (row.toLowerCase(Locale.getDefault()).contains(charString.toLowerCase(Locale.getDefault()))) {
                             filteredList.add(row);
                         }
                     }

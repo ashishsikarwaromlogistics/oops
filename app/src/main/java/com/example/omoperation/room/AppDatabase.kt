@@ -36,19 +36,8 @@ abstract class AppDatabase : RoomDatabase() {
       /*  val MIGRATION_1_2 = object : Migration(1, 2) {
             override fun migrate(database: SupportSQLiteDatabase) {
                 // Create the new table
-                database.execSQL("""
-            CREATE TABLE IF NOT EXISTS Employees (
-                uid INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-                BRANCH_NAME TEXT NOT NULL,
-                EMP_FIRST_NAME TEXT NOT NULL,
-                EMP_EMP_CODE TEXT NOT NULL,
-                EMP_EMP_TITLE TEXT NOT NULL,
-                EMP_PHONE_NO TEXT NOT NULL,
-                EMP_EMAIL_ID TEXT NOT NULL,
-                DEPT_NAME TEXT,
-                DESIG_NAME TEXT
-            )
-        """.trimIndent())
+                database.execSQL("ALTER TABLE User ADD COLUMN age INTEGER NOT NULL DEFAULT 0")
+
             }
         }*/
 
@@ -63,7 +52,7 @@ abstract class AppDatabase : RoomDatabase() {
                     AppDatabase::class.java,
                     "app_database"
                 )
-                    // .addMigrations(MIGRATION_1_2)
+                    //.addMigrations(MIGRATION_1_2)
                     .build()
                 INSTANCE = instance
                 instance

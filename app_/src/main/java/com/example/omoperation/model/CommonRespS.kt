@@ -11,5 +11,6 @@ data class CommonRespS(
     val msg: String,
     val count: String,
     val cn_wt: String,
-    var cn_date: String
+    var cn_date: String,
+    var cn_no: String
 )

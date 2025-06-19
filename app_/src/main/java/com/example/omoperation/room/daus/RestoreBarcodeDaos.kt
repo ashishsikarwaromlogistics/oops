@@ -69,7 +69,8 @@ interface RestoreBarcodeDaos {
     @Query("DELETE FROM RestoreBarcode WHERE timestamp < :timeThreshold")
     suspend fun deleteAfter24Hours(timeThreshold: String)
 
-
+    @Query("DELETE FROM RestoreBarcode WHERE uid NOT IN (SELECT MIN(uid) FROM RestoreBarcode GROUP BY barcode)")
+    suspend fun deleteDuplicateBarcodes()
 
 
     companion object {

@@ -12,6 +12,7 @@ import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.omoperation.R
 import com.example.omoperation.room.tables.Branches
+import java.util.Locale
 
 class BrancheAdapter(val list: List<Branches>,val branchesinterface: BranchInterface) :
     RecyclerView.Adapter<BrancheAdapter.MyViewHolder>() ,Filterable{
@@ -61,9 +62,9 @@ class BrancheAdapter(val list: List<Branches>,val branchesinterface: BranchInter
                         list
                 } else {
                     val filteredList = list.filter {
-                        it.BRANCH_BRANCH_NAME.toLowerCase().contains(charString.toLowerCase()) ||
-                                it.CITY_CITY_NAME.toLowerCase().contains(charString.toLowerCase()) ||
-                                it.BRANCH_BRANCH_CODE.toLowerCase().contains(charString.toLowerCase())
+                        it.BRANCH_BRANCH_NAME.lowercase(Locale.getDefault()).contains(charString.lowercase(Locale.getDefault())) ||
+                                it.CITY_CITY_NAME.lowercase(Locale.getDefault()).contains(charString.lowercase(Locale.getDefault())) ||
+                                it.BRANCH_BRANCH_CODE.lowercase(Locale.getDefault()).contains(charString.lowercase(Locale.getDefault()))
                     }
                     filteredList
                 }

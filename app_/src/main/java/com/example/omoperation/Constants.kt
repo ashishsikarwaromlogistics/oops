@@ -26,7 +26,8 @@ class Constants {
         val STARTTIME = "STARTTIME"
         val ENDTIME = "ENDTIME"
         val g_key = "AIzaSyCQ_02yFiN5hTXt1xFIwiWoH1JMsMUF_8M"
-
+        val todaydate = "todaydate"
+        val MISDATA = "MISDATA"
         var authorizationtoken =
             "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWJqZWN0IjoiOTkgNDAxNDUgMTMwNiA0MDAwMDEiLCJpYXQiOjE3MTM0MTk2MjB9.VY-VIp3ky6rXiwGBnbAsTkzPNZtjipN-RnVPW7dF_vQ"
 

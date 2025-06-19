@@ -718,7 +718,7 @@ class AVRWithtGate : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSpeec
             //  binding.barcodeCount.setText(barcodelist.size.toString())
             adapter.notifyDataSetChanged()
             lifecycleScope.launch {
-                val barcodem= Barcode(barcode=barcode )
+                val barcodem= Barcode(barcode=barcode , timestamp = Utils.getCurrentTimestamp())
                 db.barcodeDao().inserbarcode(barcodem)
                 // getcureentGR(barcode)
             }
@@ -746,7 +746,7 @@ class AVRWithtGate : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSpeec
             binding.barcodeCount.setText(barcodelist.size.toString())
             adapter.notifyDataSetChanged()
             lifecycleScope.launch {
-                val barcodem= Barcode(barcode=barcode )
+                val barcodem= Barcode(barcode=barcode , timestamp = Utils.getCurrentTimestamp())
                 db.barcodeDao().inserbarcode(barcodem)
                 getcureentGR(barcode)
             }
@@ -781,7 +781,7 @@ class AVRWithtGate : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSpeec
     }
 
     private fun speak(city : String){
-        textToSpeech.speak(city.toLowerCase(), TextToSpeech.QUEUE_FLUSH, null, null)
+        textToSpeech.speak(city.lowercase(Locale.getDefault()), TextToSpeech.QUEUE_FLUSH, null, null)
     }
     override fun onDestroy() {
         if (textToSpeech != null) {
@@ -1091,7 +1091,11 @@ class AVRWithtGate : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSpeec
     }
     fun checklorry() {
         val mod= CommonMod()
-        mod.lorryno=binding.lorryNo.text!!.toString().toUpperCase()
+     //   mod.lorryno=binding.lorryNo.text!!.toString().uppercase(Locale.getDefault())
+        mod.lorryno= run {
+            binding.lorryNo.text!!.toString()
+                .uppercase(Locale.getDefault())
+        }
         mod.type="Challan"
         cp.show()
         lifecycleScope.launch {

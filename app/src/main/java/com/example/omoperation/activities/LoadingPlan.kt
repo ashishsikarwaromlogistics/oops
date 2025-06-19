@@ -2,6 +2,8 @@ package com.example.omoperation.activities
 
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -35,14 +37,22 @@ class LoadingPlan : AppCompatActivity() , LoadingPlanAdapter.Loadinginterface {
         binding.recyLoading.setHasFixedSize(false)
         binding.recyLoading.layoutManager= LinearLayoutManager(this)
         findata()
+       /* var loadingNo:  MutableList<LoadingNo> = mutableListOf()
+        loadingNo.add(LoadingNo("","","123456","1305"))
+        loadingNo.add(LoadingNo("","","67890","7500"))
+        loadingNo.add(LoadingNo("","","24680","8510"))
+        loadingNo.add(LoadingNo("","","13579","6640"))
 
+        adapter= LoadingPlanAdapter(interfaces,this@LoadingPlan,loadingNo)
+        binding.recyLoading.adapter=adapter
+        calltofilter()*/
 
          }
     fun findata(){
         cp.show()
         val mod= CommonMod()
         mod.status="getTallyNo"
-        //  mod.branch="1328"
+        // mod.branch="1328"
         mod.branch=OmOperation.getPreferences(Constants.BCODE,"")
         ApiClient.getClientsanchar().create(ServiceInterface::class.java).loadingplan(Utils.getheaders(),mod).enqueue(object : Callback<LoadingResp>{
             override fun onResponse(call: Call<LoadingResp>, resp: Response<LoadingResp>) {
@@ -51,6 +61,7 @@ class LoadingPlan : AppCompatActivity() , LoadingPlanAdapter.Loadinginterface {
                 {
                     adapter= LoadingPlanAdapter(interfaces,this@LoadingPlan,resp.body()!!.loadingNo)
                     binding.recyLoading.adapter=adapter
+                    calltofilter()
                 }
                 else{
                     Utils.showDialog(this@LoadingPlan,"error","Loading Plan not found",R.drawable.ic_error_outline_red_24dp)
@@ -67,7 +78,21 @@ class LoadingPlan : AppCompatActivity() , LoadingPlanAdapter.Loadinginterface {
         })
 
     }
+    fun calltofilter(){
+        binding.edtloading.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                // No action needed here
+            }
 
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                adapter.filter.filter(s)
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                // No action needed here
+            }
+        })
+    }
     override fun senddata(a: LoadingNo) {
         val intent = Intent()
         setResult(-1, intent)

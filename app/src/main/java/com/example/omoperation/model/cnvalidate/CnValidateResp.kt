@@ -9,5 +9,6 @@ data class CnValidateResp(
     var cn_date: String,
     var cn_wt: String,
     var cn_no: String,
+    var mcn: String,
     val response: String
 )

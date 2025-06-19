@@ -11,6 +11,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.omoperation.R
 import com.example.omoperation.room.tables.Employees
+import java.util.Locale
 
 
 class EmployeeAdapter(val list: List<Employees>, val empinterface: EmployeeInterface) :
@@ -61,9 +62,9 @@ class EmployeeAdapter(val list: List<Employees>, val empinterface: EmployeeInter
                         list
                     } else {
                         val filteredList = list.filter {
-                            it.BRANCH_NAME.toLowerCase().contains(charString.toLowerCase()) ||
-                                    it.EMP_FIRST_NAME.toLowerCase().contains(charString.toLowerCase()) ||
-                                    it.EMP_EMP_CODE.toLowerCase().contains(charString.toLowerCase())
+                            it.BRANCH_NAME.lowercase(Locale.getDefault()).contains(charString.lowercase(Locale.getDefault())) ||
+                                    it.EMP_FIRST_NAME.lowercase(Locale.getDefault()).contains(charString.lowercase(Locale.getDefault())) ||
+                                    it.EMP_EMP_CODE.lowercase(Locale.getDefault()).contains(charString.lowercase(Locale.getDefault()))
                         }
                         filteredList
                     }

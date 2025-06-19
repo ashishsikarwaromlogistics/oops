@@ -17,21 +17,21 @@ import javax.inject.Named
 class Dash_Adapt @Inject constructor() : RecyclerView.Adapter<Dash_Adapt.MyViewHolder>() {
     val titlename= arrayOf("CN Enquery","AVR","Get Paper(Out)",
         "Challan","Barcode Print","Get Paper In",
-        "Challan with Trip",
+        "PickUp AVR","Challan with Trip",
         "Cn Creation By Eway", "Restore Data","Vehicle Image\nUpload",
        "Pickup Challan Creation","Loading Plan\nTally","CN ReWare House",
         "Stock Audit", "AVR Without Gate","View Gate Entry","Training","Logout")
     val background= arrayOf(
         R.drawable.pink_circle,R.drawable.blue_circle,R.drawable.green_circle,
         R.drawable.pink_circle,R.drawable.green_circle,R.drawable.blue_circle,
-        R.drawable.pink_circle,
+        R.drawable.pink_circle,R.drawable.pink_circle,
         R.drawable.green_circle, R.drawable.green_circle, R.drawable.blue_circle,
         R.drawable.pink_circle,R.drawable.pink_circle,R.drawable.green_circle,
         R.drawable.pink_circle,R.drawable.green_circle,R.drawable.green_circle,R.drawable.green_circle,R.drawable.pink_circle)
 
     val rect= arrayOf(R.drawable.aqua_rect,R.drawable.red_rect,R.drawable.green_rect,
         R.drawable.purple_rect,R.drawable.yellow_rect,R.drawable.blue_rect,
-        R.drawable.red_rect,
+        R.drawable.red_rect,R.drawable.red_rect,
         R.drawable.pink_rect,R.drawable.grey_rect,R.drawable.orange_rect,
         R.drawable.purple_rect,R.drawable.white_rect,R.drawable.aqua_rect,
         R.drawable.yellow_rect,R.drawable.aqua_rect,R.drawable.aqua_rect,R.drawable.aqua_rect,R.drawable.aqua_rect
@@ -39,14 +39,15 @@ class Dash_Adapt @Inject constructor() : RecyclerView.Adapter<Dash_Adapt.MyViewH
 
     val textcolor= arrayOf(R.color.color7,R.color.color8,R.color.color9,
         R.color.color10,R.color.color11,R.color.color12,
-        R.color.color7,
+        R.color.color7, R.color.color7,
         R.color.color1, R.color.color2, R.color.color3
         , R.color.color4, R.color.color5, R.color.color7,
         R.color.color10,R.color.color1,R.color.color1,R.color.color1,R.color.color6
        )
     //37595
-    val titleimage= arrayOf(R.drawable.enquiry1,R.drawable.avr,R.drawable.branch,
-        R.drawable.loading,R.drawable.challan,R.drawable.enquiry1,
+    val titleimage= arrayOf(R.drawable.enquiry1,R.drawable.avr,
+        R.drawable.branch,R.drawable.loading,R.drawable.challan,
+        R.drawable.avr, R.drawable.enquiry1,
         R.drawable.ic_loading, R.drawable.enquiry1, R.drawable.restore,
         R.drawable.vehicletrack,R.drawable.vehicletrack,R.drawable.ic_loading,
         R.drawable.rewarehouse,R.drawable.ic_loading,R.drawable.ic_avr,

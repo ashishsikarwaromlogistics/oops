@@ -1,6 +1,5 @@
 package com.example.omoperation.network
 
-import dagger.Provides
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -9,8 +8,8 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 
-public class ApiClient @Inject constructor() {
-//140 ,00,00, 000
+ class ApiClient @Inject constructor() {
+//
     companion object{
 
         private val retrofit3: Retrofit by lazy {
@@ -71,6 +70,7 @@ public class ApiClient @Inject constructor() {
                 .client(client)
                 .build()
         }
+        @JvmStatic
         fun getClient(): Retrofit {
             return retrofit
         }

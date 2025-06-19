@@ -17,6 +17,7 @@ import com.example.omoperation.model.oda.EmpEnquiry;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class ODAStationAdapter extends RecyclerView.Adapter<ODAStationAdapter.MyViewHolder>
         implements Filterable {
@@ -86,7 +87,7 @@ public class ODAStationAdapter extends RecyclerView.Adapter<ODAStationAdapter.My
                 } else {
                     List<EmpEnquiry> filteredList = new ArrayList<>();
                     for (EmpEnquiry row : modelList) {
-                        if (row.getBRANCH_BRANCH_NAME().toLowerCase().contains(charString.toLowerCase()) || row.getCITY_CITY_NAME().toLowerCase().contains(charString.toLowerCase()) || row.getBRANCH_BRANCH_CODE().contains(charString.toLowerCase())) {
+                        if (row.getBRANCH_BRANCH_NAME().toLowerCase(Locale.getDefault()).contains(charString.toLowerCase(Locale.getDefault())) || row.getCITY_CITY_NAME().toLowerCase(Locale.getDefault()).contains(charString.toLowerCase(Locale.getDefault())) || row.getBRANCH_BRANCH_CODE().contains(charString.toLowerCase(Locale.getDefault()))) {
                             filteredList.add(row);
                         }
                     }

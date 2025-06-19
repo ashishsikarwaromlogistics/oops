@@ -36,7 +36,14 @@
                     android:layout_marginStart="@dimen/_5sdp"
                     android:textColor="@android:color/white" />
             </LinearLayout>
-
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight=".05"
+                android:layout_height="match_parent"
+                android:text=":"
+                android:textSize="@dimen/_30ssp"
+                android:textColor="@color/white"
+                />
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -261,7 +268,9 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical">
+                        android:orientation="vertical"
+                        android:layout_margin="@dimen/_2sdp"
+                        >
 
                         <LinearLayout
                             android:id="@+id/linearLayout"
@@ -392,7 +401,21 @@
 
             </LinearLayout>
         </ScrollView>
-
+        <TextView
+            android:layout_width="wrap_content"
+            android:id="@+id/tvicon"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/_12ssp"
+            android:padding="@dimen/_10sdp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginBottom="@dimen/_40sdp"
+            android:layout_marginRight="@dimen/_20sdp"
+            android:background="@color/colorPrimary"
+             android:textColor="@color/white"
+            android:text="Remarks"
+            android:visibility="gone"
+            />
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/save"
             android:layout_width="match_parent"

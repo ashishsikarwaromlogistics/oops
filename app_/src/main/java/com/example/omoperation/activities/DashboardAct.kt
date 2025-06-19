@@ -9,6 +9,7 @@ import android.provider.MediaStore
 import android.view.KeyEvent
 import android.view.View
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -20,6 +21,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.omoperation.Constants
+import com.example.omoperation.LocationService
 import com.example.omoperation.LoggerService
 import com.example.omoperation.OmOperation
 import com.example.omoperation.R
@@ -28,9 +30,14 @@ import com.example.omoperation.Utils
 import com.example.omoperation.adapters.Dash_Adapt
 import com.example.omoperation.adapters.DrawerAdapter
 import com.example.omoperation.databinding.ActivityDashboardBinding
+import com.example.omoperation.model.MIS
 import com.example.omoperation.room.AppDatabase
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -65,12 +72,42 @@ class DashboardAct : AppCompatActivity()   {
         super.onCreate(savedInstanceState)
 
         binding=DataBindingUtil.setContentView(this,R.layout.activity_dashboard)
+
+
+
+
+
+        // Start the location tracking service
+    //    val serviceIntent = Intent(this, LocationService::class.java)
+
+           // startService(serviceIntent)
+
+
+
         db=AppDatabase.getDatabase(this)
         lifecycleScope.launch {
             val timeThreshold = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
                 .format(Date(System.currentTimeMillis() - 24 * 60 * 60 * 1000))
             db.restorebarcodedao().deleteAfter24Hours(timeThreshold)
         }
+       lifecycleScope.launch {
+           if(!OmOperation.getPreferences2(Constants.todaydate,"").equals(Utils.GetTodayDate())){
+               OmOperation.savePreferences2(Constants.MISDATA,"[]")
+               OmOperation.savePreferences2(Constants.todaydate,"")
+           }
+
+
+        /*   val jsonString = OmOperation.getPreferences2(Constants.MISDATA, "")
+           val mydata: ArrayList<MIS> = jsonString?.takeIf { it.isNotEmpty() }?.let {
+               Gson().fromJson(it, object : TypeToken<ArrayList<MIS>>() {}.type)
+           } ?: arrayListOf()
+           mydata.add(
+               MIS(OmOperation.getPreferences(Constants.EMP_CODE,""),
+               OmOperation.getPreferences(Constants.EMP_CODE,""),
+               "123456789","CHALLAN")
+           )
+           OmOperation.savePreferences2(Constants.MISDATA,mydata.toString())*/
+       }
 
         empname=findViewById(R.id.empname)
        // WhatsAppService.sendWhatsAppMessage("+918285497507", "Your otp is 1234567");
@@ -84,7 +121,7 @@ class DashboardAct : AppCompatActivity()   {
         drawerLayout!!.addDrawerListener(actionBarDrawerToggle!!)
         actionBarDrawerToggle!!.syncState()
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-       init()
+        init()
         click()
     }
 

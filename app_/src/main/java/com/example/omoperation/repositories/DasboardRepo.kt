@@ -7,17 +7,12 @@ import android.content.pm.PackageManager
 import android.os.Build
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.lifecycleScope
 import com.example.omoperation.OmOperation
-import com.example.omoperation.activities.AVR
+import com.example.omoperation.R
+import com.example.omoperation.Utils
 import com.example.omoperation.activities.BarcodeModule
-import com.example.omoperation.activities.BarcodePrint
-import com.example.omoperation.activities.BranchesAct
-import com.example.omoperation.activities.ChallanCreation
-import com.example.omoperation.activities.CnCreationByEway
 import com.example.omoperation.activities.CnEnquery
 import com.example.omoperation.activities.CnRewareHouse
-import com.example.omoperation.activities.EmployeesAct
 import com.example.omoperation.activities.GetPaper
 import com.example.omoperation.activities.LoadingPlanByGate
 import com.example.omoperation.activities.LoadingPlanTally
@@ -30,9 +25,7 @@ import com.example.omoperation.activities.VehicleImage
 import com.example.omoperation.activities.VehicleLoadUnload
 import com.example.omoperation.activities.VideoList
 import com.example.omoperation.adapters.Dash_Adapt
-import com.example.omoperation.model.tally.TallyResp
 import com.example.omoperation.room.AppDatabase
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class DasboardRepo @Inject constructor(): Dash_Adapt.DashInterface {
@@ -79,7 +72,8 @@ class DasboardRepo @Inject constructor(): Dash_Adapt.DashInterface {
             con. startActivity(Intent(con, TripChallan::class.java))
         }
         else if(value==7){
-            con. startActivity(Intent(con, CnCreationByEway::class.java))
+            Utils.showDialog(con,"alert","please use om staff app", R.drawable.ic_error_outline_red_24dp)
+           // con. startActivity(Intent(con, CnCreationByEway::class.java))
         }
         else if(value==8){
             con. startActivity(Intent(con, RestoreActivity::class.java))
@@ -124,6 +118,7 @@ class DasboardRepo @Inject constructor(): Dash_Adapt.DashInterface {
 
         }
         else if(value==17){
+         //   con.startActivity(Intent(con, TestAct::class.java))
             exitApp()
         }
     }

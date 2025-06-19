@@ -151,4 +151,6 @@
         <item>CM</item>
         <item>FT</item>
     </string-array>
+    <string name="version">Version : 3.0</string>
+    <string name="lorry">Enter Lorry</string>
 </resources>

@@ -2,6 +2,10 @@ package com.example.omoperation.network
 
 import com.example.omoperation.model.CommonMod
 import com.example.omoperation.model.CommonRespS
+import com.example.omoperation.model.PunchInMod
+import com.example.omoperation.model.PunchInResp
+import com.example.omoperation.model.PunchOutMod
+import com.example.omoperation.model.PunchOutResp
 import com.example.omoperation.model.VersionResp
 import com.example.omoperation.model.audit.AuditMod
 import com.example.omoperation.model.avr.AvrMod
@@ -343,14 +347,14 @@ interface ServiceInterface   {
     @POST("omstaffAppVersion.php")//https://api.omlogistics.co.in/omstaffAppVersion.php
     suspend fun omstaffAppVersion(
         @Body mod: CommonMod
-    ): Response<VersionResp>?
+    ): Response<VersionResp>
 
 
     @Headers("Content-Type: application/json;charset=UTF-8")
     @POST("vluimage.php")
     suspend fun vluimage(
         @HeaderMap headers: Map<String, String?>,
-        @Body mod: CommonMod?
+        @Body mod: CommonMod
     ): Response<VehcleUnloadResp>
 
     @Headers("Content-Type: application/json;charset=UTF-8")
@@ -391,6 +395,23 @@ interface ServiceInterface   {
         @HeaderMap headers: Map<String?, String?>?,
         @Body mod: PrintCNMod?
     ): Call<PrintResp>?
+ @POST("office-entry-form.php")
+    fun punchin(
+
+        @Body mod: PunchInMod?
+    ): Call<PunchInResp>?
+
+    @POST("emp_visit.php")
+    fun punchout(
+        @Body mod: PunchOutMod
+    ): Call<PunchOutResp>
+
+
+    @POST("trackdeviceid.php")
+    suspend fun trackdeviceid(): Response<CommonRespS>
+
+    @POST("savedeviceid.php")
+    suspend fun savedeviceid(): Response<CommonRespS>
 
 
 //https://api.omlogistics.co.in/emp_networkdir.php

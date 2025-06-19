@@ -19,6 +19,7 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
+    <color name="red">#710429</color>
     <color name="color1">#B1254F</color>
     <color name="color2">#046D7A</color>
     <color name="color3">#B88A00</color>
@@ -26,6 +27,7 @@
     <color name="color5">#300380</color>
     <color name="color6">#255F59</color>
     <color name="color7">#2C9531</color>
+    <color name="green">#28852C</color>
     <color name="color8">#8A6F1E</color>
     <color name="color9">#A00C3E</color>
     <color name="color10">#2588B4</color>

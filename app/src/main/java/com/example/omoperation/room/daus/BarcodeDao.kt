@@ -26,7 +26,19 @@ interface BarcodeDao {
             "group by substr(barcode, 1, length(barcode) - 4)")
     suspend fun cnwithboxes() : List<CNWithBoxes>
 
-   val prefix: String
+    @Query("SELECT COUNT(*) AS a\n" +
+            "FROM barcode\n" +
+            "WHERE SUBSTR(barcode, 1, LENGTH(barcode) - 4) = :cn")
+    suspend infix fun getboxcn(cn : String):Int
+
+
+    @Query("SELECT barcode " +
+            "FROM barcode\n" +
+            "WHERE SUBSTR(barcode, 1, LENGTH(barcode) - 4) = :cn")
+    suspend infix fun gettotalboxofcn(cn : String):List<String>
+
+
+       val prefix: String
        get() = "%"
 
     @Query("select barcode " +
@@ -78,7 +90,7 @@ interface BarcodeDao {
 
  //@Query("select count() from barcode where SUBSTR(barcode.barcode, 1, LENGTH(barcode.barcode) - 4)=:barcode1")
  @Query("delete from barcode where SUBSTR(barcode.barcode, 1, LENGTH(barcode.barcode) - 4)  IN (:selectedbarcode)")
- suspend fun restoreselecteddata(selectedbarcode : List<String>):Int
+ suspend fun deleteuncheckdata(selectedbarcode : List<String>):Int
 
   @Query("SELECT barcode " +
           "FROM barcode " +

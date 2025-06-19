@@ -7,16 +7,19 @@ import android.content.pm.PackageManager
 import android.os.Build
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.example.omoperation.Constants
 import com.example.omoperation.OmOperation
 import com.example.omoperation.R
 import com.example.omoperation.Utils
 import com.example.omoperation.activities.BarcodeModule
 import com.example.omoperation.activities.CnEnquery
 import com.example.omoperation.activities.CnRewareHouse
+import com.example.omoperation.activities.Dummy
 import com.example.omoperation.activities.GetPaper
 import com.example.omoperation.activities.LoadingPlanByGate
 import com.example.omoperation.activities.LoadingPlanTally
 import com.example.omoperation.activities.LoginActivity
+import com.example.omoperation.activities.MainActivity
 import com.example.omoperation.activities.PickUpChallan
 import com.example.omoperation.activities.RestoreActivity
 import com.example.omoperation.activities.StockAudit
@@ -40,7 +43,17 @@ class DasboardRepo @Inject constructor(): Dash_Adapt.DashInterface {
         this.con=con
         db=AppDatabase.getDatabase(con)
         if(value==0){
+            if(OmOperation.getPreferences(Constants.EMP_CODE,"").equals("33740")||
+                OmOperation.getPreferences(Constants.EMP_CODE,"").equals("33917")){
+                con.startActivity(Intent(con, MainActivity::class.java))
+            }
+            else{
+
+            }
             con.startActivity(Intent(con, CnEnquery::class.java))
+          //   con.startActivity(Intent(con, MainActivity::class.java))
+
+           // con.startActivity(Intent(con, Dummy::class.java))
         }
         else if(value==1){
             openAVR()
@@ -50,7 +63,7 @@ class DasboardRepo @Inject constructor(): Dash_Adapt.DashInterface {
 
         }
         else if(value==3){
-            openchallanCreation()
+            openchallanCreation(1)
            }
         else if(value==4){
             if (ContextCompat.checkSelfPermission(con, android.Manifest.permission.BLUETOOTH_CONNECT)
@@ -69,55 +82,60 @@ class DasboardRepo @Inject constructor(): Dash_Adapt.DashInterface {
             con.startActivity(Intent(con, GetPaper::class.java))
         }
         else if(value==6){
+            openchallanCreation(5)
+          //  con. startActivity(Intent(con, PickUpChallan::class.java))
+        }
+
+        else if(value==7){
             con. startActivity(Intent(con, TripChallan::class.java))
         }
-        else if(value==7){
+        else if(value==8){
             Utils.showDialog(con,"alert","please use om staff app", R.drawable.ic_error_outline_red_24dp)
            // con. startActivity(Intent(con, CnCreationByEway::class.java))
         }
-        else if(value==8){
+        else if(value==9){
             con. startActivity(Intent(con, RestoreActivity::class.java))
         }
 
-        else if(value==9){
+        else if(value==10){
             con. startActivity(Intent(con, VehicleImage::class.java))
         }
-        else if(value==10){
+        else if(value==11){
             con. startActivity(Intent(con, PickUpChallan::class.java))
         }
-        else if(value==11){
+        else if(value==12){
 
 
             con.startActivity(Intent(con, LoadingPlanTally::class.java))
 
 
         }
-        else if(value==12){
+        else if(value==13){
             con.startActivity(Intent(con, CnRewareHouse::class.java))
 
-        } else if(value==13){
+        } else if(value==14){
             con.startActivity(Intent(con, StockAudit::class.java))
 
         }
-        else if(value==14){
+        else if(value==15){
             openAVRWithtGate()
            // OmOperation.logoutdevice()
 
 
         }
-        else if(value==15){
+        else if(value==16){
             con.startActivity(Intent(con, VehicleLoadUnload::class.java).putExtra("loadtype",2))
 
 
 
         }
-        else if(value==16){
+        else if(value==17){
             con.startActivity(Intent(con, VideoList::class.java))
 
 
 
         }
-        else if(value==17){
+        else if(value==18){
          //   con.startActivity(Intent(con, TestAct::class.java))
             exitApp()
         }
@@ -143,7 +161,7 @@ class DasboardRepo @Inject constructor(): Dash_Adapt.DashInterface {
 
     }
 
-    fun openchallanCreation( ) {
+    fun openchallanCreation(value : Int ) {
         val alertBox = android.app.AlertDialog.Builder(con)
         alertBox.setMessage("Do you want to use BackUp ?\n" +
                 "क्या आप बैकअप का उपयोग करना चाहते हैं?").setCancelable(false)
@@ -151,22 +169,22 @@ class DasboardRepo @Inject constructor(): Dash_Adapt.DashInterface {
                 "YES/हाँ"
             ) { dialog, which ->
 
-                con.startActivity(Intent(con, RestoreActivity::class.java).putExtra("value",1)
+                con.startActivity(Intent(con, RestoreActivity::class.java).putExtra("value",value)
                     .putExtra("isdelete","YES"))
 
                 // val activityManager = con.getSystemService(Context.ACTIVITY_SERVICE) as android.app.ActivityManager
                 //  activityManager.restartPackage(con.packageName)
 
-            }.setNegativeButton("NO/नहीं") { dialog, _ ->
+            }.setNegativeButton("Delete Data/डेटा मिटाएँं") { dialog, _ ->
 
-                con.startActivity(Intent(con, RestoreActivity::class.java).putExtra("value",1)
+                con.startActivity(Intent(con, RestoreActivity::class.java).putExtra("value",value)
                     .putExtra("isdelete","NO"))
 
                 dialog.dismiss() // Close the dialog
         }
 
             .setNeutralButton("Not Now/अभी नहीं"){  dialog, _ ->
-                con.startActivity(Intent(con, RestoreActivity::class.java).putExtra("value",1)
+                con.startActivity(Intent(con, RestoreActivity::class.java).putExtra("value",value)
                     .putExtra("isdelete","NOT NOW"))
                 dialog.dismiss()
             }
@@ -190,7 +208,7 @@ class DasboardRepo @Inject constructor(): Dash_Adapt.DashInterface {
                 // val activityManager = con.getSystemService(Context.ACTIVITY_SERVICE) as android.app.ActivityManager
                 //  activityManager.restartPackage(con.packageName)
 
-            }.setNegativeButton("NO/नहीं") { dialog, _ ->
+            }.setNegativeButton("Delete Data/डेटा मिटाएँं") { dialog, _ ->
 
                 con.startActivity(Intent(con, RestoreActivity::class.java).putExtra("value",2)
                     .putExtra("isdelete","NO"))
@@ -222,7 +240,7 @@ class DasboardRepo @Inject constructor(): Dash_Adapt.DashInterface {
                 // val activityManager = con.getSystemService(Context.ACTIVITY_SERVICE) as android.app.ActivityManager
                 //  activityManager.restartPackage(con.packageName)
 
-            }.setNegativeButton("NO/नहीं") { dialog, _ ->
+            }.setNegativeButton("Delete Data/डेटा मिटाएँ") { dialog, _ ->
 
                 con.startActivity(Intent(con, RestoreActivity::class.java).putExtra("value",4)
                     .putExtra("isdelete","NO"))

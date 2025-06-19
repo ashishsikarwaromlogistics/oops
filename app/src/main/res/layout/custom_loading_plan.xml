@@ -4,6 +4,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:background="@color/white"
+    android:layout_margin="@dimen/_2sdp"
     >
 
 
@@ -11,7 +12,8 @@
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="@dimen/_20sdp"
-        android:layout_marginTop="@dimen/_1sdp"
+        android:layout_marginTop="@dimen/_2sdp"
+        android:layout_marginBottom="@dimen/_2sdp"
         android:background="#F3F3F3"
         android:orientation="horizontal"
         >

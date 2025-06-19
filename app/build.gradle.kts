@@ -2,6 +2,8 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
     alias(libs.plugins.jetbrainshilt)
+    alias(libs.plugins.kotlin.compose)
+   // alias(libs.plugins.ksp)
     kotlin("kapt")
 }
 
@@ -13,14 +15,14 @@ android {
         applicationId = "com.example.omoperation"
         minSdk = 24
         targetSdk = 35
-        versionCode = 20
-        versionName = "3.0"
+        versionCode = 40
+        versionName = "5.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        vectorDrawables {
-            useSupportLibrary = true
-        }
-        vectorDrawables.useSupportLibrary = true
+      //  vectorDrawables {
+        //    useSupportLibrary = true
+        //}
+      //  vectorDrawables.useSupportLibrary = true
 
 
     }
@@ -38,8 +40,8 @@ android {
 
         debug {
             isDebuggable = true
-            isMinifyEnabled = true
-            isShrinkResources = true
+            isMinifyEnabled = false
+            isShrinkResources = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -47,11 +49,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "11"
     }
     buildFeatures {
         viewBinding = true
@@ -59,7 +61,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
+        kotlinCompilerExtensionVersion = "2.0.0"
     }
     packaging {
         resources {
@@ -103,35 +105,18 @@ dependencies {
     implementation(libs.glide)
     implementation(libs.zxing)
     implementation (libs.zxingandroidembedded)
+    implementation(libs.multidex)
 
-
-    /*implementation ("com.google.mlkit:text-recognition:16.0.0")
-
-    // CameraX dependencies
-    implementation ("androidx.camera:camera-core:1.3.0")
-    implementation ("androidx.camera:camera-camera2:1.3.0")
-    implementation ("androidx.camera:camera-lifecycle:1.3.0")
-    implementation ("androidx.camera:camera-view:1.3.0")*/
-
-    //implementation 'com.shuhart.stepview:stepview:1.5.1'
-    //implementation 'com.github.bumptech.glide:glide:4.15.0'
-   // implementation(libs.twilio)
-  //  implementation(libs.commons)
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
     implementation(libs.play.services.location)
     kapt(libs.roomCompiler)
     kapt(libs.hiltcompiler)
-
+    kapt(libs.glideCompiler)
 
     annotationProcessor(libs.glideCompiler)
 
-   /* implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1")
 
-    // ViewModel & LiveData
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.2")
-    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.7.2")*/
 
 
 

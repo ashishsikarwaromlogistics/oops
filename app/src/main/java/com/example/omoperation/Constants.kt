@@ -3,6 +3,7 @@ package com.example.omoperation
 class Constants {
     companion object{
         val PREF_NAME = "OMOPERATION"
+        val SAVE_OLL = "SAVE_OLL"
 
         val CNCREATION = "CNCREATION"
         val PROFILE = "PROFILE"
@@ -15,6 +16,8 @@ class Constants {
         val SENDDATA = "SENDDATA"
         public const val JWTTOKEN = "JWTTOKEN"
         val BCODE = "BCODE"
+        val BAJAJ = "BAJAJ"
+        val bajajlist_with_realtion = "bajajlist_with_realtion"
         val BNAME = "BNAME"
         val EMPNAME = "EMPNAME"
         val ISLOGIN = "ISLOGIN" // ISLOGIN="0" not log in ISLOGIN="1"  log in

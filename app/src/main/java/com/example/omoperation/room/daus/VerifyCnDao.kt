@@ -27,4 +27,7 @@ interface VerifyCnDao {
     @Query("select box from cn where cn  = (:cnvalue)")
     suspend fun getbox(cnvalue : String):String
 
+    @Query("select weight from cn where cn  = (:cnvalue)")
+    suspend fun getweight(cnvalue : String):String
+
 }

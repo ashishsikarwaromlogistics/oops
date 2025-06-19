@@ -98,8 +98,9 @@ class ChallanCreation : AppCompatActivity() {
 
 
         binding.destination.setOnClickListener {
-            val intent = Intent(this, BranchesAct::class.java)
-            intent .putExtra("senddata",1)
+            val intent = Intent(this, BranchesAct::class.java).also {
+                it.putExtra("senddata",1)
+            }
             resultLauncher.launch(intent)
 
         }
@@ -267,8 +268,15 @@ class ChallanCreation : AppCompatActivity() {
          }
          else if(binding.destination.text.toString().equals("9995") &&
              binding.odaStation.text.toString().equals("")){
-           Utils.showDialog(this,"error","Please select ODA station ",R.drawable.ic_error_outline_red_24dp)
-         return false
+             Utils.showDialog(this,"error","Please select ODA station ",R.drawable.ic_error_outline_red_24dp)
+             return false
+         }
+         else if(binding.edtLoadingPlan.text.toString().equals("") &&
+              !binding.destination.text.toString().equals("9999")
+
+                    ){
+             Utils.showDialog(this,"error","Please select Loading Plan ",R.drawable.ic_error_outline_red_24dp)
+             return false
          }
         return true
     }

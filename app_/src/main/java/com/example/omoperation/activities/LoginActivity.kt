@@ -2,6 +2,7 @@ package com.example.omoperation.activities
 
 import android.content.Intent
 import android.os.Bundle
+import android.provider.Settings
 import android.text.InputType
 import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
@@ -30,6 +31,7 @@ class LoginActivity : AppCompatActivity() {
             binding.empBranch.visibility= View.VISIBLE
             binding.guest.visibility= View.VISIBLE
         }
+        binding.dviceid.setText(Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID))
         cp= CustomProgress(this)
         loginviewmod=ViewModelProvider(this).get(LoginViewMod::class.java)
         binding.loginmod=loginviewmod

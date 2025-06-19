@@ -34,10 +34,11 @@ class CnEnquery : AppCompatActivity() {
     lateinit var cnEnqueryViewmod: CnEnqueryViewmod
     lateinit var title: TextView
     private var CN_GPS_API: String? = null
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-       binding=DataBindingUtil. setContentView(this,R.layout.activity_cn_enquery)
+        binding=DataBindingUtil. setContentView(this,R.layout.activity_cn_enquery)
         title=findViewById(R.id.title)
         title.setText("CN Enquiry")
         cnEnqueryViewmod=ViewModelProvider(this,CnEnqueryFact(this, CnEnqueryRepository())).get(CnEnqueryViewmod::class.java)
@@ -94,6 +95,7 @@ class CnEnquery : AppCompatActivity() {
         }
 
     }
+
     private fun getFrightDetails(response: FreightResp) {
         try {
             val CNerror: String = response.error
@@ -219,6 +221,7 @@ class CnEnquery : AppCompatActivity() {
             } else {
                 binding.downloadPodLayout.visibility = View.GONE
             }
+            binding.dynamicTable.removeAllViews()
             val heading: View =
                 LayoutInflater.from(this@CnEnquery).inflate(R.layout.table_row_cn, null, false)
             val heading1 = heading.findViewById<TextView>(R.id.packages)
@@ -385,4 +388,6 @@ class CnEnquery : AppCompatActivity() {
             )
         }
     }
+
+
 }

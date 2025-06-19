@@ -17,11 +17,16 @@ import com.example.omoperation.model.tally.Detail;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class LoadingPlanTallyAdapter extends RecyclerView.Adapter<LoadingPlanTallyAdapter.MyViewHolder> {
     List<Detail> detail;
     LoadingPlanInterface loadingPlanInterface;
+
+    private final Set<Integer> selectedItems = new HashSet<>();
     public LoadingPlanTallyAdapter(@NotNull List<Detail> detail, LoadingPlanInterface loadingPlanInterface) {
         this.detail=detail;
         this.loadingPlanInterface=loadingPlanInterface;
@@ -66,8 +71,40 @@ public class LoadingPlanTallyAdapter extends RecyclerView.Adapter<LoadingPlanTal
               }
             }
         });
-    }
 
+        if (selectedItems.contains(position)) {
+            holder.itemView.setBackgroundColor(Color.BLUE);
+        } else {
+            holder.itemView.setBackgroundColor(Color.TRANSPARENT);
+        }
+        holder.itemView.setOnLongClickListener(v -> {
+            toggleSelection(position);
+            return true;
+        });
+
+        // Normal click toggles if selection mode is active
+        holder.itemView.setOnClickListener(v -> {
+            if (!selectedItems.isEmpty()) {
+                toggleSelection(position);
+            }
+        });
+    }
+   public void removeselected(){
+        selectedItems.clear();
+        notifyDataSetChanged();
+    }
+    private void toggleSelection(int position) {
+        if (selectedItems.contains(position)) {
+            selectedItems.remove(position);
+        } else {
+            selectedItems.add(position);
+        }
+        notifyItemChanged(position);
+        if(selectedItems.size()==0) loadingPlanInterface.visibleicon(selectedItems,false);
+            else
+        loadingPlanInterface.visibleicon(selectedItems,true);
+       // selectionChangedListener.onSelectionChanged(new ArrayList<>(selectedItems));
+    }
     @Override
     public int getItemCount() {
         return detail.size();
@@ -93,6 +130,8 @@ public class LoadingPlanTallyAdapter extends RecyclerView.Adapter<LoadingPlanTal
     public interface LoadingPlanInterface{
 
         public void sendRemarks(int position);
-        public void sendRemarks(int position,boolean task);
+          void sendRemarks(int position,boolean task);
+          void visibleicon( Set<Integer> selectedItems,boolean isvisble );
+
     }
 }

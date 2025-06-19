@@ -1,17 +1,21 @@
 package com.example.omoperation.activities
 
+import android.app.Activity
 import android.content.Context
 import android.content.DialogInterface
+import android.content.Intent
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
 import android.util.Log
 import android.view.KeyEvent
 import android.view.MotionEvent
+import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -20,6 +24,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.transition.Visibility
 import com.example.omoperation.Constants
 import com.example.omoperation.CustomProgress
 import com.example.omoperation.OmOperation
@@ -46,6 +51,7 @@ import java.text.DecimalFormat
 import java.util.ArrayList
 import java.util.HashMap
 import java.util.Locale
+import kotlin.text.trimStart
 
 class LoadingPlanTally : AppCompatActivity(),LoadingPlanTallyAdapter.LoadingPlanInterface {
   lateinit  var binding : ActivityLoadingPlanTallyBinding
@@ -67,9 +73,30 @@ class LoadingPlanTally : AppCompatActivity(),LoadingPlanTallyAdapter.LoadingPlan
       val cp :CustomProgress by lazy { CustomProgress(this)}
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        var sourcelauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                // There are no request codes
+                val data: Intent? = result.data
+                //  des_branch_code=data!!.getStringExtra("branchcode").toString()
+                binding.destination.setText(data!!.getStringExtra("branchcode"))
+            }
+        }
 
         binding=DataBindingUtil. setContentView(this,R.layout.activity_loading_plan_tally)
         binding.destination.setText(OmOperation.getPreferences(Constants.BCODE,""))
+        binding.destination.setOnClickListener {
+            if(OmOperation.getPreferences(Constants.EMP_CODE,"").equals("36497")||
+                OmOperation.getPreferences(Constants.EMP_CODE,"").equals("37911")||
+                OmOperation.getPreferences(Constants.EMP_CODE,"").equals("36101")||
+                OmOperation.getPreferences(Constants.EMP_CODE,"").equals("36893")||
+                 OmOperation.getPreferences(Constants.EMP_CODE,"").equals("33740")||
+                OmOperation.getPreferences(Constants.EMP_CODE,"").equals("14971")){
+                val intent = Intent(this, BranchesAct::class.java)
+                intent .putExtra("senddata",1)
+                sourcelauncher.launch(intent)
+            }
+
+        }
         Lodinginterfaces = this
         df = DecimalFormat(formatter)
         speech = TextToSpeech(applicationContext) { status: Int ->
@@ -99,12 +126,19 @@ class LoadingPlanTally : AppCompatActivity(),LoadingPlanTallyAdapter.LoadingPlan
                     Utils.showDialog(this,"error","Please enter to Branch ",R.drawable.ic_error_outline_red_24dp)
                     return@setOnClickListener
             }
-            val mod = LorryMod()
+            val mod = LorryMod().apply {
+                status="search"
+                from_branch=binding.destination.text.toString()
+                to_branch=binding.edtToBranch.text.toString()
+                tally_by=tally_by
+            }
+           /* val mod = LorryMod()
             mod.status = "search"
-            mod.from_branch = OmOperation.getPreferences(Constants.BCODE,"")
-            // mod.from_branch="1314"
+           // mod.from_branch = OmOperation.getPreferences(Constants.BCODE,"")
+            mod.from_branch = binding.destination.text.toString()
+          // mod.from_branch="809"
             mod.tally_by = tally_by
-            mod.to_branch = binding.edtToBranch.text.toString()
+            mod.to_branch = binding.edtToBranch.text.toString()*/
             if(Utils.haveInternet(this)){
                 cp.show()
                 lifecycleScope.launch {
@@ -156,6 +190,46 @@ class LoadingPlanTally : AppCompatActivity(),LoadingPlanTallyAdapter.LoadingPlan
                                    )
                                }
 
+//delete this for loop
+                             /*  for (i in 0 until 10) {
+                                   total_weight =
+                                       (total_weight + response!!.body()!!.detail!!.get(0).WT!!.toDouble())
+                                   detail.add(
+                                       Detail(
+                                           response!!.body()!!.detail!!.get(0).CEE,
+                                           response!!.body()!!.detail!!.get(0).CEE_CUSTOMER_NAME,
+                                           response!!.body()!!.detail!!.get(0).CNR,
+                                           response!!.body()!!.detail!!.get(0).CN_CN_DATE,
+                                           response!!.body()!!.detail!!.get(0).CN_CN_NO,
+                                           response!!.body()!!.detail!!.get(0).CN_FREIGHT_PAID_MODE,
+                                           response!!.body()!!.detail!!.get(0).CN_MAMUAL_CN_DATE,
+                                           response!!.body()!!.detail!!.get(0).CUSTOMER_CUSTOMER_NAME,
+                                           response!!.body()!!.detail!!.get(0).DEL_POINT,
+                                           response!!.body()!!.detail!!.get(0).DESTINATION_BRANCH_NAME,
+                                           response!!.body()!!.detail!!.get(0).DEST_CODE,
+                                           response!!.body()!!.detail!!.get(0).FRIGHT_MODE,
+                                           response!!.body()!!.detail!!.get(0).M_CN_NO,
+                                           response!!.body()!!.detail!!.get(0).ORIGIN,
+                                           response!!.body()!!.detail!!.get(0).PKG,
+                                           response!!.body()!!.detail!!.get(0).QTY,
+                                           response!!.body()!!.detail!!.get(0).REASON,
+                                           response!!.body()!!.detail!!.get(0).SOURCE_BRANCH_NAME,
+                                           response!!.body()!!.detail!!.get(0).STATUS,
+                                           response!!.body()!!.detail!!.get(0).TMODE,
+                                           response!!.body()!!.detail!!.get(0).TPTR_MODE,
+                                           response!!.body()!!.detail!!.get(0).T_S_MODE,
+                                           response!!.body()!!.detail!!.get(0).WT,
+                                           response!!.body()!!.detail!!.get(0).CHRGWT,
+                                           "*",
+                                           response!!.body()!!.detail!!.get(0).COLOR_BY,
+                                           response!!.body()!!.detail!!.get(0).CN_AGE,
+                                           false,
+                                       )
+                                   )
+                               }*/
+
+
+
 
                                //  detail= (response.body()!!.detail as ArrayList<Detail>?)!!
                                grcount_num = 0
@@ -166,6 +240,9 @@ class LoadingPlanTally : AppCompatActivity(),LoadingPlanTallyAdapter.LoadingPlan
                                binding.tvTotWeight.setText("Total Weight = " + df.format(total_weight))
                                grcount_num = 0
                                adapter = LoadingPlanTallyAdapter(detail, Lodinginterfaces)
+
+
+
                                binding.recyCn.adapter = adapter
 
                            }
@@ -310,10 +387,11 @@ class LoadingPlanTally : AppCompatActivity(),LoadingPlanTallyAdapter.LoadingPlan
       }
     var foundcn = false
     private fun SearchCN() {
-
+         val value=binding.cnText.text.toString().trimStart('0')
         for (i in 0 until detail.size) {
-            if (binding.cnText.text.toString()
-                    .equals(detail.get(i).M_CN_NO) && detail.get(i).checkvarue == false
+            Log.d("ashish",(detail.get(i).M_CN_NO).toString().trimStart('0') +"--"+ value)
+            if (value
+                    ==(detail.get(i).M_CN_NO).toString().trimStart('0') && detail.get(i).checkvarue == false
             ) {
                 grcount_num = grcount_num + 1
                 sacn_weight = sacn_weight + detail.get(i).WT!!.toDouble()
@@ -565,6 +643,75 @@ class LoadingPlanTally : AppCompatActivity(),LoadingPlanTallyAdapter.LoadingPlan
             )
         )
         adapter.notifyDataSetChanged()
+    }
+
+    override fun visibleicon(selectedItems: Set<Int?>?,isvisible : Boolean) {
+        if(isvisible)
+        binding.tvicon.visibility= View.VISIBLE
+        else
+        binding.tvicon.visibility= View.GONE
+        binding.tvicon.setOnClickListener {
+            items = resources.getStringArray(R.array.loading_remarks)
+            val builder = AlertDialog.Builder(this@LoadingPlanTally)
+            builder.setItems(items) { dialog: DialogInterface, item: Int ->
+                if (item == 0) {
+                    remarks = "MNR"
+                } else if (item == 1) {
+                    remarks = "ICP"
+                } else if (item == 2) {
+                    remarks = "LC"
+                } else if (item == 3) {
+                    remarks = "OL"
+                } else if (item == 4) {
+                    remarks = "WOP"
+                } else if (item == 5) {
+                    remarks = "WF"
+                } else if (item == 6) {
+                    remarks = "WCD"
+                }
+                for(j in  selectedItems!!){
+                    val i=j!!
+                detail.set(
+                   i, Detail(
+                        detail.get(i).CEE,
+                        detail.get(i).CEE_CUSTOMER_NAME,
+                        detail.get(i).CNR,
+                        detail.get(i).CN_CN_DATE,
+                        detail.get(i).CN_CN_NO,
+                        detail.get(i).CN_FREIGHT_PAID_MODE,
+                        detail.get(i).CN_MAMUAL_CN_DATE,
+                        detail.get(i).CUSTOMER_CUSTOMER_NAME,
+                        detail.get(i).DEL_POINT,
+                        detail.get(i).DESTINATION_BRANCH_NAME,
+                        detail.get(i).DEST_CODE,
+                        detail.get(i).FRIGHT_MODE,
+                        detail.get(i).M_CN_NO,
+                        detail.get(i).ORIGIN,
+                        detail.get(i).PKG,
+                        detail.get(i).QTY,
+                        detail.get(i).REASON,
+                        detail.get(i).SOURCE_BRANCH_NAME,
+                        detail.get(i).STATUS,
+                        detail.get(i).TMODE,
+                        detail.get(i).TPTR_MODE,
+                        detail.get(i).T_S_MODE,
+                        detail.get(i).WT,
+                        detail.get(i).CHRGWT,
+                        remarks,
+                        detail!!.get(i).COLOR_BY,
+                        detail!!.get(i).CN_AGE,
+                        false,
+                    )
+                )}
+                adapter.notifyDataSetChanged()
+                adapter.removeselected()
+                binding.tvicon.visibility= View.GONE
+                dialog.dismiss()
+            }
+
+            builder.show()
+        }
+
     }
 
     override fun sendRemarks(i: Int) {

@@ -602,6 +602,7 @@ public class Utils {
     public static String getCurrentTimestamp()  {
         return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
     }
+
     public static String getImei(Context context) {
       return getDeviceIMEI(context);
         /*TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
@@ -632,5 +633,7 @@ public class Utils {
        }
 
     }
+
+
 
 }//d3af2396d1b0fee1

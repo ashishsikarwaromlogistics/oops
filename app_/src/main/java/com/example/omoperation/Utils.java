@@ -46,6 +46,8 @@ import androidx.core.content.ContextCompat;
 
 
 import com.bumptech.glide.Glide;
+import com.example.omoperation.model.MIS;
+import com.google.gson.Gson;
 
 import java.io.ByteArrayOutputStream;
 import java.text.DateFormat;
@@ -53,6 +55,7 @@ import java.text.DecimalFormat;
 import java.text.Format;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -104,7 +107,7 @@ public class Utils {
     public static String GetTodayDate(){
         Date c = Calendar.getInstance().getTime();
         SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy",Locale.US);
-       return    df.format(c);
+        return    df.format(c);
 
     }
 
@@ -569,9 +572,18 @@ public class Utils {
         return output;
     }
     public static String getDeviceIMEI(Context context) {
+        String deviceUniqueIdentifier=  Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
 
-        String deviceUniqueIdentifier = null;
-       try{
+        try{
+             deviceUniqueIdentifier=  Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
+
+        }
+       catch (Exception e){
+           deviceUniqueIdentifier="errorfind";
+       }
+      //  String deviceUniqueIdentifier=  Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
+       // String deviceUniqueIdentifier = null;
+      /* try{
            TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
            if (null != tm) {
                deviceUniqueIdentifier = tm.getDeviceId();
@@ -583,11 +595,42 @@ public class Utils {
        }
        catch (Exception e){
            return "1234567";
-        }
+        }*/
+        return deviceUniqueIdentifier;
 
     }
     public static String getCurrentTimestamp()  {
         return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
     }
+    public static String getImei(Context context) {
+      return getDeviceIMEI(context);
+        /*TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
 
-}
+        if (ActivityCompat.checkSelfPermission(context, android.Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                return Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
+
+              //  return telephonyManager.getImei(); // For Android 8.0+
+            } else {
+                return telephonyManager.getDeviceId(); // For Android 7.1 and below
+            }
+        }
+        else {
+            return "notfound";// Permission not granted
+        }*/
+
+    }
+    public static String getocrbox(int box){
+       try{
+           if(box<10) return "000"+box;
+           else if(box<100) return "00"+box;
+           else if(box<1000) return "0"+box;
+           else return "000"+box;
+       }
+       catch (Exception e){
+           return "0001";
+       }
+
+    }
+
+}//d3af2396d1b0fee1

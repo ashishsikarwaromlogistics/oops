@@ -11,6 +11,7 @@ import com.example.omoperation.network.ApiClient
 import com.example.omoperation.network.ServiceInterface
 import com.example.omoperation.model.CommonMod
 import kotlinx.coroutines.launch
+import java.util.Locale
 import javax.inject.Inject
 
 class VehilcleViewMod @Inject constructor(application: Application) : AndroidViewModel(application) {
@@ -36,7 +37,7 @@ class VehilcleViewMod @Inject constructor(application: Application) : AndroidVie
              return
          }
         val mod= CommonMod()
-        mod.lorryno=vehicleno.value!!.toUpperCase()
+        mod.lorryno=vehicleno.value!!.uppercase(Locale.getDefault())
         mod.type="Challan"
         viewModelScope.launch {
             _livedata.value=NetworkState.Loading

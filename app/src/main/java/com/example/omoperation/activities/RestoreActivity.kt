@@ -10,7 +10,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.omoperation.Constants
 import com.example.omoperation.CustomProgress
+import com.example.omoperation.OmOperation
 import com.example.omoperation.R
 import com.example.omoperation.adapters.RestoreAdapter
 import com.example.omoperation.databinding.ActivityRestoreBinding
@@ -45,6 +47,8 @@ class RestoreActivity : AppCompatActivity(), RestoreAdapter.SendValue {
         try {
             isdelete= intent.getStringExtra("isdelete").toString()
            if(isdelete.equals("NO")){
+               OmOperation.savePreferences(Constants.bajajlist_with_realtion,"")
+               OmOperation.savePreferences(Constants.BAJAJ,"")
                lifecycleScope.launch {
                    db.restorebarcodedao().deleteAllBarcodes()
                    db.barcodeDao().deleteAllBarcodes()
@@ -60,7 +64,7 @@ class RestoreActivity : AppCompatActivity(), RestoreAdapter.SendValue {
 
 
         restorecnlist = ArrayList()
-        value = intent.getIntExtra("value", 0)
+        value = intent.getIntExtra("value", 0)//
         //mylist.add(CNWithBoxes("1234", "2", "2"))
 
 
@@ -86,7 +90,7 @@ class RestoreActivity : AppCompatActivity(), RestoreAdapter.SendValue {
             else{
                  val a = db.restorebarcodedao().getAll()
                  for (i in 0 until a.size) {
-                     val barcodem = Barcode(barcode = a.get(i).barcode)
+                     val barcodem = Barcode(barcode = a.get(i).barcode,timestamp=a.get(i).timestamp)
                      db.barcodeDao().inserbarcode(barcodem)
 
                  }
@@ -116,6 +120,9 @@ class RestoreActivity : AppCompatActivity(), RestoreAdapter.SendValue {
                     }else if (value == 4) {
                         startActivity(Intent(this@RestoreActivity, AVRWithtGate::class.java).putExtra("type","offlinechallan"))
                         finish()
+                    }else if (value == 5) {
+                        startActivity(Intent(this@RestoreActivity, PicUpAvr::class.java).putExtra("type","avrpickup"))
+                        finish()
                     }
             }
             cp.dismiss()
@@ -130,7 +137,7 @@ class RestoreActivity : AppCompatActivity(), RestoreAdapter.SendValue {
                     }
 
                 }
-                db.barcodeDao().restoreselecteddata(deleteddata)
+                db.barcodeDao().deleteuncheckdata(deleteddata)
                 adapter.notifyDataSetChanged()
             }
             AlertDialog.Builder(this)
@@ -147,9 +154,12 @@ class RestoreActivity : AppCompatActivity(), RestoreAdapter.SendValue {
                             startActivity(Intent(this, AVR::class.java))
                         else if(value==3)
                             startActivity(Intent(this, ChallanCreation::class.java).putExtra("type","offlinechallan"))
- else if(value==4)
+                        else if(value==4)
                             startActivity(Intent(this, AVRWithtGate::class.java).putExtra("type","offlinechallan"))
+                        else if (value == 5) {
+                            startActivity(Intent(this@RestoreActivity, PicUpAvr::class.java).putExtra("type","avrpickup"))
 
+                        }
                        dialog.dismiss()
                         finish()
 
@@ -159,7 +169,7 @@ class RestoreActivity : AppCompatActivity(), RestoreAdapter.SendValue {
         binding.deleteall.setOnClickListener {
             confirmation()
         }
-        binding.cancel.setOnClickListener {
+        /*binding.cancel.setOnClickListener {
             lifecycleScope.launch {
                 val deleteddata = ArrayList<String>()
                 for (i in 0 until restorecnlist.size) {
@@ -179,9 +189,36 @@ class RestoreActivity : AppCompatActivity(), RestoreAdapter.SendValue {
                 startActivity(Intent(this, AVR::class.java))
            else if (value == 4)
                 startActivity(Intent(this, AVRWithtGate::class.java))
+            else if (value == 5) {
+                startActivity(Intent(this@RestoreActivity, PicUpAvr::class.java).putExtra("type","avrpickup"))
+
+            }
            else
             finish()
+        }*/
+        binding.cancel.setOnClickListener {
+            lifecycleScope.launch {
+                val deleteddata = ArrayList<String>()
+                for (i in 0 until restorecnlist.size) {
+                    if (!restorecnlist[i].restore) {
+                        deleteddata.add(restorecnlist[i].cn)
+                    }
+                }
+                db.barcodeDao().deleteuncheckdata(deleteddata)
+                adapter.notifyDataSetChanged()
+
+                // Now start activity after operation completes
+                when (value) {
+                    1 -> startActivity(Intent(this@RestoreActivity, ChallanCreation::class.java))
+                    3 -> startActivity(Intent(this@RestoreActivity, ChallanCreation::class.java).putExtra("type", "offlinechallan"))
+                    2 -> startActivity(Intent(this@RestoreActivity, AVR::class.java))
+                    4 -> startActivity(Intent(this@RestoreActivity, AVRWithtGate::class.java))
+                    5 -> startActivity(Intent(this@RestoreActivity, PicUpAvr::class.java).putExtra("type", "avrpickup"))
+                    else -> finish()
+                }
+            }
         }
+
     }
 
     override fun chageststus(position: Int, restore: Boolean) {
@@ -233,12 +270,14 @@ class RestoreActivity : AppCompatActivity(), RestoreAdapter.SendValue {
                 1 -> {
                     startActivity(Intent(this@RestoreActivity, ChallanCreation::class.java))
                 }
- 3 -> {
+                3 -> {
                     startActivity(Intent(this@RestoreActivity, ChallanCreation::class.java).putExtra("type","offlinechallan"))
                 }
 
                 2 -> startActivity(Intent(this@RestoreActivity, AVR::class.java))
                 4 -> startActivity(Intent(this@RestoreActivity, AVRWithtGate::class.java))
+                5 -> startActivity(Intent(this@RestoreActivity, PicUpAvr::class.java).putExtra("type","avrpickup"))
+
                 else -> finish()
             }
 

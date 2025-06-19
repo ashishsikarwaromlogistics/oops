@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import android.view.WindowManager
+import android.view.inputmethod.EditorInfo
 import android.widget.ListView
 import android.widget.TextView
 import android.widget.Toast
@@ -76,6 +77,8 @@ class PrintMultiple : AppCompatActivity() {
     var iszebraprint=false
     var STICKER_COUNT=""
     val boxes=ArrayList<Int>()
+    var totalno=0
+    var myprintcn=""
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -100,17 +103,48 @@ class PrintMultiple : AppCompatActivity() {
                 }
             }
         })
+        binding.inputCn.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                if (binding.inputCn.getText().toString().isEmpty()) {
+                    Toast.makeText(this, "Enter CN Number", Toast.LENGTH_SHORT).show()
+                } else if (binding.inputBranchCode.text.toString() == null) {
+                    Toast.makeText(this, "Select Branch", Toast.LENGTH_SHORT).show()
+                } else {
+                    getCNDetails(binding.inputCn.getText().toString().trim { it <= ' ' })
+                }
+                true
+            } else {
+                false
+            }
+        }
+        binding.imgSearch.setOnClickListener {
+            if (binding.inputCn.getText().toString().isEmpty()) {
+                Toast.makeText(this, "Enter CN Number", Toast.LENGTH_SHORT).show()
+            } else if (binding.inputBranchCode.text.toString() == null) {
+                Toast.makeText(this, "Select Branch", Toast.LENGTH_SHORT).show()
+            } else {
+                getCNDetails(binding.inputCn.getText().toString().trim { it <= ' ' })
+            }
+        }
 
         binding.btnPrint.setOnClickListener {
-
             if(!isvalid){
                 Utils.showDialog(this@PrintMultiple,"error","CN not validate",R.drawable.ic_error_outline_red_24dp)
                 return@setOnClickListener
             }
-            if(isConnected()){
+            else if(boxes.size==0){
+                Utils.showDialog(this@PrintMultiple,"error","Box is not added",R.drawable.ic_error_outline_red_24dp)
+                return@setOnClickListener
+            }
+            else if(binding.edtRemarks.text.toString().isEmpty()|| binding.edtRemarks.text.toString().isBlank()){
+                Utils.showDialog(this@PrintMultiple,"error","Please Add remarks first.",R.drawable.ic_error_outline_red_24dp)
+                return@setOnClickListener
+            }
+            else if(isConnected()){
                 lifecycleScope.launch {
                     var currentBox=0;
-                    var cn=binding.inputCn.text.toString();
+                    //var cn=binding.inputCn.text.toString();
+                    var cn=myprintcn
                     for(i in 0 until boxes.size){
                         currentBox=boxes.get(i).toInt()
                         var bar: String = if (currentBox < 10) {
@@ -124,13 +158,17 @@ class PrintMultiple : AppCompatActivity() {
                         }
                         bar = "O" + Utils.transformNumber(bar.toLong())
 
-                        printdata(binding.inputNoOfBox.text.toString(),bar,binding.inputCn.text.toString(),binding.inputFrom.text.toString(),binding.inputTo.text.toString(),currentBox.toString(),binding.manualNo.text.toString())
+                        printdata(binding.inputNoOfBox.text.toString(),bar,myprintcn,binding.inputFrom.text.toString(),binding.inputTo.text.toString(),currentBox.toString(),binding.manualNo.text.toString())
 
                     }
                     savesticker()
 
 
                 }
+            }
+            else {
+                Utils.showDialog(this@PrintMultiple,"error","Please Connect Printer first",R.drawable.ic_error_outline_red_24dp)
+                return@setOnClickListener
             }
         }
 
@@ -152,14 +190,18 @@ class PrintMultiple : AppCompatActivity() {
                     response: Response<Myquery>
                 ) {
                     cp.dismiss()
+                    totalno=0
                     if(response.code()==200){
                         if(response.body()?.error.equals("false")){
+                            myprintcn=response.body()?.cn_enquiry?.get(0)?.CNNO.toString()
                             isvalid=true
                             STICKER_COUNT=response.body()?.cn_enquiry?.get(0)?.STICKER_COUNT.toString()
                             binding.inputFrom.setText(response.body()?.cn_enquiry?.get(0)?.BFROM.toString())
                             binding.inputTo.setText(response.body()?.cn_enquiry?.get(0)?.BTO.toString())
                             binding.manualNo.setText(response.body()?.cn_enquiry?.get(0)?.CN_REMARKS.toString()?:"-")
                             binding.inputNoOfBox.setText(response.body()?.cn_enquiry?.get(0)?.NO_OF_PKG.toString())
+                            totalno=Utils.check_null_Int(binding.inputNoOfBox.text.toString())
+                            binding.inputCn.isEnabled=false
                             //binding.inputFrom.setText(response.body()?.cn_enquiry?.get(0)?.BFROM.toString())
                         }
                         else {
@@ -172,6 +214,7 @@ class PrintMultiple : AppCompatActivity() {
 
                 override fun onFailure(call: Call<Myquery>, t: Throwable) {
                     cp.dismiss()
+                    totalno=0
                     isvalid=false
                     Utils.showDialog(this@PrintMultiple,"onFailure",t.message,R.drawable.ic_error_outline_red_24dp)
 
@@ -237,7 +280,7 @@ class PrintMultiple : AppCompatActivity() {
                     "\"\r\n",
             "CODEPAGE 1252\r\n",
 
-            "BOX 8,135,300,170,3\r\n",//x y w , h from y axis,radius
+        //    "BOX 8,135,300,170,3\r\n",//x y w , h from y axis,radius
             /*("TEXT 10,140,\"ROMAN.TTF\",0,2,12,\"" + cn
                     + "\"\r\n"),*/
             ("TEXT 10,140,\"ROMAN.TTF\",0,2,11,\"CN:"
@@ -313,14 +356,17 @@ class PrintMultiple : AppCompatActivity() {
             }
         }
         else{
-            for (command in ccmm) {
-
-                //   for (String command : Retail_Express) {
-                //   for (String command : rugtec) {
-                outputStream!!.write(command.toByteArray())
-                outputStream!!.flush()
-                //  publishProgress(currentBox)
+            try{
+                for (command in ccmm) {
+                    outputStream!!.write(command.toByteArray())
+                    outputStream!!.flush()
+                    //  publishProgress(currentBox)
+                }
             }
+            catch (e:Exception){
+                Utils.showDialog(this,"${e.toString()}","Unexpected error(Printer not connected properly)",R.drawable.ic_error_outline_red_24dp)
+            }
+
         }
 
 
@@ -553,9 +599,21 @@ class PrintMultiple : AppCompatActivity() {
             (resources.displayMetrics.heightPixels * 0.5).toInt()// Wrap content for height
         )
         //d.setContentView(R.layout.dialog_box)
+        binding1.tvbox.setText("Total Box are ${totalno}.")
         binding1.tvclose.setOnClickListener { d.dismiss() }
+        binding1.done.setOnClickListener { d.dismiss() }
+        binding1.remove.setOnClickListener {
+            boxes.remove(binding1.edtbox.text.toString().toInt())
+            binding1.edtbox.setText("")
+            binding.tvboxes.setText(boxes.toString())
+            binding1.list.setText(""+boxes.toString())
+        }
+        binding1.list.setText(""+boxes.toString())
         binding1.submit.setOnClickListener {
-            if(binding1.edtbox.text.length==0) Utils.showDialog(this,"error","please enter box numner ",R.drawable.ic_error_outline_red_24dp)
+            if(totalno<Utils.check_null_Int(binding1.edtbox.text.toString())){
+                Utils.showDialog(this,"error","You cann't enter value more than ${totalno}",R.drawable.ic_error_outline_red_24dp)
+            }
+            else if(binding1.edtbox.text.length==0) Utils.showDialog(this,"error","please enter box numner ",R.drawable.ic_error_outline_red_24dp)
             else if(binding1.edtbox.text.toString().toInt()<1){
                 Utils.showDialog(this,"error","box number is not valid",R.drawable.ic_error_outline_red_24dp)
 
@@ -565,10 +623,12 @@ class PrintMultiple : AppCompatActivity() {
 
             }
             else {
-                Utils.showDialog(this,"Success","Added",R.drawable.ic_success)
-           boxes.add(binding1.edtbox.text.toString().toInt())
+               // Utils.showDialog(this,"Success","Added",R.drawable.ic_success)
+                boxes.add(binding1.edtbox.text.toString().toInt())
+                binding1.edtbox.setText("")
                 binding.tvboxes.setText(boxes.toString())
-                d.dismiss()
+                binding1.list.setText(""+boxes.toString())
+               // d.dismiss()
             }
 
         }
@@ -576,3 +636,4 @@ class PrintMultiple : AppCompatActivity() {
     }
 
 }
+//123465

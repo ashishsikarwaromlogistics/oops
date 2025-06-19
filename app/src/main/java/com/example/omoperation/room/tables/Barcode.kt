@@ -10,7 +10,7 @@ import java.util.Locale
 
 @Entity
 data class Barcode(@PrimaryKey(autoGenerate = true)  val uid: Int=0,
-                   @ColumnInfo(name = "timestamp") val timestamp: String= getCurrentTimestamp(),
+                   @ColumnInfo(name = "timestamp") val timestamp: String,
                    @ColumnInfo(name = "barcode") val barcode: String?,
 
 )

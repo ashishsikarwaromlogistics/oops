@@ -1,5 +1,6 @@
 package com.example.omoperation.activities
 
+import android.R.attr.name
 import android.app.DatePickerDialog
 import android.app.Dialog
 import android.app.ProgressDialog
@@ -40,7 +41,6 @@ import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.omoperation.Constants
@@ -78,6 +78,7 @@ import java.util.Calendar
 import java.util.LinkedList
 import java.util.Locale
 import javax.inject.Inject
+
 
 @AndroidEntryPoint
 class AVRWithtGate : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSpeech.OnInitListener,
@@ -463,7 +464,28 @@ class AVRWithtGate : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSpeec
                         barCode =
                             getString(R.string.NBC_Prefix) + CustomerBarcode[1] + CustomerBarcode[4]
                     } else {
-                        if (barCode.contains("-")) {
+                        if (barCode.startsWith("0"))
+                        {
+                            barCode =barCode.trim { it <= ' ' }.replaceFirst("^0+(?!$)".toRegex(), "")
+                            val input = barCode
+                           // val breakspoint = input.split("-")
+
+                            val breakspoints = input.split("~")
+                            val breakspoint=breakspoints[0].split("-")
+
+                            for (part in breakspoint) {
+                                println(part)
+                            }
+                            if(breakspoint[1].length>4){
+
+                                val result: String = breakspoint[1].replace("[A-Za-z]", "")
+                                barCode=breakspoint[0]+result
+                            }
+                            else{
+                                barCode=breakspoint[0]+ breakspoint[1]
+                            }
+                        }
+                        else if (barCode.contains("-")) {
 
 
                             /* val builder = StringBuilder(barCode)
@@ -476,13 +498,20 @@ class AVRWithtGate : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSpeec
                             // Print each part
                             for (part in parts) {
                                 println(part)
-                            }
+                                val input = barCode
+                                val breakspoint = input.split("-")
+                                for (part in breakspoint) {
+                                    println(part)
+                                }
+                                if(breakspoint[1].length>4){
+                                    barCode=breakspoint[0]+breakspoint[1].substring(0,breakspoint[1].length-1)
+                                }
+                                else{
+                                    barCode=breakspoint[0]+ breakspoint[1]
+                                }          }
 
                             barCode=parts[1]+"0"+parts[2].substring(1,parts[2].length)
                             Log.d("ashish",barCode);
-                        }
-                        else if (barCode.startsWith("0")) {
-                            barCode =barCode.trim { it <= ' ' }.replaceFirst("^0+(?!$)".toRegex(), "")
                         }
                         else{
                             barCode = barCode.substring(1, barCode.length)
@@ -928,6 +957,15 @@ class AVRWithtGate : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSpeec
             }
             R.id.clear ->{
                 DeleteAllbarcode()
+                true
+            }
+            R.id.duplicate ->{
+                lifecycleScope.launch {
+                    db.restorebarcodedao().deleteDuplicateBarcodes()
+                    withContext(Dispatchers.Main) {
+                        Toast.makeText(this@AVRWithtGate, "Duplicate barcodes deleted", Toast.LENGTH_SHORT).show()
+                    }
+                }
                 true
             }
 

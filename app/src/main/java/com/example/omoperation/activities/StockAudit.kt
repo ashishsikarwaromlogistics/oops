@@ -363,7 +363,7 @@ class StockAudit : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSpeech.
             binding.barcodeCount.setText(barcodelist.size.toString())
             adapter.notifyDataSetChanged()
             lifecycleScope.launch {
-                val barcodem= Barcode(barcode=barcode )
+                val barcodem= Barcode(barcode=barcode , timestamp = Utils.getCurrentTimestamp())
                 db.barcodeDao().inserbarcode(barcodem)
                 getcureentGR(barcode)
             }
@@ -376,7 +376,7 @@ class StockAudit : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSpeech.
         }
     }
     private fun speak(city : String){
-        textToSpeech.speak(city.toLowerCase(), TextToSpeech.QUEUE_FLUSH, null, null)
+        textToSpeech.speak(city.lowercase(Locale.getDefault()), TextToSpeech.QUEUE_FLUSH, null, null)
     }
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val inflater = menuInflater

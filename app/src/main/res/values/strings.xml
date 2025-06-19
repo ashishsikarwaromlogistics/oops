@@ -12,7 +12,7 @@
 
     <string name="lorem_ipsum">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in scelerisque sem. Mauris
-        volutpat, dolor id interdum ullamcorper, risus dolor egestas lectus, sit amet mattis purus
+        volutpat, dolor id interdum ullamcorper, rises dolor egestas lectus, sit amet mattis purus
         dui nec risus. Maecenas non sodales nisi, vel dictum dolor. Class aptent taciti sociosqu ad
         litora torquent per conubia nostra, per inceptos himenaeos. Suspendisse blandit eleifend
         diam, vel rutrum tellus vulputate quis. Aliquam eget libero aliquet, imperdiet nisl a,
@@ -139,7 +139,7 @@
         <item>Wrong Feeding</item>
         <item>Wrong CN Destination</item>
     </string-array>
-    <string name="title_activity_my_browser">MyBrowser</string>
+    <string name="title_activity_my_browser">My Browser</string>
     <string name="content">Splash Screen LOGO</string>
     <string name="get_paper">Get Paper</string>
     <string name="submit">Submit</string>
@@ -151,6 +151,6 @@
         <item>CM</item>
         <item>FT</item>
     </string-array>
-    <string name="version">Version : 3.0</string>
-    <string name="lorry">Enter Lorry</string>
+    <string name="version">Version : 5.1</string>
+    <string name="lorry">EnterLorry</string>
 </resources>

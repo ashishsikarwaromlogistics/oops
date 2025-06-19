@@ -1,9 +1,13 @@
 package com.example.omoperation.activities
 
 import android.Manifest
+import android.Manifest.permission.READ_MEDIA_IMAGES
 import android.content.DialogInterface
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
@@ -15,9 +19,12 @@ import android.view.View.OnTouchListener
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.lifecycleScope
@@ -54,6 +61,7 @@ class VehicleLoadUnload : AppCompatActivity(), ImageAdapter.ImageInterface {
     var status="loadChallan"
     val cp:CustomProgress by lazy { CustomProgress(this) }
     var loadtype=1
+    private val REQUEST_PERMISSION = 1001
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding=DataBindingUtil.setContentView(this, R.layout.activity_vehicle_load_unload)
@@ -62,8 +70,7 @@ class VehicleLoadUnload : AppCompatActivity(), ImageAdapter.ImageInterface {
         title=findViewById(R.id.title)
         title.setText("Vehicle Load/Unload")
        binding.recyimage.setHasFixedSize(false)
-        binding.recyimage.layoutManager=LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL, false
-        )
+        binding.recyimage.layoutManager=LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL, false)
         binding.fieldVehicleNo.setOnFocusChangeListener(OnFocusChangeListener { v: View?, hasFocus: Boolean ->
             if (!hasFocus) {
                 val vehicle: String = binding.fieldVehicleNo.getText().toString().trim { it <= ' ' }
@@ -119,8 +126,23 @@ class VehicleLoadUnload : AppCompatActivity(), ImageAdapter.ImageInterface {
             }
         }
         binding.browse.setOnClickListener {
-            cameraPermissionRequest.launch(Manifest.permission.CAMERA)
-
+           /* if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                if (ContextCompat.checkSelfPermission(this, READ_MEDIA_IMAGES) == PERMISSION_GRANTED) {
+                    dispatchTakePictureIntent()
+                } else {
+                    ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_MEDIA_IMAGES), REQUEST_PERMISSION)
+                }
+            }
+           else*/
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED||
+                ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                // Request permission
+                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.CAMERA), REQUEST_PERMISSION)
+            } else {
+                // Permission already granted, launch the image picker
+               // openGallery()
+                dispatchTakePictureIntent()
+            }
            // cameraPermissionRequest
         }
         binding.select.setOnClickListener {
@@ -134,6 +156,23 @@ class VehicleLoadUnload : AppCompatActivity(), ImageAdapter.ImageInterface {
         }
 
     }
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == REQUEST_PERMISSION) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permission granted, open the image picker
+                //openGallery()
+                dispatchTakePictureIntent()
+            } else {
+                // Permission denied
+                Toast.makeText(this, "Permission denied to read your External storage", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+
+
+
     private fun dispatchTakePictureIntent() {
         val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         if (takePictureIntent.resolveActivity(packageManager) != null) {
@@ -171,7 +210,14 @@ class VehicleLoadUnload : AppCompatActivity(), ImageAdapter.ImageInterface {
         }
     }
 
-
+    /*override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_IMAGE_BROWSE && resultCode == RESULT_OK) {
+            val selectedImageUri: Uri? = data?.data
+            // Handle the selected image URI (e.g., display it in an ImageView)
+            Toast.makeText(this, "Image selected: $selectedImageUri", Toast.LENGTH_SHORT).show()
+        }
+    }*/
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
@@ -192,30 +238,16 @@ class VehicleLoadUnload : AppCompatActivity(), ImageAdapter.ImageInterface {
 
     // Function to create an image Uri where the camera will save the photo
 
-    private val cameraPermissionRequest = registerForActivityResult(
-        ActivityResultContracts.RequestPermission()
-    ) { isGranted ->
-        if (isGranted) {
-          //  dispatchTakePictureIntent()
 
-            openGallery()
-        } else {
-            // Permission denied
-        }
-    }
-
-    private val galleryPermissionRequest = registerForActivityResult(
-        ActivityResultContracts.RequestPermission()
-    ) { isGranted ->
-        if (isGranted) {
-            openGallery()
-        } else {
-            // Permission denied
-        }
-    }
     fun openGallery(){
         val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-        startActivityForResult(intent, REQUEST_IMAGE_BROWSE)
+        if (intent.resolveActivity(packageManager) != null) {
+            startActivityForResult(intent, REQUEST_IMAGE_BROWSE)
+        } else {
+           Utils.showDialog(this,"error","No App to Handle this ",R.drawable.ic_error_outline_red_24dp)
+        }
+        //val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+       // startActivityForResult(intent, REQUEST_IMAGE_BROWSE)
     }
     fun validate():Boolean{
         if(binding.fieldVehicleNo.text.toString().equals("")){

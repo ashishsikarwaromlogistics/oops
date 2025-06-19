@@ -61,7 +61,7 @@ class LoadingPlanTally : AppCompatActivity(),LoadingPlanTallyAdapter.LoadingPlan
     lateinit var adapter: LoadingPlanTallyAdapter
     lateinit var send_lorryType: String
     var check_lorryType: Int = 0
-      val detail: ArrayList<Detail> by lazy { ArrayList() }
+    val detail: ArrayList<Detail> by lazy { ArrayList() }
     lateinit var Lodinginterfaces: LoadingPlanTallyAdapter.LoadingPlanInterface
     var remarks = ""
       val cp :CustomProgress by lazy { CustomProgress(this)}
@@ -206,7 +206,15 @@ class LoadingPlanTally : AppCompatActivity(),LoadingPlanTallyAdapter.LoadingPlan
             }
             Log.d("ashishsikarwar", "" + sacn_weight);
             Log.d("ashishsikarwar", "" + check_lorryType);
-            if (a > 0 && sacn_weight < check_lorryType) {
+            if (a > 0 ) {
+                Utils.showDialog(
+                    this,
+                    "Error",
+                    "You have " + a + " missing some GR . Kindly add remark to complete this.",
+                    R.drawable.ic_error_outline_red_24dp
+                )
+            }
+            else  if (a > 0 && sacn_weight < check_lorryType) {
                 Utils.showDialog(
                     this,
                     "Error",

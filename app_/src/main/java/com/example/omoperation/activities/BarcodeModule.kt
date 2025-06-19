@@ -17,11 +17,13 @@ class BarcodeModule : AppCompatActivity() ,CommonAdapter.CommonInterface{
     var name: Array<String> = arrayOf(
         "Print Sticker",
         "Multiple Sticker Print",
-        "Docket Print"
+        "Docket Print",
+        "Safety In"
     )
     var icon: Array<Int> = arrayOf(
         R.drawable.barcodeprint,
         R.drawable.plan,
+        R.drawable.barcodeprint,
         R.drawable.barcodeprint
     )
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,6 +45,9 @@ class BarcodeModule : AppCompatActivity() ,CommonAdapter.CommonInterface{
             }
             2 -> {
                 startActivity(Intent(this, PrintCN::class.java))
+            }
+            3 -> {
+                startActivity(Intent(this, SafetyInAct::class.java))
             }
         }
     }
