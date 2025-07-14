@@ -196,6 +196,29 @@ class RestoreActivity : AppCompatActivity(), RestoreAdapter.SendValue {
            else
             finish()
         }*/
+        binding.deleteselect.setOnClickListener {
+            lifecycleScope.launch {
+                val deleteddata = ArrayList<String>()
+                for (i in 0 until restorecnlist.size) {
+                    if (restorecnlist[i].restore) {
+                        deleteddata.add(restorecnlist[i].cn)
+                    }
+                }
+                db.barcodeDao().deleteuncheckdata(deleteddata)
+                db.restorebarcodedao().deleteuncheckdata(deleteddata)//this line added
+                adapter.notifyDataSetChanged()
+
+                // Now start activity after operation completes
+                when (value) {
+                    1 -> startActivity(Intent(this@RestoreActivity, ChallanCreation::class.java))
+                    3 -> startActivity(Intent(this@RestoreActivity, ChallanCreation::class.java).putExtra("type", "offlinechallan"))
+                    2 -> startActivity(Intent(this@RestoreActivity, AVR::class.java))
+                    4 -> startActivity(Intent(this@RestoreActivity, AVRWithtGate::class.java))
+                    5 -> startActivity(Intent(this@RestoreActivity, PicUpAvr::class.java).putExtra("type", "avrpickup"))
+                    else -> finish()
+                }
+            }
+        }
         binding.cancel.setOnClickListener {
             lifecycleScope.launch {
                 val deleteddata = ArrayList<String>()
@@ -256,10 +279,7 @@ class RestoreActivity : AppCompatActivity(), RestoreAdapter.SendValue {
         lifecycleScope.launch {
             restorecnlist.clear()
             adapter.notifyDataSetChanged()
-            /* db.restorebarcodedao().deleteAllBarcodes()
-             db.barcodeDao().deleteAllBarcodes()
-             db.manualDao().DeleteAllManual()
-             db.verifydao().deleteCN()*/
+
             withContext(Dispatchers.IO) {
                 db.restorebarcodedao().deleteAllBarcodes()
                 db.barcodeDao().deleteAllBarcodes()

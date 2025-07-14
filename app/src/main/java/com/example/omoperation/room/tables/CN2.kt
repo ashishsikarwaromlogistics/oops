@@ -10,5 +10,6 @@ data class CN2(
     @PrimaryKey(autoGenerate = true) val uid: Int = 0,
     @ColumnInfo(name = "BARCODE") val box: String,
     @ColumnInfo(name = "CN_No") val cn: String,
+    @ColumnInfo(name = "find_box") val findBox: String= ""
 
 )

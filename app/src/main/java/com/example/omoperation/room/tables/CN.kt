@@ -12,5 +12,6 @@ data class CN(
     @ColumnInfo(name = "city") val city: String,
     @ColumnInfo(name = "cn") val cn: String,
     @ColumnInfo(name = "challan") val challan: String,
-    @ColumnInfo(name = "weight") val weight: String
+    @ColumnInfo(name = "weight") val weight: String,
+    @ColumnInfo(name = "find_box") val findBox: String= ""
 )

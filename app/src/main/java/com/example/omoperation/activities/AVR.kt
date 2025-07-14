@@ -50,6 +50,7 @@ import com.example.omoperation.CustomProgress
 import com.example.omoperation.OmOperation
 import com.example.omoperation.R
 import com.example.omoperation.Utils
+import com.example.omoperation.activities.BarcodeScanning
 import com.example.omoperation.adapters.AVRAdapter
 import com.example.omoperation.adapters.CustomGrList
 import com.example.omoperation.databinding.ActivityAvrBinding
@@ -288,11 +289,12 @@ class AVR : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSpeech.OnInitL
                     }
                 }
 
-                val cnlist = db.barcodeDao().getcnlischallan().map { cnentity ->
+                val cnlist = db.barcodeDao().getcnlischallanmis().map { cnentity ->
                     Cnlist().apply {
                         barcode = cnentity.boxes
                         CN_No = cnentity.cn
                         CHALLAN_NO = cnentity.challan
+                        CLIENT_BOX_NO = cnentity.find_box
                         paperstatus=if (grwithotdoc.any { it.contains(cnentity.cn) })  "N" else "Y"
                     }
                 }
@@ -304,7 +306,8 @@ class AVR : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSpeech.OnInitL
                 mod.bcode=OmOperation.getPreferences(Constants.BCODE,"")
                 mod.emp=OmOperation.getPreferences(Constants.EMP_CODE,"")
                 mod.gate_no=binding.gateNo.text.toString()
-                mod.imei= Utils.getDeviceIMEI(this@AVR)
+              //  mod.imei= Utils.getDeviceIMEI(this@AVR)
+                mod.imei= OmOperation.getPreferences2( Constants.SAVE_OLL, "")
                 mod.missing_status=missing//if packet is short give remarks otherwise null
                 mod.remarks=remarks//if packet is short give remarks otherwise null
                 mod.airbag=binding.edtAir.text.toString()
@@ -569,11 +572,13 @@ class AVR : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSpeech.OnInitL
                        }*/
                        if (barCode.contains("-")){
                            clearBarcodeEdittext()
-                           if(bajajlist.contains(barCode)){
+                           val input = barCode
+                           val parts = input.split("~")
+                           if(bajajlist.contains(parts[0])){
                                showCustomBackgroundToast("Duplicate Barcode")
                                speak("Duplicate Barcode")
                            }
-                           else  checkcnBajaj(barCode)
+                           else  checkcnBajaj(parts[0])
                            return@setOnEditorActionListener true
                            //  clearBarcodeEdittext()
 
@@ -670,10 +675,10 @@ class AVR : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSpeech.OnInitL
    }
     fun checkcnBajaj(barcode : String){
         if(Utils.haveInternet(this)){
-            val input = barcode
-            val parts = input.split("~")
+            //val input = barcode
+           // val parts = input.split("~")
             pd.show()
-            val cn1=parts[0]
+            val cn1=barcode//parts[0]
             val mod= CnValidateMod()
             mod.avr=binding.gateNo.text.toString()
             mod.bcode=OmOperation.getPreferences(Constants.BCODE,"")
@@ -697,24 +702,6 @@ class AVR : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSpeech.OnInitL
                                     cnmapbox.put(cureentgr,response.body()!!.pkg.toInt())
                                     binding.GRCount.setText(cnlist.size.toString())
                                     lifecycleScope.launch {
-                                        /*var   bajajboxno=  db.barcodeDao()getboxcn(cureentgr)
-                                        bajajboxno=bajajboxno+1
-                                        var   myboxnum=  ""
-
-                                        if(bajajboxno!!>=1000){
-                                            myboxnum=""+bajajboxno
-                                        }
-                                        else if(bajajboxno >=100){
-                                            myboxnum="0"+bajajboxno
-                                        }
-                                        else if(bajajboxno>=10){
-                                            myboxnum="00"+bajajboxno
-                                        }
-                                        else {
-                                            myboxnum="000"+bajajboxno
-                                        }
-                                        addtolocalbajaj(barcode,cureentgr+myboxnum,body.city.toString())
-                                    */
                                         var   cnboxlist=  db.barcodeDao()gettotalboxofcn(cureentgr)
                                         var mynextnumber=cureentgr.toString()+"0001"
                                         val allNumbers = mutableSetOf<Long>()
@@ -764,11 +751,13 @@ class AVR : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSpeech.OnInitL
                                                 box = response.body()!!.pkg,
                                                 cn = cureentgr,
                                                 city = response.body()!!.city ?: "",
-                                                weight = "0"
+                                                weight = "0",
+                                                findBox = barcode
                                             )
                                             db.verifydao().inserbarcode(cn)
                                         }
                                         else{
+                                            db.barcodeDao().appendToFindBox(cureentgr,","+barcode)
                                             /*  val cn = CN(
                                                   challan = response.body()!!.challan,
                                                   box = response.body()!!.pkg,
@@ -1178,7 +1167,11 @@ class AVR : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSpeech.OnInitL
                 }
                 true
             }
+            R.id.bajajmiss ->{
+                startActivity(Intent(this@AVR, BajajMiss::class.java))
 
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }

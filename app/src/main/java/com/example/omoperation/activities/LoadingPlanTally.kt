@@ -57,7 +57,7 @@ class LoadingPlanTally : AppCompatActivity(),LoadingPlanTallyAdapter.LoadingPlan
   lateinit  var binding : ActivityLoadingPlanTallyBinding
     var items = arrayOf("Branch", "Hub/Region", "All", "Route")
     var items2 = arrayOf("")
-    var tally_by = "M"
+    var tallyby = "M"
     var formatter = "##,###,###.##"
     lateinit var df: DecimalFormat
     var grcount_num: Int = 0
@@ -90,6 +90,8 @@ class LoadingPlanTally : AppCompatActivity(),LoadingPlanTallyAdapter.LoadingPlan
                 OmOperation.getPreferences(Constants.EMP_CODE,"").equals("36101")||
                 OmOperation.getPreferences(Constants.EMP_CODE,"").equals("36893")||
                  OmOperation.getPreferences(Constants.EMP_CODE,"").equals("33740")||
+                 OmOperation.getPreferences(Constants.EMP_CODE,"").equals("36893")||
+                 OmOperation.getPreferences(Constants.EMP_CODE,"").equals("25043")||
                 OmOperation.getPreferences(Constants.EMP_CODE,"").equals("14971")){
                 val intent = Intent(this, BranchesAct::class.java)
                 intent .putExtra("senddata",1)
@@ -130,7 +132,7 @@ class LoadingPlanTally : AppCompatActivity(),LoadingPlanTallyAdapter.LoadingPlan
                 status="search"
                 from_branch=binding.destination.text.toString()
                 to_branch=binding.edtToBranch.text.toString()
-                tally_by=tally_by
+                tally_by=tallyby
             }
            /* val mod = LorryMod()
             mod.status = "search"
@@ -304,7 +306,7 @@ class LoadingPlanTally : AppCompatActivity(),LoadingPlanTallyAdapter.LoadingPlan
                 mod.status = "insert"
                 mod.from_branch = OmOperation.getPreferences(Constants.BCODE,"")
                 // mod.from_branch="1314"
-                mod.tally_by = tally_by
+                mod.tally_by = tallyby
                 mod.to_branch = binding.edtToBranch.text.toString()
                 mod.enter_by = OmOperation.getPreferences(Constants.EMP_CODE,"")
                 val array: ArrayList<Cnlist>
@@ -505,13 +507,13 @@ class LoadingPlanTally : AppCompatActivity(),LoadingPlanTallyAdapter.LoadingPlan
                 items,
                 DialogInterface.OnClickListener { dialog: DialogInterface, item: Int ->
                     if (item == 0) {
-                        tally_by = "M"
+                        tallyby = "M"
                     } else if (item == 1) {
-                        tally_by = "H"
+                        tallyby = "H"
                     } else if (item == 2) {
-                        tally_by = "A"
+                        tallyby = "A"
                     } else if (item == 3) {
-                        tally_by = "R"
+                        tallyby = "R"
                     }
                     binding.edtTallyBy.setText(items.get(item))
                     dialog.dismiss()

@@ -3,6 +3,7 @@ package com.example.omoperation
 import android.app.Dialog
 import android.content.Context
 import android.widget.TextView
+import org.json.JSONObject
 
 
 class CustomProgress(con: Context) {
@@ -13,6 +14,10 @@ class CustomProgress(con: Context) {
         dialog.setContentView(R.layout.custom_progress)
         dialog.window?.setBackgroundDrawableResource(android.R.color.transparent) // Use safe call for getWindow
         tv_msg = dialog.findViewById(R.id.tv_msg)
+
+
+
+
     }
     fun show() {
         if (!dialog.isShowing) { // Show only if not already showing

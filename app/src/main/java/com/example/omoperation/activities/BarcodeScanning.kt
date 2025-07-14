@@ -45,6 +45,7 @@ import com.example.omoperation.model.MIS
 import com.example.omoperation.model.avr.Barcodelist
 import com.example.omoperation.model.barcode_load.BarcodeMod
 import com.example.omoperation.model.barcode_load.Cn
+import com.example.omoperation.model.clientbox.ClientBoxMod
 import com.example.omoperation.model.cnvaridate.CnValidateMod
 import com.example.omoperation.network.ApiClient
 import com.example.omoperation.network.ServiceInterface
@@ -68,7 +69,7 @@ import java.util.concurrent.ExecutorService
 class BarcodeScanning : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSpeech.OnInitListener {
     lateinit var binding: ActivityBarcodeScanningBinding
     lateinit var  bundle : Bundle
-    lateinit var  db : AppDatabase//32*100----> 10dp;//280
+    lateinit var  db : AppDatabase      //32*100----> 10dp;//280
     private lateinit var imei: String
     lateinit var barcodelist: ArrayList<String>
     lateinit var cnlist: LinkedList<String>
@@ -328,11 +329,13 @@ class BarcodeScanning : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSp
                 }*/
                 if (barCode.contains("-")){
                     clearBarcodeEdittext()
-                    if(bajajlist.contains(barCode)){
+                    val input = barCode
+                    val parts = input.split("~")
+                    if(bajajlist.contains(parts[0])){
                         showCustomBackgroundToast("Duplicate Barcode")
                         speak("Duplicate Barcode")
                     }
-                    else  checkcnBajaj(barCode)
+                    else  checkcnBajaj(parts[0])
 
                   //  clearBarcodeEdittext()
                     return 0
@@ -601,23 +604,7 @@ class BarcodeScanning : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSp
 
 
             lifecycleScope.launch {
-               /* var   bajajboxno=  db.barcodeDao()getboxcn(cn)
-                bajajboxno=bajajboxno+1
-                var   myboxnum=  ""
 
-                if(bajajboxno!!>=1000){
-                    myboxnum=""+bajajboxno
-                }
-                else if(bajajboxno >=100){
-                    myboxnum="0"+bajajboxno
-                }
-                else if(bajajboxno>=10){
-                    myboxnum="00"+bajajboxno
-                }
-                else {
-                    myboxnum="000"+bajajboxno
-                }
-                addtolocalbajaj(scanbarcode,cn+myboxnum,body.city.toString())*/
 
                 var   cnboxlist=  db.barcodeDao()gettotalboxofcn(cn)
                 var mynextnumber=cn.toString()+"0001"
@@ -659,28 +646,24 @@ class BarcodeScanning : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSp
                 addtolocalbajaj(scanbarcode,mynextnumber,body.city.toString())
             }
 
-
-
-
-
-            /* val bajajboxno=bajajbox.get(cn)
-             var myboxnum=""*/
-
             lifecycleScope.launch {
                 if(cnlist.contains(cn)){
-
+                   lifecycleScope.launch {
+                       db.barcodeDao().appendToFindBox(cn,","+scanbarcode)
+                   }
                 }
                 else{
                     totalweight += Utils.safedouble(body.cn_wt ?: "0.0")
                     binding.tvweight.setText("Weight:"+totalweight)
                      cnlist.add(cn)
-                    binding.GRCount.setText(cnlist.size.toString())
+                     binding.GRCount.setText(cnlist.size.toString())
                     val cnEntity = CN(
                         challan = "",
                         box = body.pkg,
                         cn = cn,
                         city = body.city ?: "",
-                        weight = body.cn_wt
+                        weight = body.cn_wt,
+                        findBox = scanbarcode
                     )
                     db.verifydao().inserbarcode(cnEntity)
                 }
@@ -814,10 +797,15 @@ class BarcodeScanning : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSp
        }
         catch (e: Exception){} }
     override fun onDestroy() {
-        if (textToSpeech != null) {
-            textToSpeech.stop()
-            textToSpeech.shutdown()
+        try{
+            textToSpeech?.let {
+                it.stop()
+                it.shutdown()
+            }
         }
+        catch (e: Exception){}
+
+
         super.onDestroy()
     }
 
@@ -831,10 +819,12 @@ class BarcodeScanning : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSp
                 }
             }
 
-            val cnlist = db.barcodeDao().getcnboxes().map { cnentity ->
+          //  val cnlist = db.barcodeDao().getcnboxes().map { cnentity ->
+            val cnlist = db.barcodeDao().getcnboxesformiss().map { cnentity ->
                 Cn().apply {
                     barcode = cnentity.box
                     cnNo = cnentity.cn
+                    clienT_BOX_NO =cnentity.findBox
 
                 }
             }
@@ -854,7 +844,8 @@ class BarcodeScanning : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSp
             mod.bcode = OmOperation.getPreferences(Constants.BCODE, "")
             mod.barcodelist = barcodelist
             mod.cnlist=cnlist
-             mod.imei=imei
+             //mod.imei=imei
+             mod.imei=OmOperation.getPreferences2( Constants.SAVE_OLL, "")
             mod.loadingPlan = bundle.getString("loading_plan")
             mod.airbag = (bundle.getInt("airbag")).toString()
             mod.sheetbelt = (bundle.getInt("sheetbelt")).toString()
@@ -971,6 +962,11 @@ class BarcodeScanning : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSp
                         Toast.makeText(this@BarcodeScanning, "Duplicate barcodes deleted", Toast.LENGTH_SHORT).show()
                     }
                 }
+                true
+            }
+            R.id.bajajmiss ->{
+                startActivity(Intent(this@BarcodeScanning, BajajMiss::class.java))
+
                 true
             }
 
@@ -1345,6 +1341,9 @@ class BarcodeScanning : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSp
 
         }
     }
+
+
+
 
 }
 //

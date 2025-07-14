@@ -32,7 +32,8 @@ class OmOperation : Application() {
         lateinit var sharedPreferences: SharedPreferences
         lateinit var sharedPreferences2: SharedPreferences
         lateinit var omOperation:  OmOperation
-        var appDatabase: AppDatabase?=null
+
+
         @Synchronized
         fun getInstance(): OmOperation {
             return omOperation

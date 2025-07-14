@@ -28,4 +28,5 @@ package com.example.omoperation.model
     var challan: String?=null
     var branch: String?=null
     var type: String?=null
+    var tob: String?=null
 }

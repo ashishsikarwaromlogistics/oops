@@ -65,11 +65,66 @@ class Splash : AppCompatActivity() {
 
     }
 
-
     override fun onResume() {
         super.onResume()
+        if(OmOperation.getPreferences2( Constants.SAVE_OLL,"").equals("")){
+            saveDeviceid()
+        }
+        else if(Utils.haveInternet(this)){
+
+                lifecycleScope.launch {
+                    val mod=CommonMod()
+                    mod.status="omops"
+                    val response = withTimeoutOrNull(15000L) { // Set timeout to 15 seconds
+                        try {
+                            ApiClient.getClient().create(ServiceInterface::class.java).omstaffAppVersion(mod)
+                        } catch (e: Exception) {
+                            Utils.showDialog(this@Splash,"error{${e.toString()}}","Net Connection is not working properly",R.drawable.ic_error_outline_red_24dp)
+                            null // Return null on exception, e.g., network failure
+                        }
+                    }
+                    if(response!=null){
+                        if(response.code() ==200){
+                            try {
+                                val pInfo = packageManager.getPackageInfo(packageName, 0)
+                                val versionCode = pInfo.versionCode  // Deprecated in API 28
+                                val versionName = pInfo.versionName
+                                if(response.body()?.ver.toString().toInt()>versionCode.toInt()){
+                                    Utils.showDialog(this@Splash,"error","Please Update your App by MDM",R.drawable.ic_error_outline_red_24dp)
+                                }
+                                else validate()
+                                Log.d("Version Code", "Version code: $versionCode")
+                                Log.d("Version Name", "Version name: $versionName")
+                            } catch (e: PackageManager.NameNotFoundException) {
+                                e.printStackTrace()
+                                validate()
+                            }
+
+                        }
+                        else {
+                            validate()
+                        }
+                    }
+                    else
+                        Utils.showDialog(this@Splash,"No response","Server error or network connection break",R.drawable.ic_error_outline_red_24dp)
+                    //val response=
+
+
+
+                }
+
+
+
+        }
+        else{
+            Utils.showDialog(this,"error","No,Internet Connection",R.drawable.ic_error_outline_red_24dp)
+        }
+
+    }
+   /* override fun onResume() {
+        super.onResume()
         if(Utils.haveInternet(this)){
-            if(OmOperation.getPreferences(Constants.SAVE_OLL,"false").equals("true")){
+            if(OmOperation.getPreferences(Constants.SAVE_OLL,"true").equals("true")){
                     lifecycleScope.launch {
                         val mod=CommonMod()
                         mod.status="omops"
@@ -143,7 +198,7 @@ class Splash : AppCompatActivity() {
             Utils.showDialog(this,"error","No,Internet Connection",R.drawable.ic_error_outline_red_24dp)
         }
 
-    }
+    }*/
     fun validate(){
         if(OmOperation.getPreferences(Constants.ISLOGIN,"0").equals("1")){
             viewmod.checkvalidate()
@@ -198,48 +253,58 @@ class Splash : AppCompatActivity() {
         }
     }
     fun saveDeviceid(){
-        val employee_dialog = androidx.appcompat.app.AlertDialog.Builder(this@Splash).create()
-        val layoutInflater =
-            getApplicationContext().getSystemService(LAYOUT_INFLATER_SERVICE) as LayoutInflater
-
+        val builder = AlertDialog.Builder(this@Splash)
+        val layoutInflater = layoutInflater  // Use the activity's inflater, not application context
         val view: View = layoutInflater.inflate(R.layout.save_oll, null)
-        val emp_edit_text = view.findViewById<EditText?>(R.id.emp_edit_text)
-        val btn_yes = view.findViewById<Button?>(R.id.yes_btn)
 
-        btn_yes.setOnClickListener(View.OnClickListener { view1: View? ->
-            val empcode = emp_edit_text.getText().toString()
+        val emp_edit_text = view.findViewById<EditText>(R.id.emp_edit_text)
+        val btn_yes = view.findViewById<Button>(R.id.yes_btn)
+
+        builder.setView(view)
+        val employee_dialog = builder.create()
+
+        btn_yes.setOnClickListener {
+            val empcode = emp_edit_text.text.toString()
             if (empcode.isEmpty()) {
-                emp_edit_text.setError("Required")
-            } else {
-                employee_dialog.dismiss()
-
-                viewmod.savedeviceid(Settings.Secure.getString(
-                    this.getContentResolver(),
-                    Settings.Secure.ANDROID_ID
-                ),emp_edit_text.text.toString())
-
-                viewmod.savedata.observe (this, Observer{
-                    when(it){
-                        is NetworkState.Error ->{
-                          validate()
-                        }
-                        is NetworkState.Loading ->{
-
-                        }
-                        is NetworkState.Success<*> ->{
-                            OmOperation.savePreferences(Constants.SAVE_OLL,"true")
-                        }
-
-
-                    }
-                })
-
-
+                emp_edit_text.error = "Required"
             }
-        })
+            else if(empcode.equals("00000")
+                || empcode.equals("11111")
+                || empcode.equals("22222")
+                || empcode.equals("33333")
+                || empcode.equals("44444")
+                || empcode.equals("55555")
+                || empcode.equals("77777")
+                || empcode.equals("88888")
+                || empcode.equals("99999")
+                ||empcode.equals("0000")
+                || empcode.equals("1111")
+                || empcode.equals("2222")
+                || empcode.equals("3333")
+                || empcode.equals("4444")
+                || empcode.equals("5555")
+                || empcode.equals("7777")
+                || empcode.equals("8888")
+                || empcode.equals("9999")
 
-        employee_dialog.setView(view)
+                || empcode.equals("1234")
+                || empcode.equals("12345")
+
+
+                ){
+                emp_edit_text.error = "please input proper oll"
+            }
+            else if (empcode.length == 5 || empcode.length == 4) {
+                OmOperation.savePreferences2( Constants.SAVE_OLL, emp_edit_text.text.toString())
+                Log.d("OLL", "Saved: ${OmOperation.getPreferences2( Constants.SAVE_OLL, "")}")
+                employee_dialog.dismiss()
+                validate()
+            }
+            else   emp_edit_text.error = "please input proper oll"
+        }
+
         employee_dialog.show()
+
 
     }
     override fun onBackPressed() {

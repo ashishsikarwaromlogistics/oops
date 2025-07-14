@@ -13,5 +13,6 @@ data class CommonRespS(
     val cn_wt: String,
     var cn_date: String,
     var mcn: String,
-    var cn_no: String
+    var cn_no: String,
+    var tally_flag: String
 )

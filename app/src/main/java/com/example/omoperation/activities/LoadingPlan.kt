@@ -52,7 +52,7 @@ class LoadingPlan : AppCompatActivity() , LoadingPlanAdapter.Loadinginterface {
         cp.show()
         val mod= CommonMod()
         mod.status="getTallyNo"
-        // mod.branch="1328"
+         //mod.branch="1328"
         mod.branch=OmOperation.getPreferences(Constants.BCODE,"")
         ApiClient.getClientsanchar().create(ServiceInterface::class.java).loadingplan(Utils.getheaders(),mod).enqueue(object : Callback<LoadingResp>{
             override fun onResponse(call: Call<LoadingResp>, resp: Response<LoadingResp>) {

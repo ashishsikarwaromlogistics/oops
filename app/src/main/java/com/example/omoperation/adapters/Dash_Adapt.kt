@@ -17,7 +17,7 @@ import javax.inject.Named
 class Dash_Adapt @Inject constructor() : RecyclerView.Adapter<Dash_Adapt.MyViewHolder>() {
     val titlename= arrayOf("CN Enquery","AVR","Get Paper(Out)",
         "Challan","Barcode Print","Get Paper In",
-        "PickUp AVR","Challan with Trip",
+        "Challan with Sticker Pasting","Challan with Trip",
         "Cn Creation By Eway", "Restore Data","Vehicle Image\nUpload",
        "Pickup Challan Creation","Loading Plan\nTally","CN ReWare House",
         "Stock Audit", "AVR Without Gate","View Gate Entry","Training","Logout")

@@ -16,6 +16,11 @@
         android:orderInCategory="100"
         android:title="Delete Duplicate"
         app:showAsAction="collapseActionView" />
+    <item
+        android:id="@+id/bajajmiss"
+        android:orderInCategory="100"
+        android:title="Bajaj Missing"
+        app:showAsAction="collapseActionView" />
 
 
 </menu>

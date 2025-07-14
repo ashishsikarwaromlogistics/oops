@@ -16,12 +16,13 @@ import com.example.omoperation.room.daus.VerifyCnDao
 import com.example.omoperation.room.tables.Barcode
 import com.example.omoperation.room.tables.Branches
 import com.example.omoperation.room.tables.CN
+import com.example.omoperation.room.tables.CN2
 import com.example.omoperation.room.tables.Employees
 import com.example.omoperation.room.tables.ManualAvr
 import com.example.omoperation.room.tables.RestoreBarcode
 import com.example.omoperation.room.tables.User
 
-@Database(entities = [User::class,Barcode::class,ManualAvr::class, CN::class, Branches::class,Employees::class, RestoreBarcode::class], version = 1)
+@Database(entities = [User::class,Barcode::class,ManualAvr::class, CN::class, Branches::class,Employees::class, RestoreBarcode::class , CN2::class], version = 2)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao
     abstract fun   barcodeDao(): BarcodeDao
@@ -33,18 +34,24 @@ abstract class AppDatabase : RoomDatabase() {
 
 
     companion object {
-      /*  val MIGRATION_1_2 = object : Migration(1, 2) {
-            override fun migrate(database: SupportSQLiteDatabase) {
-                // Create the new table
-                database.execSQL("ALTER TABLE User ADD COLUMN age INTEGER NOT NULL DEFAULT 0")
-
-            }
-        }*/
-
 
         @Volatile
         private var INSTANCE: AppDatabase? = null
+        val MIGRATION_1_2 = object : Migration(1, 2) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                // Add the new column to CN table
+                database.execSQL("ALTER TABLE CN ADD COLUMN find_box TEXT NOT NULL DEFAULT ''")
+                database.execSQL("""
+            CREATE TABLE IF NOT EXISTS CN2 (
+                uid INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                BARCODE TEXT NOT NULL,
+                CN_No TEXT NOT NULL,
+                find_box TEXT NOT NULL
+            )
+        """.trimIndent())
 
+               }
+        }
         fun getDatabase(context: Context): AppDatabase {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
@@ -52,7 +59,7 @@ abstract class AppDatabase : RoomDatabase() {
                     AppDatabase::class.java,
                     "app_database"
                 )
-                    //.addMigrations(MIGRATION_1_2)
+                     .addMigrations(MIGRATION_1_2)
                     .build()
                 INSTANCE = instance
                 instance

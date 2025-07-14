@@ -15,8 +15,8 @@ android {
         applicationId = "com.example.omoperation"
         minSdk = 24
         targetSdk = 35
-        versionCode = 40
-        versionName = "5.1"
+        versionCode = 43
+        versionName = "5.3"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
       //  vectorDrawables {
@@ -110,6 +110,14 @@ dependencies {
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
     implementation(libs.play.services.location)
+
+    implementation ("com.google.mlkit:text-recognition:16.0.0")
+    implementation ("androidx.camera:camera-core:1.3.1")
+    implementation ("androidx.camera:camera-camera2:1.3.1")
+    implementation ("androidx.camera:camera-lifecycle:1.3.1")
+    implementation ("androidx.camera:camera-view:1.3.1")
+    implementation ("androidx.camera:camera-mlkit-vision:1.2.0-beta01")
+
     kapt(libs.roomCompiler)
     kapt(libs.hiltcompiler)
     kapt(libs.glideCompiler)

@@ -12,6 +12,9 @@ import com.example.omoperation.model.avr.AvrMod
 import com.example.omoperation.model.avr.AvrResp
 import com.example.omoperation.model.branches.BranchesResp
 import com.example.omoperation.model.calculate_charge.CalculateMod
+import com.example.omoperation.model.checklist.VehicleContainerEntry
+import com.example.omoperation.model.checklist.VehicleContainerEntryResp
+import com.example.omoperation.model.clientbox.ClientBoxResp
 import com.example.omoperation.model.cn_create_eway.CNCreateEwayResp
 import com.example.omoperation.model.cn_create_eway.CnCreateEwayMod
 import com.example.omoperation.model.cn_enquery.Myquery
@@ -104,7 +107,7 @@ interface ServiceInterface   {
         @Body mod: AvrMod?
     ): Call<AvrResp>
 
-//https://api.omlogistics.co.in//cn_validate1.php
+    //https://api.omlogistics.co.in/cn_validate1.php
     @POST("cn_validate1.php")
     fun cn_validate1(
         @HeaderMap headers: Map<String, String>,
@@ -134,6 +137,8 @@ interface ServiceInterface   {
 
     @POST
     suspend fun loading_barcode(@Url url : String,@HeaderMap headers: Map<String, String>,@Body mod: Any): Response<CommonRespS>
+@POST
+    suspend fun find_client_missing_box(@Url url : String,@HeaderMap headers: Map<String, String>,@Body mod: Any): Response<ClientBoxResp>
 
     @Headers("Content-Type: application/json;charset=UTF-8")
     @POST("cn_validate.php")
@@ -413,7 +418,10 @@ interface ServiceInterface   {
     @POST("savedeviceid.php")
     suspend fun savedeviceid(): Response<CommonRespS>
 
-
+    @POST("api/cncreation/VehicleContainerEntry")
+    fun Container_Chek_List(@Body mod: VehicleContainerEntry): Call<VehicleContainerEntryResp>
+//https://scmomsanchar.omlogistics.co.in/api/cncreation/VehicleContainerEntry
+    //https://scm.omlogistics.co.in/api/cncreation/VehicleContainerEntry
 //https://api.omlogistics.co.in/emp_networkdir.php
     //https://api.omlogistics.co.in/oda_station.php
     //{"bcode":"7500","status":"challan"}

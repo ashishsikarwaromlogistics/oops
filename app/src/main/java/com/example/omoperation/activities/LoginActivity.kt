@@ -11,8 +11,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.example.omoperation.Constants
 import com.example.omoperation.CustomProgress
 import com.example.omoperation.NetworkState
+import com.example.omoperation.OmOperation
 import com.example.omoperation.R
 import com.example.omoperation.Utils
 import com.example.omoperation.databinding.ActivityLoginBinding
@@ -31,7 +33,9 @@ class LoginActivity : AppCompatActivity() {
             binding.empBranch.visibility= View.VISIBLE
             binding.guest.visibility= View.VISIBLE
         }
-        binding.dviceid.setText(Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID))
+        binding.dviceid.setText(Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID)+"\n OLL : "+
+                OmOperation.getPreferences2(
+                    Constants.SAVE_OLL,""))
         cp= CustomProgress(this)
         loginviewmod=ViewModelProvider(this).get(LoginViewMod::class.java)
         binding.loginmod=loginviewmod

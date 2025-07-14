@@ -24,10 +24,9 @@ class LoginViewMod( application: Application) : AndroidViewModel(application) {
     val edtpass=MutableLiveData("")
     val _livedata=MutableLiveData<NetworkState>()
     val livedata: LiveData<NetworkState> =_livedata
-    private val context = getApplication<Application>().applicationContext
-    init {
+    val context = getApplication<Application>().applicationContext
 
-    }
+
      fun Login(){
          _livedata.value=NetworkState.Loading
         if(edtemp.value!!.isEmpty() || edtpass.value!!.isEmpty()){
@@ -40,7 +39,7 @@ class LoginViewMod( application: Application) : AndroidViewModel(application) {
 
                 val mod= LoginMod()
                 mod.uuid=Utils.getUUID(context)
-                val amdroid_id = Settings.Secure.getString(
+                val android_id = Settings.Secure.getString(
                     context.getContentResolver(),
                     Settings.Secure.ANDROID_ID
                 )

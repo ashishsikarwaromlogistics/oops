@@ -44,6 +44,7 @@ class ChallanCreation : AppCompatActivity() {
         binding=DataBindingUtil.setContentView(this,R.layout.activity_challan_creation)
         cp=CustomProgress(this)
         binding.source.setText(OmOperation.getPreferences(Constants.BCODE,""))
+        //binding.source.setText("1328")
 
         type= intent.getStringExtra("type").toString()?:""
         if(type.equals("offlinechallan")){
@@ -66,13 +67,6 @@ class ChallanCreation : AppCompatActivity() {
         touchingOpts.add("NO")
         val arrayAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, touchingOpts)
         binding.touchingFlg.setAdapter(arrayAdapter)
-
-
-
-
-
-
-
         binding.touchingFlg.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
                 adapterView: AdapterView<*>?,
@@ -175,6 +169,9 @@ class ChallanCreation : AppCompatActivity() {
         val mod= CommonMod().apply {
             lorryno = binding.lorryNo.text.toString().uppercase()
             type = "Challan"
+            bcode=binding.source.text.toString()
+            bcode=binding.source.text.toString()
+            tob=binding.destination.text.toString()
         }
       /*  mod.lorryno=binding.lorryNo.text.toString().uppercase()
         mod.type="Challan"*/
@@ -195,6 +192,11 @@ class ChallanCreation : AppCompatActivity() {
                     cp.dismiss()
                     if(resp.body()!!.error.toString().equals("false"))
                     {
+                        if(resp.body()!!.tally_flag.equals("Y")){
+                            if(binding.edtLoadingPlan.text.toString().equals("") || binding.edtLoadingPlan.text.toString().isEmpty())
+                            {  Utils.showDialog(this@ChallanCreation,"error","Loading Plan is mandatory",R.drawable.ic_error_outline_red_24dp)
+                            return@launch}
+                        }
                         val bundle = Bundle()
                         bundle.putString("loading_plan", binding.edtLoadingPlan.getText().toString())
                         bundle.putString("to", binding.destination.text.toString())
@@ -271,13 +273,15 @@ class ChallanCreation : AppCompatActivity() {
              Utils.showDialog(this,"error","Please select ODA station ",R.drawable.ic_error_outline_red_24dp)
              return false
          }
-         else if(binding.edtLoadingPlan.text.toString().equals("") &&
-              !binding.destination.text.toString().equals("9999")
+        /* else if(binding.edtLoadingPlan.text.toString().equals("") ){
 
-                    ){
+             if(binding.destination.text.toString().equals("9999")||
+                 binding.destination.text.toString().equals("9995")){
+                 return  true
+             }
              Utils.showDialog(this,"error","Please select Loading Plan ",R.drawable.ic_error_outline_red_24dp)
              return false
-         }
+         }*/
         return true
     }
 

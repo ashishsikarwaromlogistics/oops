@@ -18,11 +18,15 @@ class BarcodeModule : AppCompatActivity() ,CommonAdapter.CommonInterface{
         "Print Sticker",
         "Multiple Sticker Print",
         "Docket Print",
-        "Safety In"
+        "Safety In",
+        "Vehicle Container CheckList",
+        "Gabrail"
     )
     var icon: Array<Int> = arrayOf(
         R.drawable.barcodeprint,
         R.drawable.plan,
+        R.drawable.barcodeprint,
+        R.drawable.barcodeprint,
         R.drawable.barcodeprint,
         R.drawable.barcodeprint
     )
@@ -48,6 +52,12 @@ class BarcodeModule : AppCompatActivity() ,CommonAdapter.CommonInterface{
             }
             3 -> {
                 startActivity(Intent(this, SafetyInAct::class.java))
+            }
+            4 -> {
+                startActivity(Intent(this, VehicleContainerCheckList::class.java))
+            }
+            5 -> {
+                startActivity(Intent(this, Gabrail::class.java))
             }
         }
     }

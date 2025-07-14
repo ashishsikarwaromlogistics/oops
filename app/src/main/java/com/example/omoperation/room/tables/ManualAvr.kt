@@ -9,7 +9,7 @@ data class ManualAvr(
     @PrimaryKey(autoGenerate = true)  val uid: Int=0,
     @ColumnInfo(name = "cn") val cn: String?,
     @ColumnInfo(name = "boxes") val boxes: String?,
-    @ColumnInfo(name = "challan") val challan: String?,
+    @ColumnInfo(name = "challan") val challan: String?
 
 
     )

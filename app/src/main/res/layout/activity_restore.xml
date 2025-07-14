@@ -58,7 +58,7 @@ android:layout_weight="1"
             />
        <LinearLayout
            android:layout_width="match_parent"
-           android:layout_height="wrap_content"
+           android:layout_height="@dimen/_40sdp"
            android:orientation="horizontal"
            >
            <Button
@@ -68,7 +68,7 @@ android:layout_weight="1"
                android:textColor="@color/white"
                android:layout_width="0dp"
                android:layout_weight="1"
-               android:layout_height="wrap_content"/>
+               android:layout_height="match_parent"/>
            <Button
                android:id="@+id/cancel"
                android:text="Cancel"
@@ -76,15 +76,22 @@ android:layout_weight="1"
                android:textColor="@color/white"
                android:layout_width="0dp"
                android:layout_weight="1"
-               android:layout_height="wrap_content"/>
+               android:layout_height="match_parent"/>
            <Button
-               android:id="@+id/deleteall"
-               android:text="Delete ALL"
+               android:id="@+id/deleteselect"
+               android:text="Selected Delete"
                android:background="@drawable/btn_rect"
                android:textColor="@color/white"
                android:layout_width="0dp"
                android:layout_weight="1"
-               android:layout_height="wrap_content"/>
+               android:layout_height="match_parent"/> <Button
+           android:id="@+id/deleteall"
+           android:text="Delete ALL"
+           android:background="@drawable/btn_rect"
+           android:textColor="@color/white"
+           android:layout_width="0dp"
+           android:layout_weight="1"
+           android:layout_height="match_parent"/>
        </LinearLayout>
 
 

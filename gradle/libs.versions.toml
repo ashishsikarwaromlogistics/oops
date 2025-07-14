@@ -1,29 +1,31 @@
 [versions]
-agp = "8.3.1"
-kotlin = "1.9.0"
-hilt = "2.48"
-glide = "4.15.0"
-twalio = "8.0.0"
-common = "2.11.0"
-coreKtx = "1.13.1"
+agp = "8.9.1"
+kotlin = "2.1.20"
+coreKtx = "1.16.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
-lifecycleRuntimeKtx = "2.8.3"
-activityCompose = "1.9.0"
-composeBom = "2023.08.00"
+lifecycleRuntimeKtx = "2.8.7"
+activityCompose = "1.10.1"
+composeBom = "2025.04.00"
+hilt = "2.56.2"
+glide = "4.15.0"
 retrofit = "2.9.0"
 okhttp = "5.0.0-alpha.2"
 appcompat = "1.7.0"
 material = "1.12.0"
-activity = "1.8.0"
-constraintlayout = "2.1.4"
+activity = "1.10.1"
+constraintlayout = "2.2.1"
 sdpSsp = "1.1.0"
-coroutines = "1.7.1"
-viewmodel = "2.7.2"
-room_version = "2.6.1"
-navigationFragmentKtx = "2.7.7"
-navigationUiKtx = "2.7.7"
+coroutines = "1.7.3"
+viewmodel = "2.8.7"
+room_version = "2.7.0"
+navigationFragmentKtx = "2.8.9"
+navigationUiKtx = "2.8.9"
+zxing = "3.5.3"
+multidex = "2.0.1"
+zxing-android-embedded = "4.3.0"
+playServicesLocation = "21.3.0"
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -55,19 +57,25 @@ lifecyclelivedata = { group = "androidx.lifecycle", name = "lifecycle-livedata-k
 roomlibrary = { group = "androidx.room", name = "room-ktx", version.ref = "room_version" }
 roomrun = { group = "androidx.room", name = "room-runtime", version.ref = "room_version" }
 roomCompiler = { group = "androidx.room", name = "room-compiler", version.ref = "room_version" }
+zxing = { group = "com.google.zxing", name = "core", version.ref = "zxing" }
+zxingandroidembedded = { module = "com.journeyapps:zxing-android-embedded", version.ref = "zxing-android-embedded" }
+multidex = { group = "androidx.multidex", name = "multidex", version.ref = "multidex" }
 hilt = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
 glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glide" }
 glideCompiler = { group = "com.github.bumptech.glide", name = "compiler", version.ref = "glide" }
-twilio = { group = "com.twilio.sdk", name = "twilio", version.ref = "twalio" }
-commons = { group = "commons-io", name = "commons-io", version.ref = "common" }
+
 hiltcompiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt" }
 
 androidx-navigation-fragment-ktx = { group = "androidx.navigation", name = "navigation-fragment-ktx", version.ref = "navigationFragmentKtx" }
 androidx-navigation-ui-ktx = { group = "androidx.navigation", name = "navigation-ui-ktx", version.ref = "navigationUiKtx" }
+play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServicesLocation" }
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
+ksp = { id = "com.google.devtools.ksp", version = "2.0.0-1.0.23" }
 jetbrainsKotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 jetbrainshilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
+kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+google-services = { id = "com.google.gms.google-services", version = "4.4.3" }
 
 
 

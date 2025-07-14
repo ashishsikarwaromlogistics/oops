@@ -3,7 +3,7 @@ package com.example.omoperation
 class Constants {
     companion object{
         val PREF_NAME = "OMOPERATION"
-        val SAVE_OLL = "SAVE_OLL"
+         val SAVE_OLL = "SAVE_OLL1"
 
         val CNCREATION = "CNCREATION"
         val PROFILE = "PROFILE"

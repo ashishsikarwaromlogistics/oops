@@ -6,8 +6,10 @@ import androidx.room.Insert
 import androidx.room.Query
 import com.example.omoperation.model.barcode_load.Cn
 import com.example.omoperation.model.dataclass.CNWithBoxes
+import com.example.omoperation.room.tables.AVRCN
 import com.example.omoperation.room.tables.Barcode
 import com.example.omoperation.room.tables.CN2
+import com.example.omoperation.room.tables.CNBoxSummary
 import com.example.omoperation.room.tables.ManualAvr
 
 @Dao
@@ -70,6 +72,22 @@ interface BarcodeDao {
     suspend fun getcnlischallan():List<ManualAvr>
 
 
+
+    @Query("SELECT 0 uid," +
+            "    SUBSTR(barcode.barcode, 1, LENGTH(barcode.barcode) - 4) AS cn,\n" +
+            "cn.find_box AS find_box, " +
+            "   COUNT(SUBSTR(barcode.barcode, 1, LENGTH(barcode.barcode) - 4)) AS boxes,\n" +
+            "    cn.challan\n" +
+            "FROM \n" +
+            "barcode \n" +
+            "JOIN \n" +
+            "cn ON SUBSTR(barcode.barcode, 1, LENGTH(barcode.barcode) - 4) = cn.cn\n" +
+            "GROUP BY     cn, cn.challan \n" +
+            "UNION all\n" +
+            "SELECT 0 uid,cn ,'' find_box,boxes ,challan from ManualAvr")
+    suspend fun getcnlischallanmis():List<AVRCN>
+
+
  @Query("SELECT " +
          "  0 uid,  SUBSTR(barcode.barcode, 1, LENGTH(barcode.barcode) - 4) AS CN_No," +
          "    COUNT(SUBSTR(barcode.barcode, 1, LENGTH(barcode.barcode) - 4)) AS BARCODE " +
@@ -81,7 +99,22 @@ interface BarcodeDao {
          "GROUP BY cn.cn " +
          "UNION all " +
          "SELECT uid,cn  CN_No ,boxes  BARCODE  from ManualAvr")
- suspend fun getcnboxes():List<CN2>
+ suspend fun getcnboxes():List<CNBoxSummary>
+
+    @Query("SELECT " +
+            "  0 uid,  SUBSTR(barcode.barcode, 1, LENGTH(barcode.barcode) - 4) AS CN_No," +
+
+            " cn.find_box AS find_box, "+
+            "    COUNT(SUBSTR(barcode.barcode, 1, LENGTH(barcode.barcode) - 4)) AS BARCODE " +
+
+            "FROM " +
+            "barcode " +
+            "JOIN " +
+            "cn ON SUBSTR(barcode.barcode, 1, LENGTH(barcode.barcode) - 4) = cn.cn " +
+            "GROUP BY cn.cn " +
+            "UNION all " +
+            "SELECT uid,cn  CN_No , '' find_box,  boxes  BARCODE  from ManualAvr")
+    suspend fun getcnboxesformiss():List<CN2>
 
 
  @Query("select count() from barcode where SUBSTR(barcode.barcode, 1, LENGTH(barcode.barcode) - 4)=:cn")
@@ -102,6 +135,11 @@ interface BarcodeDao {
     @Query("DELETE FROM Barcode WHERE uid NOT IN (SELECT MIN(uid) FROM Barcode GROUP BY barcode)")
     suspend fun deleteDuplicateBarcodes()
 
+    @Query("UPDATE CN SET find_box = find_box || :newText WHERE cn = :cnNo")
+    suspend fun appendToFindBox(cnNo: String, newText: String)
+
+    @Query("UPDATE CN SET find_box = find_box || :newText WHERE cn = :cnNo")
+    suspend fun updatefindbox(cnNo: String, newText: String)
 
   /*  @Query("SELECT barcode " +
             "FROM barcode ")

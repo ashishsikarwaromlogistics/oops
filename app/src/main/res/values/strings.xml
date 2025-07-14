@@ -151,6 +151,6 @@
         <item>CM</item>
         <item>FT</item>
     </string-array>
-    <string name="version">Version : 5.1</string>
+    <string name="version">Version : 5.3</string>
     <string name="lorry">EnterLorry</string>
 </resources>

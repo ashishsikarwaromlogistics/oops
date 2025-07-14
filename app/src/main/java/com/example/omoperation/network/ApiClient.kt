@@ -78,8 +78,34 @@ import javax.inject.Inject
 
 
 
-
+    private val scmretrofit: Retrofit by lazy {
+        val interceptor = HttpLoggingInterceptor().apply {
+            level = HttpLoggingInterceptor.Level.BODY
+        }
+        val client = OkHttpClient.Builder()
+            .addInterceptor(interceptor)
+            .readTimeout(60, TimeUnit.SECONDS)
+            .connectTimeout(60, TimeUnit.SECONDS)
+            .retryOnConnectionFailure(true)
+            .build()
+        Retrofit.Builder()
+            .baseUrl(ServiceInterface.omapp)
+            // .baseUrl("http://nicmapi.mhlprs.com/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(client)
+            .build()
     }
+    @JvmStatic
+    fun getscmclient(): Retrofit {
+        return scmretrofit
+    }
+
+
+
+
+
+
+}
 
 
 

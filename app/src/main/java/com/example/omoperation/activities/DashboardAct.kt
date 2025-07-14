@@ -6,8 +6,11 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.view.KeyEvent
 import android.view.View
+import android.widget.Button
+import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
@@ -17,16 +20,19 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.omoperation.Constants
 import com.example.omoperation.LocationService
 import com.example.omoperation.LoggerService
+import com.example.omoperation.NetworkState
 import com.example.omoperation.OmOperation
 import com.example.omoperation.R
 import com.example.omoperation.UserRepository
 import com.example.omoperation.Utils
+import com.example.omoperation.activities.Splash
 import com.example.omoperation.adapters.Dash_Adapt
 import com.example.omoperation.adapters.DrawerAdapter
 import com.example.omoperation.databinding.ActivityDashboardBinding
@@ -67,15 +73,75 @@ class DashboardAct : AppCompatActivity()   {
     private val CAMERA_IMAGE_CODE = 100
     private val CAMERA_REQUEST_CODE = 101
     lateinit var db :AppDatabase
+    lateinit var welcome : TextView
+    fun saveDeviceid(){
+        val builder = android.app.AlertDialog.Builder(this@DashboardAct)
+        val layoutInflater = layoutInflater  // Use the activity's inflater, not application context
+        val view: View = layoutInflater.inflate(R.layout.save_oll, null)
+
+        val emp_edit_text = view.findViewById<EditText>(R.id.emp_edit_text)
+        val tvtitle = view.findViewById<TextView>(R.id.tvtitle)
+        tvtitle.setText("Change OLL Number")
+        val btn_yes = view.findViewById<Button>(R.id.yes_btn)
+
+        builder.setView(view)
+        val employee_dialog = builder.create()
+
+        btn_yes.setOnClickListener {
+            val empcode = emp_edit_text.text.toString()
+            if (empcode.isEmpty()) {
+                emp_edit_text.error = "Required"
+            }
+            else if(empcode.equals("00000")
+                || empcode.equals("11111")
+                || empcode.equals("22222")
+                || empcode.equals("33333")
+                || empcode.equals("44444")
+                || empcode.equals("55555")
+                || empcode.equals("77777")
+                || empcode.equals("88888")
+                || empcode.equals("99999")
+                ||empcode.equals("0000")
+                || empcode.equals("1111")
+                || empcode.equals("2222")
+                || empcode.equals("3333")
+                || empcode.equals("4444")
+                || empcode.equals("5555")
+                || empcode.equals("7777")
+                || empcode.equals("8888")
+                || empcode.equals("9999")
+
+                || empcode.equals("1234")
+                || empcode.equals("12345")
+
+
+            ){
+                emp_edit_text.error = "please input proper oll"
+            }
+            else if (empcode.length == 5 || empcode.length == 4) {
+                OmOperation.savePreferences2( Constants.SAVE_OLL, emp_edit_text.text.toString())
+                Log.d("OLL", "Saved: ${OmOperation.getPreferences2( Constants.SAVE_OLL, "")}")
+                employee_dialog.dismiss()
+                welcome.setText("OLL: ${OmOperation.getPreferences2( Constants.SAVE_OLL, "")}")
+            }
+            else   emp_edit_text.error = "please input proper oll"
+        }
+
+        employee_dialog.show()
+
+
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding=DataBindingUtil.setContentView(this,R.layout.activity_dashboard)
 
-
-
-
+        welcome=findViewById<TextView>(R.id.welcome)
+        welcome.setText("OLL: ${OmOperation.getPreferences2( Constants.SAVE_OLL, "")}")
+        welcome.setOnClickListener {
+            saveDeviceid()
+        }
 
         // Start the location tracking service
     //    val serviceIntent = Intent(this, LocationService::class.java)
