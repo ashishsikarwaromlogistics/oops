@@ -635,5 +635,20 @@ public class Utils {
     }
 
 
+    public static String getocrbox1(int box){
+        try{
+            if(box<10) return "000"+box;
+            else if(box<100) return "00"+box;
+            else if(box<1000) return "0"+box;
+            else return "000"+box;
+        }
+        catch (Exception e){
+            return "0001";
+        }
+
+    }
+
+
+
 
 }//d3af2396d1b0fee1
