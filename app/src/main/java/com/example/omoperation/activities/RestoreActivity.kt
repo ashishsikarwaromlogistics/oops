@@ -90,7 +90,7 @@ class RestoreActivity : AppCompatActivity(), RestoreAdapter.SendValue {
             else{
                  val a = db.restorebarcodedao().getAll()
                  for (i in 0 until a.size) {
-                     val barcodem = Barcode(barcode = a.get(i).barcode,timestamp=a.get(i).timestamp)
+                     val barcodem = Barcode(barcode = a.get(i).barcode, find_box =a.get(i).find_box,timestamp=a.get(i).timestamp)
                      db.barcodeDao().inserbarcode(barcodem)
 
                  }

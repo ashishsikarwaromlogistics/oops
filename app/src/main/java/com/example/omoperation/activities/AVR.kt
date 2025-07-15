@@ -282,10 +282,14 @@ class AVR : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSpeech.OnInitL
         lifecycleScope.launch {
             if(Utils.haveInternet(this@AVR)){
                 cp.show()
+
+
+
                 val barcodelist = db.barcodeDao().getAll().map { barcodeEntity ->
                     Barcodelist().apply {
                         barcode = barcodeEntity.barcode
                         time = barcodeEntity.timestamp
+                        find_box=barcodeEntity.find_box
                     }
                 }
 
@@ -294,7 +298,7 @@ class AVR : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSpeech.OnInitL
                         barcode = cnentity.boxes
                         CN_No = cnentity.cn
                         CHALLAN_NO = cnentity.challan
-                        CLIENT_BOX_NO = cnentity.find_box
+                       // CLIENT_BOX_NO = cnentity.find_box
                         paperstatus=if (grwithotdoc.any { it.contains(cnentity.cn) })  "N" else "Y"
                     }
                 }
@@ -814,12 +818,12 @@ class AVR : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSpeech.OnInitL
             binding.barcodeCount.setText(barcodelist.size.toString())
             adapter.notifyDataSetChanged()
             lifecycleScope.launch {
-                val barcodem=Barcode(barcode=barcode , timestamp = Utils.getCurrentTimestamp())
+                    val barcodem=Barcode(barcode=barcode , find_box =scanbarcode, timestamp = Utils.getCurrentTimestamp())
                 db.barcodeDao().inserbarcode(barcodem)
                 getcureentGR(barcode)
             }
             lifecycleScope.launch {
-                val barcodem= RestoreBarcode(barcode=barcode )
+                val barcodem= RestoreBarcode(barcode=barcode ,find_box = scanbarcode)
                 db.restorebarcodedao().inserbarcode(barcodem)
 
             }
@@ -934,12 +938,12 @@ class AVR : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSpeech.OnInitL
             binding.barcodeCount.setText(barcodelist.size.toString())
             adapter.notifyDataSetChanged()
             lifecycleScope.launch {
-                val barcodem=Barcode(barcode=barcode , timestamp = Utils.getCurrentTimestamp())
+                val barcodem=Barcode(barcode=barcode , find_box ="",  timestamp = Utils.getCurrentTimestamp())
                 db.barcodeDao().inserbarcode(barcodem)
                 getcureentGR(barcode)
             }
             lifecycleScope.launch {
-                val barcodem= RestoreBarcode(barcode=barcode )
+                val barcodem= RestoreBarcode(barcode=barcode,find_box = "" )
                 db.restorebarcodedao().inserbarcode(barcodem)
 
             }

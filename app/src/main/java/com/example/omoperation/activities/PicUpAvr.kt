@@ -3,6 +3,9 @@ package com.example.omoperation.activities
 import android.app.Activity
 import android.app.AlertDialog
 import android.app.Dialog
+import android.bluetooth.BluetoothAdapter
+import android.bluetooth.BluetoothDevice
+import android.bluetooth.BluetoothSocket
 import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Color
@@ -23,6 +26,7 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ListView
 import android.widget.SearchView
 import android.widget.Spinner
 import android.widget.TextView
@@ -50,6 +54,8 @@ import com.example.omoperation.model.avr.Barcodelist
 import com.example.omoperation.model.barcode_load.BarcodeMod
 import com.example.omoperation.model.barcode_load.Cn
 import com.example.omoperation.model.cnvaridate.CnValidateMod
+import com.example.omoperation.model.stickervalid.StickerValidMod
+import com.example.omoperation.model.stickervalid.StickerValidResp
 import com.example.omoperation.network.ApiClient
 import com.example.omoperation.network.ServiceInterface
 import com.example.omoperation.room.AppDatabase
@@ -65,8 +71,12 @@ import kotlinx.coroutines.withTimeoutOrNull
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.io.IOException
+import java.io.InputStream
+import java.io.OutputStream
 import java.util.LinkedList
 import java.util.Locale
+import java.util.UUID
 
 class PicUpAvr : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSpeech.OnInitListener{
     lateinit var binding: ActivityPicUpAvrBinding
@@ -92,8 +102,6 @@ class PicUpAvr : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSpeech.On
     var cureentgr=""
     var sealnumber=""//900 //  //  1090
     var lorryno=""//
-    var frombranchcode=""
-    var tobranchcode=""
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
        // enableEdgeToEdge()
@@ -102,6 +110,7 @@ class PicUpAvr : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSpeech.On
         binding.tvtitle.setText("PickUp AVR"+OmOperation.getPreferences(Constants.BCODE,"")+"\n"+OmOperation.getPreferences(Constants.EMP_CODE,""))
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         //  var bajajlist= ArrayList<String>()
+        initlization()
         try{
             bajajlist= Gson().fromJson(
                 OmOperation.getPreferences(Constants.BAJAJ, ""),
@@ -136,34 +145,7 @@ class PicUpAvr : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSpeech.On
         binding.recyAvr.adapter=adapter
         binding.barcodeText.setText("")
         binding.barcodeText.requestFocus()
-        var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == Activity.RESULT_OK) {
-                // There are no request codes
-                val data: Intent? = result.data
-                frombranchcode=data!!.getStringExtra("branchcode").toString()
-                binding.branch.setText(data!!.getStringExtra("branchcode"))
-            }
-        }
 
-        var tobranchlaunch = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == Activity.RESULT_OK) {
-                // There are no request codes
-                val data: Intent? = result.data
-                tobranchcode=data!!.getStringExtra("branchcode").toString()
-                binding.tobranch.setText(data!!.getStringExtra("branchcode"))
-            }
-        }
-
-        binding.branch.setOnClickListener {
-            val intent = Intent(this, BranchesAct::class.java)
-            intent .putExtra("senddata",1)
-            resultLauncher.launch(intent)
-        }
-        binding.tobranch.setOnClickListener {
-            val intent = Intent(this, BranchesAct::class.java)
-            intent .putExtra("senddata",1)
-            tobranchlaunch.launch(intent)
-        }
         binding.searchBtn.setOnClickListener {
             validateVehicle()
         }
@@ -230,10 +212,10 @@ class PicUpAvr : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSpeech.On
         //        AlertDialog.Builder alertDialog = new AlertDialog.Builder(BarcodeScanning.this);
 //        alertDialog.setTitle("Notification");
         bundle = intent.extras!!
-        lorryno= "OM"
+        lorryno= binding.lorryNo.text.toString()
         binding.submitBtn.setOnClickListener {
-            if(frombranchcode.equals("")|| lorryno.equals("")||tobranchcode.equals("")){
-                Utils.showDialog(this@PicUpAvr,"error","Please Verify Vehicle no and branch code",R.drawable.ic_error_outline_red_24dp)
+            if( lorryno.equals("")){
+                Utils.showDialog(this@PicUpAvr,"error","Please Verify Vehicle ",R.drawable.ic_error_outline_red_24dp)
                 return@setOnClickListener
             }
 
@@ -315,18 +297,117 @@ class PicUpAvr : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSpeech.On
 
     }
 
+    lateinit var bluetoothAdapter: BluetoothAdapter
+    var bluetoothSocket: BluetoothSocket? = null
+    lateinit var mDeviceList: java.util.ArrayList<BluetoothDevice>
+    private var paired_devices: Array<String> = arrayOf()
+    var outputStream: OutputStream? = null
+    var inputStream: InputStream? = null
+    fun initlization(){
+        mDeviceList = ArrayList()
+        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
+        val pairedDevices = bluetoothAdapter
+            .bondedDevices
+        if (pairedDevices != null) {
+            mDeviceList.addAll(pairedDevices)
+            for (i in mDeviceList!!.indices) {
+                add(mDeviceList!![i].name)
+            }
+        } else {
+            Toast.makeText(this, "Paired Devices Not Found", Toast.LENGTH_SHORT).show()
+        }
+        binding.spinnerText.setOnClickListener {
+            if (bluetoothAdapter != null) {
+                if (bluetoothSocket != null) {
+                    if (bluetoothSocket!!.isConnected) {
+                        try {
+                            bluetoothSocket!!.close()
 
+                        } catch (exception: IOException) {
+                            Toast.makeText(this, exception.message, Toast.LENGTH_SHORT).show()
+                        }
+                    } else {
+                        showPairedDevices()
+                    }
+                } else {
+                    showPairedDevices()
+                }
+            } else {
+                Toast.makeText(this, "Please wait.", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+    fun add(input: String) {
+        paired_devices += input
+    }
+    fun disconnect() {
+        if (bluetoothSocket == null) {
+            Toast.makeText(this@PicUpAvr, "Socket is not connected", Toast.LENGTH_SHORT)
+                .show()
+        }
+        try {
+            bluetoothSocket!!.close()
+            //bluetoothSocket = null
+        } catch (e: IOException) {
+            println(e.message)
+        }
+    }
+    private fun showPairedDevices() {
+        val mAlertDialogBuilder = androidx.appcompat.app.AlertDialog.Builder(this)
 
+        // Row layout is inflated and added to ListView
+        val mRowList = layoutInflater.inflate(R.layout.ustom_list, null)
+        val mListView = mRowList.findViewById<ListView>(R.id.list_view_1)
+
+        // Adapter is created and applied to ListView
+        val mAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, paired_devices)
+        mListView.adapter = mAdapter
+        mAdapter.notifyDataSetChanged()
+
+        // Row item is set as view in the Builder and the
+        // ListView is displayed in the Alert Dialog
+
+        mAlertDialogBuilder.setView(mRowList)
+        val dialog = mAlertDialogBuilder.create()
+        dialog.show()
+        mListView.setOnItemClickListener { parent, view, position, id ->
+            cp!!.show()
+            Thread(Runnable {
+                bluetoothSocket = mDeviceList!!.get(position).createRfcommSocketToServiceRecord( UUID .fromString("00001101-0000-1000-8000-00805F9B34FB"))
+
+                if(!bluetoothSocket!!.isConnected){
+
+                    bluetoothSocket!!.connect()
+                }
+
+                outputStream = bluetoothSocket!!.getOutputStream()
+                inputStream = bluetoothSocket!!.getInputStream()
+                runOnUiThread {
+                    if(bluetoothSocket!!.isConnected){
+                       binding.spinnerText.setText(mDeviceList!!.get(position).name)
+                        binding.btnConnect!!.setText("Connected")
+                        binding.cardBarcode.visibility=View.VISIBLE
+                        binding.cardBarcode.requestFocus()
+                        Utils.showDialog(this,"Success","Connected",R.drawable.ic_success)
+                    }
+                    else{
+
+                        binding.spinnerText.setText("Select Printer")
+                        binding.btnConnect.setText("DisConnected")
+                        Toast.makeText(this,"DisConnected", Toast.LENGTH_SHORT).show()
+                    }
+                    cp.dismiss()
+                }
+            }).start()
+            dialog.dismiss()
+        }
+
+    }
 
     private fun validatebarcode() :Int {
         try {
-            //viewmode.checkdata(binding.barcodeText.getText().toString().trim())
             var barCode = binding.barcodeText.getText().toString().trim()
             binding.barcodeText.setText("")
-            /* if (barCode.startsWith("O")) {
-                 barCode = barCode.substring(1, barCode.length)
-                 barCode = Utils.revertTransform(barCode)
-             }*/
             if (barCode.contains(getString(R.string.NBC_Sticker_Identification))) {
                 val CustomerBarcode =
                     barCode.split(getString(R.string.NBC_Sticker_Identification).toRegex())
@@ -336,40 +417,6 @@ class PicUpAvr : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSpeech.On
                     getString(R.string.NBC_Prefix) + CustomerBarcode[1] + CustomerBarcode[4]
             }
             else {
-                /* if (barCode.startsWith("0")) {
-                     barCode =
-                         barCode.trim { it <= ' ' }.replaceFirst("^0+(?!$)".toRegex(), "")
-                     val input = barCode
-                     val breakspoints = input.split("~")
-                     val breakspoint=breakspoints[0].split("-")
-                     for (part in breakspoint) {
-                         println(part)
-                     }
-                     if(breakspoint[1].length>4){
-                         barCode=breakspoint[0]+breakspoint[1].substring(1,breakspoint[1].length)
-                     }
-                     else{
-                         barCode=breakspoint[0]+ breakspoint[1]
-                     }
- 
-                 }
-                 else if (barCode.contains("-")) {
-                     val input = barCode
-                     val parts = input.split("-")
- 
-                     // Print each part
-                     for (part in parts) {
-                         println(part)
-                     }
- 
-                     barCode=parts[1]+"0"+parts[2].substring(1,parts[2].length)
-                     Log.d("ashish",barCode)
-                     //barcode=00308H171013
-                     *//* val builder = StringBuilder(barCode)
-                     barCode = builder.deleteCharAt(builder.indexOf("-") + 1)
-                         .deleteCharAt(builder.indexOf("-")).toString()
-                         .replaceFirst("^0+(?!$)".toRegex(), "")*//*
-                }*/
                 if (barCode.contains("-")){
                     clearBarcodeEdittext()
                     if(bajajlist.contains(barCode)){
@@ -382,15 +429,17 @@ class PicUpAvr : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSpeech.On
                     return 0
                 }
                 else{
-                    barCode = barCode.substring(1, barCode.length)
+
+
+                   /* barCode = barCode.substring(1, barCode.length)
                     barCode = Utils.revertTransform(barCode)
-                    barCode=barCode.trimStart('0')
+                    barCode=barCode.trimStart('0')  ashishchange*/
                 }
             }
             if (barCode.isEmpty()) {
                 binding.barcodeText.error = "Please Enter Barcode"
             }
-            else if(barCode.length<9 || barCode.length>20){
+            else if(barCode.length<5 || barCode.length>20){
                 binding.barcodeText.error = "Please Enter valid Barcode"
             }
             else {
@@ -564,30 +613,28 @@ class PicUpAvr : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSpeech.On
         }
         cp.show()
         val cn = barcode.substring(0, barcode.length - 4)
+        val mod=   StickerValidMod()
+        mod.status="tataInvValidate"
+        mod.inv_no=barcode
+        mod.sticker_for = "BAJAJ"
+        mod.bcode = OmOperation.getPreferences(Constants.BCODE,"")
 
-        val mod = CnValidateMod().apply {
-            bcode = OmOperation.getPreferences(Constants.BCODE, "")
-            cn_no = cn
-            loading_plan = bundle.getString("loading_plan")
-            from = intent.getStringExtra("from")
-            to = bundle.getString("to")
-        }
 
         ApiClient.getClient().create(ServiceInterface::class.java)
-            .cn_validate(Utils.getheaders(), mod)
-            .enqueue(object : Callback<CommonRespS> {
-                override fun onResponse(call: Call<CommonRespS>, response: Response<CommonRespS>) {
+            .tataStickerValidateNagpur( mod)
+            .enqueue(object : Callback<StickerValidResp> {
+                override fun onResponse(call: Call<StickerValidResp>, response: Response<StickerValidResp>) {
                     cp.dismiss()
                     if (response.isSuccessful) {
                         response.body()?.let { body ->
                             if (body.error.equals("false", true)) {
-                                handleSuccessfulResponse(barcode, body)
+                                //handleSuccessfulResponse(barcode, body)
                             } else {
 
                                 Utils.showDialog(
                                     this@PicUpAvr,
                                     "Error ${response.code()}",
-                                    body.response,
+                                   "",
                                     R.drawable.ic_error_outline_red_24dp
                                 )
                             }
@@ -604,7 +651,7 @@ class PicUpAvr : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSpeech.On
                     }
                 }
 
-                override fun onFailure(call: Call<CommonRespS>, t: Throwable) {
+                override fun onFailure(call: Call<StickerValidResp>, t: Throwable) {
                     cp.dismiss()
                     Utils.showDialog(this@PicUpAvr, "Failure", t.localizedMessage ?: "Unknown error", R.drawable.ic_error_outline_red_24dp)
                 }
@@ -689,12 +736,12 @@ class PicUpAvr : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSpeech.On
             binding.barcodeCount.setText(barcodelist.size.toString())
             adapter.notifyDataSetChanged()
             lifecycleScope.launch {
-                val barcodem= Barcode(barcode=barcode , timestamp = Utils.getCurrentTimestamp())
+                val barcodem= Barcode(barcode=barcode ,  find_box ="",timestamp = Utils.getCurrentTimestamp())
                 db.barcodeDao().inserbarcode(barcodem)
                 getcureentGR(barcode)
             }
             lifecycleScope.launch {
-                val barcodem= RestoreBarcode(barcode=barcode )
+                val barcodem= RestoreBarcode(barcode=barcode,find_box = "" )
                 db.restorebarcodedao().inserbarcode(barcodem)
 
             }
@@ -742,12 +789,12 @@ class PicUpAvr : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSpeech.On
             binding.barcodeCount.setText(barcodelist.size.toString())
             adapter.notifyDataSetChanged()
             lifecycleScope.launch {
-                val barcodem= Barcode(barcode=barcode , timestamp = Utils.getCurrentTimestamp())
+                val barcodem= Barcode(barcode=barcode ,  find_box ="",timestamp = Utils.getCurrentTimestamp())
                 db.barcodeDao().inserbarcode(barcodem)
                 getcureentGR(barcode)
             }
             lifecycleScope.launch {
-                val barcodem= RestoreBarcode(barcode=barcode )
+                val barcodem= RestoreBarcode(barcode=barcode,find_box = "" )
                 db.restorebarcodedao().inserbarcode(barcodem)
 
             }
@@ -805,8 +852,8 @@ class PicUpAvr : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSpeech.On
             val mod = BarcodeMod()
             mod.source =intent.getStringExtra("from")// OmOperation.getPreferences(Constants.BCODE, "")
             mod.remarks=remarks.toString()
-            mod.source = frombranchcode
-            mod.destination =tobranchcode
+            mod.source = "9994"
+            mod.destination = OmOperation.getPreferences(Constants.BCODE, "")
             mod.lorryNo = lorryno
             mod.sealNo = sealnumber
             mod.driverName = ""

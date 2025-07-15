@@ -68,9 +68,9 @@ class PickUpChallan : AppCompatActivity() , OfflineChallanAdapter.OnItemSelected
                                     } else {
                                         cn1 + currentBox
                                     }
-                                    val barcode= Barcode(barcode=bar , timestamp = Utils.getCurrentTimestamp())
+                                    val barcode= Barcode(barcode=bar ,  find_box ="",timestamp = Utils.getCurrentTimestamp())
                                     db.barcodeDao().inserbarcode(barcode)
-                                    val barcodem= RestoreBarcode(barcode=bar )
+                                    val barcodem= RestoreBarcode(barcode=bar,find_box = "" )
                                     db.restorebarcodedao().inserbarcode(barcodem)
                                 }
                             }

@@ -9,11 +9,12 @@ plugins {
 
 android {
     namespace = "com.example.omoperation"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.example.omoperation"
         minSdk = 24
+        //noinspection OldTargetApi
         targetSdk = 35
         versionCode = 43
         versionName = "5.3"

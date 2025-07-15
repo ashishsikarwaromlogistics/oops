@@ -12,6 +12,7 @@ import java.util.Locale
 data class Barcode(@PrimaryKey(autoGenerate = true)  val uid: Int=0,
                    @ColumnInfo(name = "timestamp") val timestamp: String,
                    @ColumnInfo(name = "barcode") val barcode: String?,
+                   @ColumnInfo(name = "find_box") val find_box: String= ""
 
 )
 {

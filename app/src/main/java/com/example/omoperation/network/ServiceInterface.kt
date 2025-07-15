@@ -52,6 +52,8 @@ import com.example.omoperation.model.print.PrintCNMod
 import com.example.omoperation.model.rewarehouse.ReDetailResp
 import com.example.omoperation.model.rewarehouse.ReWarehouseMod
 import com.example.omoperation.model.savegatepass.SaveDataPassMod
+import com.example.omoperation.model.stickervalid.StickerValidMod
+import com.example.omoperation.model.stickervalid.StickerValidResp
 import com.example.omoperation.model.submission.SubmissionResp
 import com.example.omoperation.model.tally.TallyResp
 import com.example.omoperation.model.vehcleimage.VehcleImageMod
@@ -420,6 +422,14 @@ interface ServiceInterface   {
 
     @POST("api/cncreation/VehicleContainerEntry")
     fun Container_Chek_List(@Body mod: VehicleContainerEntry): Call<VehicleContainerEntryResp>
+
+
+    @POST("tataStickerValidateNagpur.php")
+    fun tataStickerValidateNagpur(@Body mod: StickerValidMod): Call<StickerValidResp>
+
+
+
+
 //https://scmomsanchar.omlogistics.co.in/api/cncreation/VehicleContainerEntry
     //https://scm.omlogistics.co.in/api/cncreation/VehicleContainerEntry
 //https://api.omlogistics.co.in/emp_networkdir.php

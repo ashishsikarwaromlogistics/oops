@@ -22,7 +22,7 @@ import com.example.omoperation.room.tables.ManualAvr
 import com.example.omoperation.room.tables.RestoreBarcode
 import com.example.omoperation.room.tables.User
 
-@Database(entities = [User::class,Barcode::class,ManualAvr::class, CN::class, Branches::class,Employees::class, RestoreBarcode::class , CN2::class], version = 2)
+@Database(entities = [User::class,Barcode::class,ManualAvr::class, CN::class, Branches::class,Employees::class, RestoreBarcode::class , CN2::class], version = 3)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao
     abstract fun   barcodeDao(): BarcodeDao
@@ -37,6 +37,16 @@ abstract class AppDatabase : RoomDatabase() {
 
         @Volatile
         private var INSTANCE: AppDatabase? = null
+        val MIGRATION_2_3 = object : Migration(2, 3) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                // Add the new column to CN table
+                database.execSQL("ALTER TABLE barcode ADD COLUMN find_box TEXT NOT NULL DEFAULT ''")
+                database.execSQL("ALTER TABLE RestoreBarcode ADD COLUMN find_box TEXT NOT NULL DEFAULT ''")
+
+
+               }
+        }
+
         val MIGRATION_1_2 = object : Migration(1, 2) {
             override fun migrate(database: SupportSQLiteDatabase) {
                 // Add the new column to CN table
@@ -50,7 +60,7 @@ abstract class AppDatabase : RoomDatabase() {
             )
         """.trimIndent())
 
-               }
+            }
         }
         fun getDatabase(context: Context): AppDatabase {
             return INSTANCE ?: synchronized(this) {
@@ -60,6 +70,7 @@ abstract class AppDatabase : RoomDatabase() {
                     "app_database"
                 )
                      .addMigrations(MIGRATION_1_2)
+                     .addMigrations(MIGRATION_2_3)
                     .build()
                 INSTANCE = instance
                 instance

@@ -363,12 +363,12 @@ class StockAudit : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSpeech.
             binding.barcodeCount.setText(barcodelist.size.toString())
             adapter.notifyDataSetChanged()
             lifecycleScope.launch {
-                val barcodem= Barcode(barcode=barcode , timestamp = Utils.getCurrentTimestamp())
+                val barcodem= Barcode(barcode=barcode ,  find_box ="",timestamp = Utils.getCurrentTimestamp())
                 db.barcodeDao().inserbarcode(barcodem)
                 getcureentGR(barcode)
             }
             lifecycleScope.launch {
-                val barcodem= RestoreBarcode(barcode=barcode )
+                val barcodem= RestoreBarcode(barcode=barcode ,find_box = "")
                 db.restorebarcodedao().inserbarcode(barcodem)
 
             }

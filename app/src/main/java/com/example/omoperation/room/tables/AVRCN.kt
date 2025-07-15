@@ -2,7 +2,7 @@ package com.example.omoperation.room.tables
 
 import androidx.room.ColumnInfo
 import androidx.room.PrimaryKey
-
+//3301251017731
 data class AVRCN(
     @PrimaryKey(autoGenerate = true) val uid: Int=0,
     @ColumnInfo(name = "cn") val cn: String?,

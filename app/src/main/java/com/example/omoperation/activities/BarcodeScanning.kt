@@ -688,12 +688,12 @@ class BarcodeScanning : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSp
             binding.barcodeCount.setText(barcodelist.size.toString())
             adapter.notifyDataSetChanged()
             lifecycleScope.launch {
-                val barcodem= Barcode(barcode=barcode , timestamp = Utils.getCurrentTimestamp() )
+                val barcodem= Barcode(barcode=barcode , find_box = scanbarcode, timestamp = Utils.getCurrentTimestamp() )
                 db.barcodeDao().inserbarcode(barcodem)
                 getcureentGR(barcode)
             }
             lifecycleScope.launch {
-                val barcodem= RestoreBarcode(barcode=barcode )
+                val barcodem= RestoreBarcode(barcode=barcode, find_box = scanbarcode )
                 db.restorebarcodedao().inserbarcode(barcodem)
 
             }
@@ -762,12 +762,12 @@ class BarcodeScanning : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSp
         binding.barcodeCount.setText(barcodelist.size.toString())
         adapter.notifyDataSetChanged()
         lifecycleScope.launch {
-            val barcodem= Barcode(barcode=barcode, timestamp = Utils.getCurrentTimestamp() )
+            val barcodem= Barcode(barcode=barcode, find_box = "", timestamp = Utils.getCurrentTimestamp() )
             db.barcodeDao().inserbarcode(barcodem)
             getcureentGR(barcode)
         }
         lifecycleScope.launch {
-            val barcodem= RestoreBarcode(barcode=barcode )
+            val barcodem= RestoreBarcode(barcode=barcode ,find_box = "")
             db.restorebarcodedao().inserbarcode(barcodem)
 
         }
@@ -816,6 +816,7 @@ class BarcodeScanning : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSp
                 Barcodelist().apply {
                     barcode = barcodeEntity.barcode
                     time = barcodeEntity.timestamp
+                    find_box=barcodeEntity.find_box
                 }
             }
 
@@ -824,10 +825,11 @@ class BarcodeScanning : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSp
                 Cn().apply {
                     barcode = cnentity.box
                     cnNo = cnentity.cn
-                    clienT_BOX_NO =cnentity.findBox
+
 
                 }
             }
+
 
             val mod = BarcodeMod()
             mod.source =intent.getStringExtra("from")// OmOperation.getPreferences(Constants.BCODE, "")
