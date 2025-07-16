@@ -94,6 +94,8 @@ class BarcodeScanning : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSp
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+
+
         binding=DataBindingUtil.setContentView(this,R.layout.activity_barcode_scanning)
         //binding=DataBindingUtil.setContentView(this,R.layout.activity_avr)
         binding.tvtitle.setText("Challan"+OmOperation.getPreferences(Constants.BCODE,"")+"\n"+OmOperation.getPreferences(Constants.EMP_CODE,""))

@@ -78,7 +78,7 @@ import java.util.LinkedList
 import java.util.Locale
 import java.util.UUID
 
-class PicUpAvr : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSpeech.OnInitListener{
+class PicUpAvr : BaseActivity() , AVRAdapter.RemoveBarcode, TextToSpeech.OnInitListener{
     lateinit var binding: ActivityPicUpAvrBinding
 
     lateinit var  bundle : Bundle
@@ -430,7 +430,7 @@ class PicUpAvr : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSpeech.On
                 }
                 else{
 
-
+                    checkcnBajaj(barCode)
                    /* barCode = barCode.substring(1, barCode.length)
                     barCode = Utils.revertTransform(barCode)
                     barCode=barCode.trimStart('0')  ashishchange*/
@@ -794,7 +794,7 @@ class PicUpAvr : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSpeech.On
                 getcureentGR(barcode)
             }
             lifecycleScope.launch {
-                val barcodem= RestoreBarcode(barcode=barcode,find_box = "" )
+                val barcodem= RestoreBarcode(barcode=barcode  )
                 db.restorebarcodedao().inserbarcode(barcodem)
 
             }
@@ -850,7 +850,6 @@ class PicUpAvr : AppCompatActivity() , AVRAdapter.RemoveBarcode, TextToSpeech.On
             }
 
             val mod = BarcodeMod()
-            mod.source =intent.getStringExtra("from")// OmOperation.getPreferences(Constants.BCODE, "")
             mod.remarks=remarks.toString()
             mod.source = "9994"
             mod.destination = OmOperation.getPreferences(Constants.BCODE, "")
